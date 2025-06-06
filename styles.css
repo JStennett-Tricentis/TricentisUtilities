@@ -1,0 +1,267 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	min-height: 100vh;
+	padding: 20px;
+}
+
+.container {
+	max-width: 1000px;
+	margin: 0 auto;
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+}
+
+.header {
+	background: linear-gradient(45deg, #2c3e50, #34495e);
+	color: white;
+	padding: 30px;
+	text-align: center;
+}
+
+.header h1 {
+	font-size: 2.2em;
+	margin-bottom: 10px;
+	font-weight: 300;
+}
+
+.header p {
+	opacity: 0.9;
+	font-size: 1.1em;
+}
+
+.content {
+	padding: 30px;
+}
+
+.tabs {
+	display: flex;
+	border-bottom: 2px solid #e1e8ed;
+	margin-bottom: 30px;
+}
+
+.tab {
+	padding: 15px 25px;
+	cursor: pointer;
+	border: none;
+	background: none;
+	font-size: 16px;
+	font-weight: 600;
+	color: #6c757d;
+	transition: all 0.3s ease;
+	border-bottom: 3px solid transparent;
+}
+
+.tab.active {
+	color: #667eea;
+	border-bottom-color: #667eea;
+}
+
+.tab:hover {
+	color: #667eea;
+}
+
+.tab-content {
+	display: none;
+}
+
+.tab-content.active {
+	display: block;
+}
+
+.section {
+	background: #f8f9fa;
+	border-radius: 8px;
+	padding: 25px;
+	margin-bottom: 25px;
+	border-left: 4px solid #667eea;
+}
+
+.section h2 {
+	color: #2c3e50;
+	margin-bottom: 20px;
+	font-size: 1.3em;
+	font-weight: 600;
+}
+
+.form-group {
+	margin-bottom: 20px;
+}
+
+.form-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+}
+
+label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 500;
+	color: #2c3e50;
+}
+
+select,
+input,
+textarea {
+	width: 100%;
+	padding: 12px;
+	border: 2px solid #e1e8ed;
+	border-radius: 6px;
+	font-size: 16px;
+	transition: border-color 0.3s ease;
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+	outline: none;
+	border-color: #667eea;
+	box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+textarea {
+	resize: vertical;
+	min-height: 200px;
+	font-family: 'Courier New', monospace;
+	font-size: 14px;
+}
+
+.button-group {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 15px;
+	margin-top: 20px;
+}
+
+button {
+	padding: 15px 25px;
+	border: none;
+	border-radius: 6px;
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.btn-primary {
+	background: linear-gradient(45deg, #667eea, #764ba2);
+	color: white;
+}
+
+.btn-secondary {
+	background: linear-gradient(45deg, #11998e, #38ef7d);
+	color: white;
+}
+
+.btn-warning {
+	background: linear-gradient(45deg, #f093fb, #f5576c);
+	color: white;
+}
+
+.btn-info {
+	background: linear-gradient(45deg, #4facfe, #00f2fe);
+	color: white;
+}
+
+button:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.bookmarklet-section {
+	background: #fff3cd;
+	border-left-color: #ffc107;
+}
+
+.bookmarklet-link {
+	display: inline-block;
+	background: #ffc107;
+	color: #212529;
+	padding: 12px 20px;
+	text-decoration: none;
+	border-radius: 6px;
+	font-weight: 600;
+	margin: 10px 10px 10px 0;
+	transition: all 0.3s ease;
+}
+
+.bookmarklet-link:hover {
+	background: #e0a800;
+	transform: translateY(-1px);
+}
+
+.url-display {
+	background: #f8f9fa;
+	border: 1px solid #dee2e6;
+	border-radius: 4px;
+	padding: 10px;
+	font-family: 'Courier New', monospace;
+	font-size: 12px;
+	word-break: break-all;
+	margin-top: 10px;
+}
+
+.config-item {
+	background: white;
+	border: 1px solid #dee2e6;
+	border-radius: 6px;
+	padding: 15px;
+	margin-bottom: 15px;
+}
+
+.config-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.config-title {
+	font-weight: 600;
+	color: #2c3e50;
+}
+
+.small-btn {
+	padding: 5px 10px;
+	font-size: 12px;
+	margin-left: 10px;
+}
+
+.workspace-item {
+	background: #f8f9fa;
+	padding: 10px;
+	margin: 5px 0;
+	border-radius: 4px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.status-message {
+	padding: 10px;
+	border-radius: 4px;
+	margin: 10px 0;
+}
+
+.success {
+	background: #d4edda;
+	color: #155724;
+	border: 1px solid #c3e6cb;
+}
+
+.error {
+	background: #f8d7da;
+	color: #721c24;
+	border: 1px solid #f5c6cb;
+}

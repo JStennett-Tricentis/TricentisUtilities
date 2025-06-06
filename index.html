@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tricentis Navigator</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+	<div class="container">
+		<div class="header">
+			<h1>🚀 Tricentis Navigator</h1>
+			<p>Quick navigation tool for your cloud environments</p>
+		</div>
+
+		<div class="content">
+			<div class="tabs">
+				<button class="tab active" onclick="switchTab('navigate')">🎯 Navigate</button>
+				<button class="tab" onclick="switchTab('config')">⚙️ Configure</button>
+				<button class="tab" onclick="switchTab('bookmarklet')">📌 Bookmarklet</button>
+			</div>
+
+			<!-- Navigate Tab -->
+			<div id="navigate-tab" class="tab-content active">
+				<div class="section">
+					<h2>🎯 Environment Navigator</h2>
+
+					<div class="form-row">
+						<div class="form-group">
+							<label for="environment">Select Environment:</label>
+							<select id="environment" onchange="updateTenants()">
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label for="tenant">Select Tenant:</label>
+							<select id="tenant" onchange="updateWorkspaces()">
+							</select>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="form-group">
+							<label for="workspace">Select Workspace:</label>
+							<select id="workspace" onchange="updatePages()">
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label for="page">Select Page:</label>
+							<select id="page" onchange="updateUrlPreview()">
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="customPath">Or Custom Path:</label>
+						<input type="text" id="customPath" placeholder="/your/custom/path" />
+					</div>
+
+					<div class="url-display" id="urlPreview">
+						URL Preview: Select an environment to begin
+					</div>
+
+					<div class="button-group">
+						<button class="btn-primary" onclick="navigateToUrl()">🔗 Open in Current Tab</button>
+						<button class="btn-secondary" onclick="navigateToUrl(true)">🆕 Open in New Tab</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Config Tab -->
+			<div id="config-tab" class="tab-content">
+				<div class="section">
+					<h2>⚙️ Configuration Manager</h2>
+
+					<div class="form-row">
+						<div>
+							<h3>📝 JSON Configuration</h3>
+							<p style="margin-bottom: 15px; color: #6c757d;">Edit the complete configuration as JSON for
+								bulk changes:</p>
+							<textarea id="configJson" placeholder="Configuration will appear here..."></textarea>
+							<div class="button-group">
+								<button class="btn-info" onclick="loadConfig()">📥 Load from JSON</button>
+								<button class="btn-warning" onclick="resetToDefault()">🔄 Reset to Default</button>
+							</div>
+							<div id="configStatus"></div>
+						</div>
+
+						<div>
+							<h3>🎛️ Visual Editor</h3>
+							<p style="margin-bottom: 15px; color: #6c757d;">Quick add/edit using forms:</p>
+
+							<div class="form-group">
+								<label for="newEnvName">Environment Name:</label>
+								<input type="text" id="newEnvName" placeholder="e.g., Development" />
+							</div>
+
+							<div class="form-group">
+								<label for="newEnvKey">Environment Key:</label>
+								<input type="text" id="newEnvKey" placeholder="e.g., my-dev" />
+							</div>
+
+							<button class="btn-secondary" onclick="addEnvironment()"
+								style="width: 100%; margin-bottom: 20px;">➕ Add Environment</button>
+
+							<div id="configEditor">
+								<!-- Dynamic config editor will appear here -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Bookmarklet Tab -->
+			<div id="bookmarklet-tab" class="tab-content">
+				<div class="section bookmarklet-section">
+					<h2>📌 Bookmarklet (Drag to Bookmarks Bar)</h2>
+					<p style="margin-bottom: 15px;">Drag this link to your bookmarks bar for quick access from any page:
+					</p>
+					<a href="#" id="bookmarkletLink" class="bookmarklet-link">📌 Tricentis Navigator</a>
+				</div>
+
+				<div class="section">
+					<h2>📋 How to Use</h2>
+					<ol style="padding-left: 20px; line-height: 1.6;">
+						<li><strong>Navigate Tab:</strong> Use the dropdowns to select your environment, tenant,
+							workspace, and page, then click to navigate.</li>
+						<li><strong>Configure Tab:</strong> Add or modify environments, tenants, and workspaces using
+							either JSON or the visual editor.</li>
+						<li><strong>Bookmarklet:</strong> Drag the bookmarklet above to your bookmarks bar, then click
+							it from any page to open the quick navigator.</li>
+						<li><strong>Custom Paths:</strong> Enter any custom path in the text field to navigate to
+							specific pages not listed in the dropdown.</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="config.js"></script>
+	<script src="navigation.js"></script>
+	<script src="bookmarklet.js"></script>
+	<script src="app.js"></script>
+</body>
+
+</html>
