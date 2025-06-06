@@ -97,11 +97,31 @@ function updateBookmarklet() {
                 workspaceSelect.innerHTML = '<option value="">Select...</option>';
                 pageSelect.innerHTML = '<option value="">Default</option>';
                 if (envKey && tenantKey && config.environments[envKey]?.tenants[tenantKey]) {
-                    const workspaceKeys = config.environments[envKey].tenants[tenantKey].workspaces;
-                    workspaceKeys.forEach(workspaceKey => {
-                        const workspace = config.sharedUris.workspaces[workspaceKey];
+                    const workspaceNames = config.environments[envKey].tenants[tenantKey].workspaces;
+                    workspaceNames.forEach(workspaceName => {
+                        // Look for matching workspace in sharedUris - check direct key match first
+                        let workspaceKey = null;
+                        let workspace = null;
+                        
+                        if (config.sharedUris.workspaces[workspaceName]) {
+                            workspaceKey = workspaceName;
+                            workspace = config.sharedUris.workspaces[workspaceName];
+                        } else {
+                            // Look for matching workspace property or name
+                            workspaceKey = Object.keys(config.sharedUris.workspaces).find(key => 
+                                config.sharedUris.workspaces[key].workspace === workspaceName || 
+                                config.sharedUris.workspaces[key].name === workspaceName
+                            );
+                            if (workspaceKey) {
+                                workspace = config.sharedUris.workspaces[workspaceKey];
+                            }
+                        }
+                        
                         if (workspace) {
                             workspaceSelect.innerHTML += \`<option value="\${workspaceKey}">\${workspace.name}</option>\`;
+                        } else {
+                            // Basic portal workspace
+                            workspaceSelect.innerHTML += \`<option value="\${workspaceName}">\${workspaceName}</option>\`;
                         }
                     });
                 }
@@ -109,11 +129,25 @@ function updateBookmarklet() {
 
             workspaceSelect.onchange = function() {
                 const workspaceKey = this.value;
-                pageSelect.innerHTML = '<option value="">Home</option>';
+                pageSelect.innerHTML = '<option value="">-- Select Page --</option>';
                 if (workspaceKey && config.sharedUris.workspaces[workspaceKey]) {
                     const workspace = config.sharedUris.workspaces[workspaceKey];
-                    // Only show pages for portal workspaces
+                    
+                    // For portal workspaces, show universal pages
                     if (workspace.type === 'portal' && config.sharedUris.pages) {
+                        Object.entries(config.sharedUris.pages).forEach(([key, pageName]) => {
+                            pageSelect.innerHTML += \`<option value="\${key}">\${pageName}</option>\`;
+                        });
+                    }
+                    // For swagger workspaces, show swagger endpoints
+                    else if (workspace.type === 'swagger' && config.sharedUris.swaggerPages) {
+                        Object.entries(config.sharedUris.swaggerPages).forEach(([swaggerPath, swaggerName]) => {
+                            pageSelect.innerHTML += \`<option value="\${swaggerPath}">\${swaggerName}</option>\`;
+                        });
+                    }
+                } else if (workspaceKey) {
+                    // Handle workspaces not in sharedUris (basic portal workspaces)
+                    if (config.sharedUris.pages) {
                         Object.entries(config.sharedUris.pages).forEach(([key, pageName]) => {
                             pageSelect.innerHTML += \`<option value="\${key}">\${pageName}</option>\`;
                         });
@@ -137,10 +171,22 @@ function updateBookmarklet() {
                         const basePath = \`/_portal/space/\${workspace.workspace}\`;
                         const pagePath = pageKey || '';
                         return \`https://\${tenantKey}.\${envKey}.tricentis.com\${basePath}\${pagePath}\`;
+                    } else if (workspace.type === 'swagger') {
+                        // Swagger workspace: direct path from pageKey (which contains the full swagger path)
+                        if (pageKey) {
+                            return \`https://\${tenantKey}.\${envKey}.tricentis.com\${pageKey}\`;
+                        } else {
+                            return \`https://\${tenantKey}.\${envKey}.tricentis.com\`;
+                        }
                     } else {
                         // Custom workspace: direct path (no additional pages)
                         return \`https://\${tenantKey}.\${envKey}.tricentis.com\${workspace.path}\`;
                     }
+                } else if (workspaceKey) {
+                    // Basic portal workspace (just workspace name)
+                    const basePath = \`/_portal/space/\${workspaceKey}\`;
+                    const pagePath = pageKey || '';
+                    return \`https://\${tenantKey}.\${envKey}.tricentis.com\${basePath}\${pagePath}\`;
                 } else {
                     return \`https://\${tenantKey}.\${envKey}.tricentis.com\`;
                 }
