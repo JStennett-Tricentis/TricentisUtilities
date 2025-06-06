@@ -20,4 +20,4 @@ Thumbs.db
 *.log
 
 # Personal configuration (if you want to keep your personal config private)
-# config.json
+config.json
