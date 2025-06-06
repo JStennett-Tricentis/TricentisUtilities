@@ -26,7 +26,12 @@ function updateBookmarklet() {
                 \`<option value="\${key}">\${env.name}</option>\`).join('');
 
             popup.innerHTML = \`
-                <h2 style="margin: 0 0 20px 0; color: #2c3e50;">🚀 Quick Navigate</h2>
+                <div style="display: flex; align-items: center; margin: 0 0 20px 0;">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAyOCAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI4IiBoZWlnaHQ9IjI4IiByeD0iNCIgZmlsbD0iIzJjM2U1MCIvPgo8dGV4dCB4PSI1IiB5PSIxOSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPlQ8L3RleHQ+Cjx0ZXh0IHg9IjE1IiB5PSIxOSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNjdlZWEiPk48L3RleHQ+Cjwvc3ZnPgo="
+                         style="width: 28px; height: 28px; margin-right: 10px; border-radius: 4px;"
+                         alt="Tricentis">
+                    <h2 style="margin: 0; color: #2c3e50;">Tricentis Quick Navigate</h2>
+                </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                     <div>
                         <label style="display: block; margin-bottom: 5px; font-weight: 600;">Environment:</label>
@@ -57,11 +62,11 @@ function updateBookmarklet() {
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
+					<button id="currentTabBtn" style="flex: 1; padding: 10px; background: #11998e; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        🔗 Current Tab
+                    </button>
                     <button id="newTabBtn" style="flex: 1; padding: 10px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer;">
                         🆕 New Tab
-                    </button>
-                    <button id="currentTabBtn" style="flex: 1; padding: 10px; background: #11998e; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                        🔗 Current Tab
                     </button>
                     <button onclick="document.getElementById('tricentis-nav-overlay').remove()"
                             style="padding: 10px 15px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">
@@ -79,15 +84,80 @@ function updateBookmarklet() {
             const workspaceSelect = document.getElementById('quickWorkspace');
             const pageSelect = document.getElementById('quickPage');
 
+            // Auto-populate from current URL if on Tricentis domain
+            function autoPopulateBookmarklet() {
+                const currentUrl = window.location.href;
+                const tricentisMatch = currentUrl.match(/https:\\/\\/([^.]+)\\.([^.]+)\\.tricentis\\.com/);
+                
+                if (tricentisMatch) {
+                    const tenant = tricentisMatch[1];
+                    const environment = tricentisMatch[2];
+                    
+                    // Try to set environment
+                    for (let option of envSelect.options) {
+                        if (option.value === environment) {
+                            envSelect.value = environment;
+                            envSelect.onchange();
+                            break;
+                        }
+                    }
+                    
+                    // Try to set tenant after a brief delay
+                    setTimeout(() => {
+                        for (let option of tenantSelect.options) {
+                            if (option.value === tenant) {
+                                tenantSelect.value = tenant;
+                                tenantSelect.onchange();
+                                break;
+                            }
+                        }
+                        
+                        // Try to set workspace from URL path
+                        setTimeout(() => {
+                            const pathMatch = currentUrl.match(/\\/_portal\\/space\\/([^\\/\\?]+)/);
+                            if (pathMatch) {
+                                const workspaceName = pathMatch[1];
+                                for (let option of workspaceSelect.options) {
+                                    if (option.textContent === workspaceName || option.value === workspaceName) {
+                                        workspaceSelect.value = option.value;
+                                        workspaceSelect.onchange();
+                                        break;
+                                    }
+                                }
+                            }
+                        }, 100);
+                    }, 100);
+                }
+            }
+
+            // Call auto-populate after a brief delay to let the DOM settle
+            setTimeout(autoPopulateBookmarklet, 150);
+
             envSelect.onchange = function() {
                 const envKey = this.value;
                 tenantSelect.innerHTML = '<option value="">Select...</option>';
                 workspaceSelect.innerHTML = '<option value="">Select...</option>';
                 pageSelect.innerHTML = '<option value="">Default</option>';
                 if (envKey && config.environments[envKey]) {
+                    let fusionxFound = false;
+                    
                     Object.entries(config.environments[envKey].tenants).forEach(([key, tenant]) => {
                         tenantSelect.innerHTML += \`<option value="\${key}">\${tenant.name}</option>\`;
+                        if (tenant.name === 'FusionX' || key === 'fusionx') {
+                            fusionxFound = true;
+                        }
                     });
+                    
+                    // Auto-select FusionX if available
+                    if (fusionxFound) {
+                        for (let option of tenantSelect.options) {
+                            if (option.textContent === 'FusionX' || option.value === 'fusionx') {
+                                tenantSelect.value = option.value;
+                                tenantSelect.onchange();
+                                break;
+                            }
+                        }
+                    }
                 }
             };
 
@@ -98,32 +168,47 @@ function updateBookmarklet() {
                 pageSelect.innerHTML = '<option value="">Default</option>';
                 if (envKey && tenantKey && config.environments[envKey]?.tenants[tenantKey]) {
                     const workspaceNames = config.environments[envKey].tenants[tenantKey].workspaces;
+                    let fusionxFound = false;
+                    
                     workspaceNames.forEach(workspaceName => {
                         // Look for matching workspace in sharedUris - check direct key match first
                         let workspaceKey = null;
                         let workspace = null;
-                        
+
                         if (config.sharedUris.workspaces[workspaceName]) {
                             workspaceKey = workspaceName;
                             workspace = config.sharedUris.workspaces[workspaceName];
                         } else {
                             // Look for matching workspace property or name
-                            workspaceKey = Object.keys(config.sharedUris.workspaces).find(key => 
-                                config.sharedUris.workspaces[key].workspace === workspaceName || 
+                            workspaceKey = Object.keys(config.sharedUris.workspaces).find(key =>
+                                config.sharedUris.workspaces[key].workspace === workspaceName ||
                                 config.sharedUris.workspaces[key].name === workspaceName
                             );
                             if (workspaceKey) {
                                 workspace = config.sharedUris.workspaces[workspaceKey];
                             }
                         }
-                        
+
                         if (workspace) {
                             workspaceSelect.innerHTML += \`<option value="\${workspaceKey}">\${workspace.name}</option>\`;
+                            if (workspace.name === 'FusionX') fusionxFound = true;
                         } else {
                             // Basic portal workspace
                             workspaceSelect.innerHTML += \`<option value="\${workspaceName}">\${workspaceName}</option>\`;
+                            if (workspaceName === 'FusionX') fusionxFound = true;
                         }
                     });
+                    
+                    // Auto-select FusionX if available
+                    if (fusionxFound) {
+                        for (let option of workspaceSelect.options) {
+                            if (option.textContent === 'FusionX') {
+                                workspaceSelect.value = option.value;
+                                workspaceSelect.onchange();
+                                break;
+                            }
+                        }
+                    }
                 }
             };
 
@@ -132,7 +217,7 @@ function updateBookmarklet() {
                 pageSelect.innerHTML = '<option value="">-- Select Page --</option>';
                 if (workspaceKey && config.sharedUris.workspaces[workspaceKey]) {
                     const workspace = config.sharedUris.workspaces[workspaceKey];
-                    
+
                     // For portal workspaces, show universal pages
                     if (workspace.type === 'portal' && config.sharedUris.pages) {
                         Object.entries(config.sharedUris.pages).forEach(([key, pageName]) => {
@@ -165,7 +250,7 @@ function updateBookmarklet() {
 
                 if (workspaceKey && config.sharedUris.workspaces[workspaceKey]) {
                     const workspace = config.sharedUris.workspaces[workspaceKey];
-                    
+
                     if (workspace.type === 'portal') {
                         // Portal workspace: /_portal/space/{WorkspaceName}{/page}
                         const basePath = \`/_portal/space/\${workspace.workspace}\`;
