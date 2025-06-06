@@ -4,9 +4,36 @@ A browser-based tool for quick navigation between Tricentis cloud environments, 
 
 ## 🚀 Quick Start
 
+### Setup
+
+1. **Copy configuration file:**
+
+   ```bash
+   cp config.example.json config.json
+   ```
+
+2. **Serve via HTTP server** (required to load custom config):
+
+   ```bash
+   # Option 1: Python
+   python3 -m http.server 8000
+
+   # Option 2: Node.js
+   npx serve .
+
+   # Option 3: PHP
+   php -S localhost:8000
+   ```
+
+3. **Open in browser:**
+
+   ```bash
+   http://localhost:8000
+   ```
+
 ### Option 1: Bookmarklet (Recommended)
 
-1. Visit the [Tricentis Navigator](./index.html) tool
+1. Visit the tool at `http://localhost:8000`
 2. Go to the **Bookmarklet** tab
 3. Drag the "📌 Tricentis Navigator" link to your browser's bookmark bar
 4. Click the bookmark from any page to open the quick navigator popup
@@ -14,6 +41,8 @@ A browser-based tool for quick navigation between Tricentis cloud environments, 
 ### Option 2: Direct Access
 
 Open the tool directly in your browser to access the full interface with configuration options.
+
+> **Note:** Opening `index.html` directly (`file://` protocol) will use built-in configuration due to CORS restrictions. Use an HTTP server to load your custom `config.json`.
 
 ## ✨ Features
 
@@ -62,6 +91,21 @@ When you're already on a Tricentis page (like `https://fusionx.my-dev.tricentis.
 - Ready to navigate to other pages in the same context
 
 ## 🔧 Configuration
+
+### Initial Setup
+
+1. **Copy the example config:**
+
+   ```bash
+   cp config.example.json config.json
+   ```
+
+2. **Edit `config.json`** to match your environments:
+   - Update environment URLs (`my-dev`, `my-test`, `my`)
+   - Add your tenants and workspaces
+   - Customize available pages and swagger endpoints
+
+3. **Refresh the browser** after making changes to load the new configuration
 
 ### Adding New Environments
 
