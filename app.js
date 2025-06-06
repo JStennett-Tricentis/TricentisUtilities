@@ -12,9 +12,9 @@ function switchTab(tabName) {
 }
 
 // Initialize the application
-function initApp() {
-	// Initialize configuration
-	initConfig();
+async function initApp() {
+	// Initialize configuration (now async)
+	await initConfig();
 
 	// Set up event listeners
 	setupEventListeners();
@@ -70,8 +70,8 @@ function updateTenantEnvSelector() {
 }
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', function () {
-	initApp();
+document.addEventListener('DOMContentLoaded', async function () {
+	await initApp();
 });
 
 // Export functions for global use

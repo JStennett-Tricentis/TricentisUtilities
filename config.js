@@ -1,140 +1,52 @@
-// Default configuration
-let config = {
-	// Shared URI library - reusable across different combinations
-	sharedUris: {
-		workspaces: {
-			"fusionx": {
-				name: "FusionX",
-				type: "portal", // portal, swagger, admin, custom
-				workspace: "FusionX" // Used in /_portal/space/{workspace}/
-			},
-			"reporting": {
-				name: "Reporting",
-				type: "portal",
-				workspace: "Reporting"
-			},
-			"api-simulator": {
-				name: "API Simulator", 
-				type: "portal",
-				workspace: "APISimulator"
-			},
-			"e2g-swagger": {
-				name: "E2G Swagger API",
-				type: "custom",
-				path: "/_e2g/experimentalApis/swagger/index.html"
-			},
-			"inv-swagger": {
-				name: "INV Swagger API",
-				type: "custom", 
-				path: "/_inv/experimentalApis/swagger/index.html"
-			},
-			"admin-panel": {
-				name: "Admin Panel",
-				type: "custom",
-				path: "/_admin/dashboard"
-			},
-			"portal-home": {
-				name: "Portal Home",
-				type: "custom",
-				path: "/_portal/home"
-			},
-			"test-management": {
-				name: "Test Management",
-				type: "portal",
-				workspace: "TestManagement"
-			},
-			"ci-cd-dashboard": {
-				name: "CI/CD Dashboard", 
-				type: "portal",
-				workspace: "CICD"
-			}
-		},
-		// Universal pages that work with any portal workspace
-		pages: {
-			"": "Home",
-			"/dashboard": "Dashboard",
-			"/agents/all": "Agents (All)",
-			"/reporting/create": "Create Report", 
-			"/settings": "Settings",
-			"/projects": "Projects",
-			"/executions": "Executions",
-			"/dashboards": "Dashboards",
-			"/reports": "Reports",
-			"/analytics": "Analytics",
-			"/simulator": "API Simulator",
-			"/endpoints": "Manage Endpoints",
-			"/logs": "Request Logs",
-			"/testcases": "Test Cases",
-			"/testsuites": "Test Suites",
-			"/results": "Test Results",
-			"/pipelines": "Pipelines",
-			"/builds": "Build History",
-			"/deployments": "Deployments",
-			"/profile": "User Profile",
-			"/notifications": "Notifications"
-		}
-	},
+// Default configuration from config.json
+let config = {};
 
-	// Environment/Tenant/Workspace combinations
-	environments: {
-		"my-dev": {
-			name: "Development",
-			tenants: {
-				"fusionx": {
-					name: "FusionX",
-					workspaces: ["fusionx", "reporting", "api-simulator"]
-				},
-				"tricentis": {
-					name: "Tricentis",
-					workspaces: ["e2g-swagger", "inv-swagger", "admin-panel", "portal-home"]
-				}
-			}
-		},
-		"my-test": {
-			name: "Staging",
-			tenants: {
-				"fusionx": {
-					name: "FusionX",
-					workspaces: ["fusionx", "reporting", "api-simulator"]
-				},
-				"tricentis": {
-					name: "Tricentis",
-					workspaces: ["e2g-swagger", "admin-panel", "test-management"]
-				}
-			}
-		},
-		"my": {
-			name: "Production",
-			tenants: {
-				"fusionx": {
-					name: "FusionX",
-					workspaces: ["fusionx", "reporting"]
-				},
-				"tricentis": {
-					name: "Tricentis",
-					workspaces: ["portal-home", "admin-panel"]
-				}
-			}
+// Load config from config.json
+async function loadConfigFromFile() {
+	try {
+		const response = await fetch('./config.json');
+		if (response.ok) {
+			const fileConfig = await response.json();
+			config = fileConfig;
+			return true;
+		} else {
+			console.warn('Could not load config.json, using localStorage or defaults');
+			return false;
 		}
+	} catch (e) {
+		console.warn('Error loading config.json:', e.message);
+		return false;
 	}
-};
+}
 
 // Load config from localStorage or use default
-function initConfig() {
-	const saved = localStorage.getItem('tricentis-nav-config');
-	if (saved) {
-		try {
-			const parsedConfig = JSON.parse(saved);
-			// Validate config structure
-			if (parsedConfig && parsedConfig.sharedUris && parsedConfig.environments) {
-				config = parsedConfig;
-			} else {
-				console.warn('Invalid saved config structure, using default');
+async function initConfig() {
+	// First try to load from config.json
+	const fileLoaded = await loadConfigFromFile();
+	
+	if (!fileLoaded) {
+		// Fallback to localStorage if config.json fails
+		const saved = localStorage.getItem('tricentis-nav-config');
+		if (saved) {
+			try {
+				const parsedConfig = JSON.parse(saved);
+				// Validate config structure
+				if (parsedConfig && parsedConfig.sharedUris && parsedConfig.environments) {
+					config = parsedConfig;
+				} else {
+					console.warn('Invalid saved config structure, no config available');
+					config = { sharedUris: { workspaces: {}, pages: {} }, environments: {} };
+				}
+			} catch (e) {
+				console.warn('Invalid saved config JSON, no config available');
+				config = { sharedUris: { workspaces: {}, pages: {} }, environments: {} };
 			}
-		} catch (e) {
-			console.warn('Invalid saved config JSON, using default');
+		} else {
+			console.warn('No config found in localStorage, no config available');
+			config = { sharedUris: { workspaces: {}, pages: {} }, environments: {} };
 		}
 	}
+	
 	updateConfigDisplay();
 	// Call updateEnvironments if it exists (from navigation.js)
 	if (typeof updateEnvironments === 'function') {

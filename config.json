@@ -1,0 +1,202 @@
+{
+	"sharedUris": {
+		"workspaces": {
+			"fusionx": {
+				"name": "FusionX",
+				"type": "portal",
+				"workspace": "FusionX"
+			},
+			"reporting": {
+				"name": "Reporting",
+				"type": "portal",
+				"workspace": "Reporting"
+			},
+			"api-simulator": {
+				"name": "API-Simulator",
+				"type": "portal",
+				"workspace": "API-Simulator"
+			},
+			"e2g-swagger": {
+				"name": "E2G Swagger API",
+				"type": "custom",
+				"path": "/_e2g/experimentalApis/swagger/index.html"
+			},
+			"identity-swagger": {
+				"name": "Identity Swagger API",
+				"type": "custom",
+				"path": "/_identity/apiDocs/swagger/index.html"
+			},
+			"inv-swagger": {
+				"name": "INV Swagger API",
+				"type": "custom",
+				"path": "/_inv/experimentalApis/swagger/index.html"
+			},
+			"playlists-experimental-swagger": {
+				"name": "Playlists Experimental Swagger",
+				"type": "custom",
+				"path": "/_playlists/experimentalApis/swagger/index.html"
+			},
+			"playlists-swagger": {
+				"name": "Playlists Swagger API",
+				"type": "custom",
+				"path": "/_playlists/apiDocs/swagger/index.html"
+			},
+			"simulations-experimental-swagger": {
+				"name": "Simulations Experimental Swagger",
+				"type": "custom",
+				"path": "/_simulations/experimentalApis/swagger/index.html"
+			},
+			"simulations-swagger": {
+				"name": "Simulations Swagger API",
+				"type": "custom",
+				"path": "/_simulations/apiDocs/swagger/index.html"
+			},
+			"core-swagger": {
+				"name": "Core Swagger API",
+				"type": "custom",
+				"path": "/_core/experimentalApis/swagger/index.html"
+			},
+			"mbt-swagger": {
+				"name": "MBT Swagger API",
+				"type": "custom",
+				"path": "/_mbt/experimentalApis/swagger/index.html"
+			}
+		},
+		"pages": {
+			"/home": "Home",
+			"/agents/all": "Agents (All)",
+			"/reporting/create": "Create Report",
+			"/builder": "Test Case Builder",
+			"/inventory/testcases": "Test Cases Inventory",
+			"/playlists": "Playlists",
+			"/modules": "Modules",
+			"/builder/module": "Module Builder",
+			"/inventory/sharedactions": "Shared Actions Inventory",
+			"/inventory/apiactions": "API Actions Inventory",
+			"/apiplay": "API Playground",
+			"/simulations": "Simulations Registry",
+			"/simulators": "Simulators Agents",
+			"/runs": "Test Runs",
+			"/tdm": "Test Data Management",
+			"/tdm/business-flow": "Business Flows"
+		}
+	},
+	"environments": {
+		"my-dev": {
+			"name": "Development",
+			"tenants": {
+				"fusionx": {
+					"name": "FusionX",
+					"workspaces": [
+						"FusionX",
+						"Reporting",
+						"API-Simulator",
+						"Always Empty Workspace",
+						"Large Data Creation",
+						"Default",
+						"identity-swagger",
+						"inv-swagger",
+						"playlists-experimental-swagger",
+						"playlists-swagger",
+						"simulations-experimental-swagger",
+						"simulations-swagger",
+						"core-swagger",
+						"mbt-swagger",
+						"e2g-swagger"
+					]
+				}
+			}
+		},
+		"my-test": {
+			"name": "Staging",
+			"tenants": {
+				"fusionx": {
+					"name": "FusionX",
+					"workspaces": [
+						"FusionX",
+						"Reporting",
+						"API-Simulator",
+						"Always Empty Workspace",
+						"Large Data Creation",
+						"Default",
+						"identity-swagger",
+						"inv-swagger",
+						"playlists-experimental-swagger",
+						"playlists-swagger",
+						"simulations-experimental-swagger",
+						"simulations-swagger",
+						"core-swagger",
+						"mbt-swagger",
+						"e2g-swagger"
+					]
+				},
+				"tricentis-ci": {
+					"name": "Tricentis-CI",
+					"workspaces": [
+						"FusionX",
+						"TTAwTTA",
+						"Reporting",
+						"API-Simulator",
+						"Always Empty Workspace",
+						"Large Data Creation",
+						"Default",
+						"identity-swagger",
+						"inv-swagger",
+						"playlists-experimental-swagger",
+						"playlists-swagger",
+						"simulations-experimental-swagger",
+						"simulations-swagger",
+						"core-swagger",
+						"mbt-swagger",
+						"e2g-swagger"
+					]
+				}
+			}
+		},
+		"my": {
+			"name": "Production",
+			"tenants": {
+				"fusionx": {
+					"name": "FusionX",
+					"workspaces": [
+						"FusionX",
+						"Reporting",
+						"API-Simulator",
+						"Always Empty Workspace",
+						"Large Data Creation",
+						"Default",
+						"identity-swagger",
+						"inv-swagger",
+						"playlists-experimental-swagger",
+						"playlists-swagger",
+						"simulations-experimental-swagger",
+						"simulations-swagger",
+						"core-swagger",
+						"mbt-swagger",
+						"e2g-swagger"
+					]
+				},
+				"tricentis": {
+					"name": "Tricentis",
+					"workspaces": [
+						"FusionX",
+						"Reporting",
+						"API-Simulator",
+						"Always Empty Workspace",
+						"Large Data Creation",
+						"Default",
+						"identity-swagger",
+						"inv-swagger",
+						"playlists-experimental-swagger",
+						"playlists-swagger",
+						"simulations-experimental-swagger",
+						"simulations-swagger",
+						"core-swagger",
+						"mbt-swagger",
+						"e2g-swagger"
+					]
+				}
+			}
+		}
+	}
+}

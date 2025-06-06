@@ -39,13 +39,25 @@ function updateWorkspaces() {
 	workspaceSelect.innerHTML = '<option value="">-- Select Workspace --</option>';
 
 	if (envKey && tenantKey && config.environments[envKey]?.tenants[tenantKey]) {
-		const workspaceKeys = config.environments[envKey].tenants[tenantKey].workspaces;
-		for (const workspaceKey of workspaceKeys) {
-			const workspace = config.sharedUris.workspaces[workspaceKey];
-			if (workspace) {
+		const workspaceNames = config.environments[envKey].tenants[tenantKey].workspaces;
+		for (const workspaceName of workspaceNames) {
+			// Look for matching workspace in sharedUris by workspace name
+			const workspaceKey = Object.keys(config.sharedUris.workspaces).find(key => 
+				config.sharedUris.workspaces[key].workspace === workspaceName || 
+				config.sharedUris.workspaces[key].name === workspaceName
+			);
+			
+			if (workspaceKey) {
+				const workspace = config.sharedUris.workspaces[workspaceKey];
 				const option = document.createElement('option');
 				option.value = workspaceKey;
 				option.textContent = workspace.name;
+				workspaceSelect.appendChild(option);
+			} else {
+				// If no matching workspace found in sharedUris, create a basic portal option
+				const option = document.createElement('option');
+				option.value = workspaceName;
+				option.textContent = workspaceName;
 				workspaceSelect.appendChild(option);
 			}
 		}
@@ -93,17 +105,25 @@ function updateUrlPreview() {
 
 	if (customPath) {
 		fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${customPath}`;
-	} else if (workspaceKey && config.sharedUris.workspaces[workspaceKey]) {
+	} else if (workspaceKey) {
 		const workspace = config.sharedUris.workspaces[workspaceKey];
 		
-		if (workspace.type === 'portal') {
-			// Portal workspace: /_portal/space/{WorkspaceName}{/page}
-			const basePath = `/_portal/space/${workspace.workspace}`;
+		if (workspace) {
+			// Found workspace in sharedUris
+			if (workspace.type === 'portal') {
+				// Portal workspace: /_portal/space/{WorkspaceName}{/page}
+				const basePath = `/_portal/space/${workspace.workspace}`;
+				const pagePath = pageKey || '';
+				fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${basePath}${pagePath}`;
+			} else {
+				// Custom workspace: direct path (no additional pages)
+				fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${workspace.path}`;
+			}
+		} else {
+			// Basic portal workspace (just workspace name)
+			const basePath = `/_portal/space/${workspaceKey}`;
 			const pagePath = pageKey || '';
 			fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${basePath}${pagePath}`;
-		} else {
-			// Custom workspace: direct path (no additional pages)
-			fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${workspace.path}`;
 		}
 	} else {
 		fullUrl = `https://${tenantKey}.${envKey}.tricentis.com`;
@@ -128,17 +148,25 @@ function navigateToUrl(newTab = false) {
 
 	if (customPath) {
 		fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${customPath}`;
-	} else if (workspaceKey && config.sharedUris.workspaces[workspaceKey]) {
+	} else if (workspaceKey) {
 		const workspace = config.sharedUris.workspaces[workspaceKey];
 		
-		if (workspace.type === 'portal') {
-			// Portal workspace: /_portal/space/{WorkspaceName}{/page}
-			const basePath = `/_portal/space/${workspace.workspace}`;
+		if (workspace) {
+			// Found workspace in sharedUris
+			if (workspace.type === 'portal') {
+				// Portal workspace: /_portal/space/{WorkspaceName}{/page}
+				const basePath = `/_portal/space/${workspace.workspace}`;
+				const pagePath = pageKey || '';
+				fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${basePath}${pagePath}`;
+			} else {
+				// Custom workspace: direct path (no additional pages)
+				fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${workspace.path}`;
+			}
+		} else {
+			// Basic portal workspace (just workspace name)
+			const basePath = `/_portal/space/${workspaceKey}`;
 			const pagePath = pageKey || '';
 			fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${basePath}${pagePath}`;
-		} else {
-			// Custom workspace: direct path (no additional pages)
-			fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${workspace.path}`;
 		}
 	} else {
 		fullUrl = `https://${tenantKey}.${envKey}.tricentis.com`;
