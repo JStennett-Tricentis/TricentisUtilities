@@ -30,7 +30,7 @@ function updateBookmarklet() {
                     <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAyOCAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI4IiBoZWlnaHQ9IjI4IiByeD0iNCIgZmlsbD0iIzJjM2U1MCIvPgo8dGV4dCB4PSI1IiB5PSIxOSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPlQ8L3RleHQ+Cjx0ZXh0IHg9IjE1IiB5PSIxOSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNjdlZWEiPk48L3RleHQ+Cjwvc3ZnPgo="
                          style="width: 28px; height: 28px; margin-right: 10px; border-radius: 4px;"
                          alt="Tricentis">
-                    <h2 style="margin: 0; color: #2c3e50;">Tricentis Quick Navigate</h2>
+                    <h2 style="margin: 0; color: #2c3e50;">Tosca Cloud/Swagger Quick Navigate</h2>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                     <div>
@@ -62,15 +62,15 @@ function updateBookmarklet() {
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
+					<button onclick="document.getElementById('tricentis-nav-overlay').remove()"
+                            style="padding: 10px 15px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        ✕
+                    </button>
 					<button id="currentTabBtn" style="flex: 1; padding: 10px; background: #11998e; color: white; border: none; border-radius: 4px; cursor: pointer;">
                         🔗 Current Tab
                     </button>
                     <button id="newTabBtn" style="flex: 1; padding: 10px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer;">
                         🆕 New Tab
-                    </button>
-                    <button onclick="document.getElementById('tricentis-nav-overlay').remove()"
-                            style="padding: 10px 15px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                        ✕
                     </button>
                 </div>
             \`;
@@ -88,11 +88,11 @@ function updateBookmarklet() {
             function autoPopulateBookmarklet() {
                 const currentUrl = window.location.href;
                 const tricentisMatch = currentUrl.match(/https:\\/\\/([^.]+)\\.([^.]+)\\.tricentis\\.com/);
-                
+
                 if (tricentisMatch) {
                     const tenant = tricentisMatch[1];
                     const environment = tricentisMatch[2];
-                    
+
                     // Try to set environment
                     for (let option of envSelect.options) {
                         if (option.value === environment) {
@@ -101,7 +101,7 @@ function updateBookmarklet() {
                             break;
                         }
                     }
-                    
+
                     // Try to set tenant after a brief delay
                     setTimeout(() => {
                         for (let option of tenantSelect.options) {
@@ -111,7 +111,7 @@ function updateBookmarklet() {
                                 break;
                             }
                         }
-                        
+
                         // Try to set workspace from URL path
                         setTimeout(() => {
                             const pathMatch = currentUrl.match(/\\/_portal\\/space\\/([^\\/\\?]+)/);
@@ -140,14 +140,14 @@ function updateBookmarklet() {
                 pageSelect.innerHTML = '<option value="">Default</option>';
                 if (envKey && config.environments[envKey]) {
                     let fusionxFound = false;
-                    
+
                     Object.entries(config.environments[envKey].tenants).forEach(([key, tenant]) => {
                         tenantSelect.innerHTML += \`<option value="\${key}">\${tenant.name}</option>\`;
                         if (tenant.name === 'FusionX' || key === 'fusionx') {
                             fusionxFound = true;
                         }
                     });
-                    
+
                     // Auto-select FusionX if available
                     if (fusionxFound) {
                         for (let option of tenantSelect.options) {
@@ -169,7 +169,7 @@ function updateBookmarklet() {
                 if (envKey && tenantKey && config.environments[envKey]?.tenants[tenantKey]) {
                     const workspaceNames = config.environments[envKey].tenants[tenantKey].workspaces;
                     let fusionxFound = false;
-                    
+
                     workspaceNames.forEach(workspaceName => {
                         // Look for matching workspace in sharedUris - check direct key match first
                         let workspaceKey = null;
@@ -198,7 +198,7 @@ function updateBookmarklet() {
                             if (workspaceName === 'FusionX') fusionxFound = true;
                         }
                     });
-                    
+
                     // Auto-select FusionX if available
                     if (fusionxFound) {
                         for (let option of workspaceSelect.options) {

@@ -8,13 +8,13 @@ A browser-based tool for quick navigation between Tricentis cloud environments, 
 
 1. **Copy configuration file:**
 
-   **Start fresh**:
+   **Start with Tricentis**
 
    ```bash
    cp config.example.json config.json
    ```
 
-   **FusionX**
+   **Start with FusionX**
 
     ```bash
     cp config.fusionx.json config.json
