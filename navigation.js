@@ -41,14 +41,26 @@ function updateWorkspaces() {
 	if (envKey && tenantKey && config.environments[envKey]?.tenants[tenantKey]) {
 		const workspaceNames = config.environments[envKey].tenants[tenantKey].workspaces;
 		for (const workspaceName of workspaceNames) {
-			// Look for matching workspace in sharedUris by workspace name
-			const workspaceKey = Object.keys(config.sharedUris.workspaces).find(key => 
-				config.sharedUris.workspaces[key].workspace === workspaceName || 
-				config.sharedUris.workspaces[key].name === workspaceName
-			);
+			// Look for matching workspace in sharedUris - check direct key match first, then workspace property, then name
+			let workspaceKey = null;
+			let workspace = null;
 			
-			if (workspaceKey) {
-				const workspace = config.sharedUris.workspaces[workspaceKey];
+			// First check if workspaceName is directly a key in sharedUris.workspaces
+			if (config.sharedUris.workspaces[workspaceName]) {
+				workspaceKey = workspaceName;
+				workspace = config.sharedUris.workspaces[workspaceName];
+			} else {
+				// If not, look for matching workspace property or name
+				workspaceKey = Object.keys(config.sharedUris.workspaces).find(key => 
+					config.sharedUris.workspaces[key].workspace === workspaceName || 
+					config.sharedUris.workspaces[key].name === workspaceName
+				);
+				if (workspaceKey) {
+					workspace = config.sharedUris.workspaces[workspaceKey];
+				}
+			}
+			
+			if (workspace) {
 				const option = document.createElement('option');
 				option.value = workspaceKey;
 				option.textContent = workspace.name;
@@ -69,7 +81,7 @@ function updateWorkspaces() {
 function updatePages() {
 	const workspaceKey = document.getElementById('workspace').value;
 	const pageSelect = document.getElementById('page');
-	pageSelect.innerHTML = '<option value="">-- Home --</option>';
+	pageSelect.innerHTML = '<option value="">-- Select Page --</option>';
 
 	if (workspaceKey && config.sharedUris.workspaces[workspaceKey]) {
 		const workspace = config.sharedUris.workspaces[workspaceKey];
@@ -83,7 +95,26 @@ function updatePages() {
 				pageSelect.appendChild(option);
 			}
 		}
+		// For swagger workspaces, show swagger endpoints
+		else if (workspace.type === 'swagger' && config.sharedUris.swaggerPages) {
+			for (const [swaggerPath, swaggerName] of Object.entries(config.sharedUris.swaggerPages)) {
+				const option = document.createElement('option');
+				option.value = swaggerPath;
+				option.textContent = swaggerName;
+				pageSelect.appendChild(option);
+			}
+		}
 		// For custom workspaces, no additional pages (they're direct links)
+	} else if (workspaceKey) {
+		// Handle workspaces not in sharedUris (basic portal workspaces)
+		if (config.sharedUris.pages) {
+			for (const [pageKey, pageName] of Object.entries(config.sharedUris.pages)) {
+				const option = document.createElement('option');
+				option.value = pageKey;
+				option.textContent = pageName;
+				pageSelect.appendChild(option);
+			}
+		}
 	}
 
 	updateUrlPreview();
@@ -115,6 +146,13 @@ function updateUrlPreview() {
 				const basePath = `/_portal/space/${workspace.workspace}`;
 				const pagePath = pageKey || '';
 				fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${basePath}${pagePath}`;
+			} else if (workspace.type === 'swagger') {
+				// Swagger workspace: direct path from pageKey (which contains the full swagger path)
+				if (pageKey) {
+					fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${pageKey}`;
+				} else {
+					fullUrl = `https://${tenantKey}.${envKey}.tricentis.com`;
+				}
 			} else {
 				// Custom workspace: direct path (no additional pages)
 				fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${workspace.path}`;
@@ -158,6 +196,13 @@ function navigateToUrl(newTab = false) {
 				const basePath = `/_portal/space/${workspace.workspace}`;
 				const pagePath = pageKey || '';
 				fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${basePath}${pagePath}`;
+			} else if (workspace.type === 'swagger') {
+				// Swagger workspace: direct path from pageKey (which contains the full swagger path)
+				if (pageKey) {
+					fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${pageKey}`;
+				} else {
+					fullUrl = `https://${tenantKey}.${envKey}.tricentis.com`;
+				}
 			} else {
 				// Custom workspace: direct path (no additional pages)
 				fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${workspace.path}`;

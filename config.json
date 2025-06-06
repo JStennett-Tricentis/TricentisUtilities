@@ -16,50 +16,9 @@
 				"type": "portal",
 				"workspace": "API-Simulator"
 			},
-			"e2g-swagger": {
-				"name": "E2G Swagger API",
-				"type": "custom",
-				"path": "/_e2g/experimentalApis/swagger/index.html"
-			},
-			"identity-swagger": {
-				"name": "Identity Swagger API",
-				"type": "custom",
-				"path": "/_identity/apiDocs/swagger/index.html"
-			},
-			"inv-swagger": {
-				"name": "INV Swagger API",
-				"type": "custom",
-				"path": "/_inv/experimentalApis/swagger/index.html"
-			},
-			"playlists-experimental-swagger": {
-				"name": "Playlists Experimental Swagger",
-				"type": "custom",
-				"path": "/_playlists/experimentalApis/swagger/index.html"
-			},
-			"playlists-swagger": {
-				"name": "Playlists Swagger API",
-				"type": "custom",
-				"path": "/_playlists/apiDocs/swagger/index.html"
-			},
-			"simulations-experimental-swagger": {
-				"name": "Simulations Experimental Swagger",
-				"type": "custom",
-				"path": "/_simulations/experimentalApis/swagger/index.html"
-			},
-			"simulations-swagger": {
-				"name": "Simulations Swagger API",
-				"type": "custom",
-				"path": "/_simulations/apiDocs/swagger/index.html"
-			},
-			"core-swagger": {
-				"name": "Core Swagger API",
-				"type": "custom",
-				"path": "/_core/experimentalApis/swagger/index.html"
-			},
-			"mbt-swagger": {
-				"name": "MBT Swagger API",
-				"type": "custom",
-				"path": "/_mbt/experimentalApis/swagger/index.html"
+			"swagger-docs": {
+				"name": "Swagger Docs",
+				"type": "swagger"
 			}
 		},
 		"pages": {
@@ -79,6 +38,17 @@
 			"/runs": "Test Runs",
 			"/tdm": "Test Data Management",
 			"/tdm/business-flow": "Business Flows"
+		},
+		"swaggerPages": {
+			"/_e2g/experimentalApis/swagger/index.html": "E2G Swagger API",
+			"/_identity/apiDocs/swagger/index.html": "Identity Swagger API",
+			"/_inv/experimentalApis/swagger/index.html": "INV Swagger API",
+			"/_playlists/experimentalApis/swagger/index.html": "Playlists Experimental Swagger",
+			"/_playlists/apiDocs/swagger/index.html": "Playlists Swagger API",
+			"/_simulations/experimentalApis/swagger/index.html": "Simulations Experimental Swagger",
+			"/_simulations/apiDocs/swagger/index.html": "Simulations Swagger API",
+			"/_core/experimentalApis/swagger/index.html": "Core Swagger API",
+			"/_mbt/experimentalApis/swagger/index.html": "MBT Swagger API"
 		}
 	},
 	"environments": {
@@ -94,15 +64,7 @@
 						"Always Empty Workspace",
 						"Large Data Creation",
 						"Default",
-						"identity-swagger",
-						"inv-swagger",
-						"playlists-experimental-swagger",
-						"playlists-swagger",
-						"simulations-experimental-swagger",
-						"simulations-swagger",
-						"core-swagger",
-						"mbt-swagger",
-						"e2g-swagger"
+						"swagger-docs"
 					]
 				}
 			}
@@ -119,15 +81,7 @@
 						"Always Empty Workspace",
 						"Large Data Creation",
 						"Default",
-						"identity-swagger",
-						"inv-swagger",
-						"playlists-experimental-swagger",
-						"playlists-swagger",
-						"simulations-experimental-swagger",
-						"simulations-swagger",
-						"core-swagger",
-						"mbt-swagger",
-						"e2g-swagger"
+						"swagger-docs"
 					]
 				},
 				"tricentis-ci": {
@@ -140,15 +94,7 @@
 						"Always Empty Workspace",
 						"Large Data Creation",
 						"Default",
-						"identity-swagger",
-						"inv-swagger",
-						"playlists-experimental-swagger",
-						"playlists-swagger",
-						"simulations-experimental-swagger",
-						"simulations-swagger",
-						"core-swagger",
-						"mbt-swagger",
-						"e2g-swagger"
+						"swagger-docs"
 					]
 				}
 			}
@@ -165,15 +111,7 @@
 						"Always Empty Workspace",
 						"Large Data Creation",
 						"Default",
-						"identity-swagger",
-						"inv-swagger",
-						"playlists-experimental-swagger",
-						"playlists-swagger",
-						"simulations-experimental-swagger",
-						"simulations-swagger",
-						"core-swagger",
-						"mbt-swagger",
-						"e2g-swagger"
+						"swagger-docs"
 					]
 				},
 				"tricentis": {
@@ -185,15 +123,7 @@
 						"Always Empty Workspace",
 						"Large Data Creation",
 						"Default",
-						"identity-swagger",
-						"inv-swagger",
-						"playlists-experimental-swagger",
-						"playlists-swagger",
-						"simulations-experimental-swagger",
-						"simulations-swagger",
-						"core-swagger",
-						"mbt-swagger",
-						"e2g-swagger"
+						"swagger-docs"
 					]
 				}
 			}

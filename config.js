@@ -15,8 +15,150 @@ async function loadConfigFromFile() {
 		}
 	} catch (e) {
 		console.warn('Error loading config.json:', e.message);
+		// If CORS error (file:// protocol), provide built-in config
+		if (e.message.includes('NetworkError') || e.message.includes('CORS')) {
+			console.log('Using built-in configuration due to CORS restrictions');
+			loadBuiltInConfig();
+			return true;
+		}
 		return false;
 	}
+}
+
+// Built-in configuration as fallback
+function loadBuiltInConfig() {
+	config = {
+		"sharedUris": {
+			"workspaces": {
+				"fusionx": {
+					"name": "FusionX",
+					"type": "portal",
+					"workspace": "FusionX"
+				},
+				"reporting": {
+					"name": "Reporting",
+					"type": "portal",
+					"workspace": "Reporting"
+				},
+				"api-simulator": {
+					"name": "API-Simulator",
+					"type": "portal",
+					"workspace": "API-Simulator"
+				},
+				"swagger-docs": {
+					"name": "Swagger Docs",
+					"type": "swagger"
+				}
+			},
+			"pages": {
+				"/home": "Home",
+				"/agents/all": "Agents (All)",
+				"/reporting/create": "Create Report",
+				"/builder": "Test Case Builder",
+				"/inventory/testcases": "Test Cases Inventory",
+				"/playlists": "Playlists",
+				"/modules": "Modules",
+				"/builder/module": "Module Builder",
+				"/inventory/sharedactions": "Shared Actions Inventory",
+				"/inventory/apiactions": "API Actions Inventory",
+				"/apiplay": "API Playground",
+				"/simulations": "Simulations Registry",
+				"/simulators": "Simulators Agents",
+				"/runs": "Test Runs",
+				"/tdm": "Test Data Management",
+				"/tdm/business-flow": "Business Flows"
+			},
+			"swaggerPages": {
+				"/_e2g/experimentalApis/swagger/index.html": "E2G Swagger API",
+				"/_identity/apiDocs/swagger/index.html": "Identity Swagger API",
+				"/_inv/experimentalApis/swagger/index.html": "INV Swagger API",
+				"/_playlists/experimentalApis/swagger/index.html": "Playlists Experimental Swagger",
+				"/_playlists/apiDocs/swagger/index.html": "Playlists Swagger API",
+				"/_simulations/experimentalApis/swagger/index.html": "Simulations Experimental Swagger",
+				"/_simulations/apiDocs/swagger/index.html": "Simulations Swagger API",
+				"/_core/experimentalApis/swagger/index.html": "Core Swagger API",
+				"/_mbt/experimentalApis/swagger/index.html": "MBT Swagger API"
+			}
+		},
+		"environments": {
+			"my-dev": {
+				"name": "Development",
+				"tenants": {
+					"fusionx": {
+						"name": "FusionX",
+						"workspaces": [
+							"FusionX",
+							"Reporting",
+							"API-Simulator",
+							"Always Empty Workspace",
+							"Large Data Creation",
+							"Default",
+							"swagger-docs"
+						]
+					}
+				}
+			},
+			"my-test": {
+				"name": "Staging",
+				"tenants": {
+					"fusionx": {
+						"name": "FusionX",
+						"workspaces": [
+							"FusionX",
+							"Reporting",
+							"API-Simulator",
+							"Always Empty Workspace",
+							"Large Data Creation",
+							"Default",
+							"swagger-docs"
+						]
+					},
+					"tricentis-ci": {
+						"name": "Tricentis-CI",
+						"workspaces": [
+							"FusionX",
+							"TTAwTTA",
+							"Reporting",
+							"API-Simulator",
+							"Always Empty Workspace",
+							"Large Data Creation",
+							"Default",
+							"swagger-docs"
+						]
+					}
+				}
+			},
+			"my": {
+				"name": "Production",
+				"tenants": {
+					"fusionx": {
+						"name": "FusionX",
+						"workspaces": [
+							"FusionX",
+							"Reporting",
+							"API-Simulator",
+							"Always Empty Workspace",
+							"Large Data Creation",
+							"Default",
+							"swagger-docs"
+						]
+					},
+					"tricentis": {
+						"name": "Tricentis",
+						"workspaces": [
+							"FusionX",
+							"Reporting",
+							"API-Simulator",
+							"Always Empty Workspace",
+							"Large Data Creation",
+							"Default",
+							"swagger-docs"
+						]
+					}
+				}
+			}
+		}
+	};
 }
 
 // Load config from localStorage or use default
