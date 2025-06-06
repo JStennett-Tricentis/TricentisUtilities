@@ -71,13 +71,14 @@ function loadBuiltInConfig() {
 			"swaggerPages": {
 				"/_e2g/experimentalApis/swagger/index.html": "E2G Swagger API",
 				"/_identity/apiDocs/swagger/index.html": "Identity Swagger API",
-				"/_inv/experimentalApis/swagger/index.html": "INV Swagger API",
+				"/_inv/experimentalApis/swagger/index.html": "Inventory Swagger API",
 				"/_playlists/experimentalApis/swagger/index.html": "Playlists Experimental Swagger",
 				"/_playlists/apiDocs/swagger/index.html": "Playlists Swagger API",
 				"/_simulations/experimentalApis/swagger/index.html": "Simulations Experimental Swagger",
 				"/_simulations/apiDocs/swagger/index.html": "Simulations Swagger API",
 				"/_core/experimentalApis/swagger/index.html": "Core Swagger API",
-				"/_mbt/experimentalApis/swagger/index.html": "MBT Swagger API"
+				"/_mbt/experimentalApis/swagger/index.html": "MBT Swagger API",
+				"/_tdm/experimentalApis/swagger/index.html": "TDM Experimental Swagger"
 			}
 		},
 		"environments": {
@@ -165,7 +166,7 @@ function loadBuiltInConfig() {
 async function initConfig() {
 	// First try to load from config.json
 	const fileLoaded = await loadConfigFromFile();
-	
+
 	if (!fileLoaded) {
 		// Fallback to localStorage if config.json fails
 		const saved = localStorage.getItem('tricentis-nav-config');
@@ -188,7 +189,7 @@ async function initConfig() {
 			config = { sharedUris: { workspaces: {}, pages: {} }, environments: {} };
 		}
 	}
-	
+
 	updateConfigDisplay();
 	// Call updateEnvironments if it exists (from navigation.js)
 	if (typeof updateEnvironments === 'function') {
@@ -372,13 +373,13 @@ function removeWorkspaceFromTenant(envKey, tenantKey, workspaceKey) {
 
 function renderConfigEditor() {
 	const editor = document.getElementById('configEditor');
-	
+
 	// Ensure config has required structure
 	if (!config || !config.sharedUris || !config.environments) {
 		editor.innerHTML = '<div style="color: red;">Error: Invalid configuration structure</div>';
 		return;
 	}
-	
+
 	editor.innerHTML = `
         <div class="config-section">
             <h4>🌐 Shared Workspace Library</h4>
@@ -388,9 +389,9 @@ function renderConfigEditor() {
                         <div>
                             <strong>${workspace.name}</strong> (${key})<br>
                             <small style="color: #6c757d;">
-                                ${workspace.type === 'portal' 
-                                    ? `Portal: /_portal/space/${workspace.workspace}/` 
-                                    : `Custom: ${workspace.path}`}
+                                ${workspace.type === 'portal'
+			? `Portal: /_portal/space/${workspace.workspace}/`
+			: `Custom: ${workspace.path}`}
                             </small>
                         </div>
                         <div>
@@ -456,7 +457,7 @@ function showWorkspaceManager(envKey, tenantKey) {
                 <button onclick="this.parentElement.parentElement.parentElement.remove()"
                         style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px;">✕</button>
             </div>
-            
+
             <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #667eea;">
                 <strong style="color: #2c3e50;">Environment:</strong> ${config.environments[envKey].name}<br>
                 <strong style="color: #2c3e50;">Tenant:</strong> ${tenant.name}
@@ -582,12 +583,12 @@ function editWorkspace(workspaceKey) {
 	popup.innerHTML = `
         <div style="background: white; padding: 30px; border-radius: 12px; width: 500px; max-width: 90vw;">
             <h3 style="margin: 0 0 20px 0;">Edit Workspace: ${workspace.name}</h3>
-            
+
             <div style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 5px; font-weight: 600;">Name:</label>
                 <input type="text" id="editName" value="${workspace.name}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
             </div>
-            
+
             <div style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 5px; font-weight: 600;">Type:</label>
                 <select id="editType" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
@@ -595,17 +596,17 @@ function editWorkspace(workspaceKey) {
                     <option value="custom" ${workspace.type === 'custom' ? 'selected' : ''}>Custom Path</option>
                 </select>
             </div>
-            
+
             <div id="editWorkspaceGroup" style="margin-bottom: 15px; ${workspace.type !== 'portal' ? 'display: none;' : ''}">
                 <label style="display: block; margin-bottom: 5px; font-weight: 600;">Portal Workspace Name:</label>
                 <input type="text" id="editWorkspace" value="${workspace.workspace || ''}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
             </div>
-            
+
             <div id="editPathGroup" style="margin-bottom: 15px; ${workspace.type !== 'custom' ? 'display: none;' : ''}">
                 <label style="display: block; margin-bottom: 5px; font-weight: 600;">Custom Path:</label>
                 <input type="text" id="editPath" value="${workspace.path || ''}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
             </div>
-            
+
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button onclick="saveWorkspaceEdit('${workspaceKey}'); this.parentElement.parentElement.parentElement.remove();"
                         style="flex: 1; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
@@ -623,10 +624,10 @@ function editWorkspace(workspaceKey) {
 	popup.onclick = (e) => { if (e.target === popup) popup.remove(); };
 
 	// Add type switching logic
-	document.getElementById('editType').onchange = function() {
+	document.getElementById('editType').onchange = function () {
 		const workspaceGroup = document.getElementById('editWorkspaceGroup');
 		const pathGroup = document.getElementById('editPathGroup');
-		
+
 		if (this.value === 'portal') {
 			workspaceGroup.style.display = 'block';
 			pathGroup.style.display = 'none';

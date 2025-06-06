@@ -48,7 +48,8 @@
 			"/_simulations/experimentalApis/swagger/index.html": "Simulations Experimental Swagger",
 			"/_simulations/apiDocs/swagger/index.html": "Simulations Swagger API",
 			"/_core/experimentalApis/swagger/index.html": "Core Swagger API",
-			"/_mbt/experimentalApis/swagger/index.html": "MBT Swagger API"
+			"/_mbt/experimentalApis/swagger/index.html": "MBT Swagger API",
+			"/_tdm/experimentalApis/swagger/index.html": "TDM Experimental Swagger"
 		}
 	},
 	"environments": {
