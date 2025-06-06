@@ -6,7 +6,7 @@
 
 body {
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	background: #f5f7fa;
 	min-height: 100vh;
 	padding: 20px;
 }
@@ -21,10 +21,11 @@ body {
 }
 
 .header {
-	background: linear-gradient(45deg, #2c3e50, #34495e);
-	color: white;
+	background: #ffffff;
+	color: #2c3e50;
 	padding: 30px;
 	text-align: center;
+	border-bottom: 1px solid #e1e8ed;
 }
 
 .header h1 {
@@ -61,12 +62,12 @@ body {
 }
 
 .tab.active {
-	color: #667eea;
-	border-bottom-color: #667eea;
+	color: #0066cc;
+	border-bottom-color: #0066cc;
 }
 
 .tab:hover {
-	color: #667eea;
+	color: #0066cc;
 }
 
 .tab-content {
@@ -78,11 +79,12 @@ body {
 }
 
 .section {
-	background: #f8f9fa;
+	background: #ffffff;
 	border-radius: 8px;
 	padding: 25px;
 	margin-bottom: 25px;
-	border-left: 4px solid #667eea;
+	border: 1px solid #e1e8ed;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .section h2 {
@@ -124,8 +126,8 @@ select:focus,
 input:focus,
 textarea:focus {
 	outline: none;
-	border-color: #667eea;
-	box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+	border-color: #0066cc;
+	box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
 }
 
 textarea {
@@ -155,12 +157,12 @@ button {
 }
 
 .btn-primary {
-	background: linear-gradient(45deg, #667eea, #764ba2);
+	background: #0066cc;
 	color: white;
 }
 
 .btn-secondary {
-	background: linear-gradient(45deg, #11998e, #38ef7d);
+	background: #28a745;
 	color: white;
 }
 
@@ -175,8 +177,8 @@ button {
 }
 
 button:hover {
-	transform: translateY(-2px);
-	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .bookmarklet-section {
