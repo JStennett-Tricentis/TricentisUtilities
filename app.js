@@ -18,6 +18,9 @@ function initApp() {
 
 	// Set up event listeners
 	setupEventListeners();
+
+	// Populate tenant environment selector
+	updateTenantEnvSelector();
 }
 
 function setupEventListeners() {
@@ -34,6 +37,36 @@ function setupEventListeners() {
 			navigateToUrl();
 		}
 	});
+
+	// Handle workspace type switching
+	const typeSelect = document.getElementById('newUriType');
+	if (typeSelect) {
+		typeSelect.addEventListener('change', function() {
+			const workspaceGroup = document.getElementById('workspaceNameGroup');
+			const customGroup = document.getElementById('customPathGroup');
+			
+			if (this.value === 'portal') {
+				workspaceGroup.style.display = 'block';
+				customGroup.style.display = 'none';
+			} else {
+				workspaceGroup.style.display = 'none';
+				customGroup.style.display = 'block';
+			}
+		});
+	}
+}
+
+function updateTenantEnvSelector() {
+	const select = document.getElementById('tenantEnvSelect');
+	if (select) {
+		select.innerHTML = '<option value="">-- Select Environment --</option>';
+		for (const [key, env] of Object.entries(config.environments)) {
+			const option = document.createElement('option');
+			option.value = key;
+			option.textContent = env.name;
+			select.appendChild(option);
+		}
+	}
 }
 
 // Initialize when DOM is ready
@@ -51,5 +84,13 @@ window.updateUrlPreview = updateUrlPreview;
 window.loadConfig = loadConfig;
 window.resetToDefault = resetToDefault;
 window.addEnvironment = addEnvironment;
+window.addTenant = addTenant;
+window.addSharedUri = addSharedUri;
+window.addWorkspaceToTenant = addWorkspaceToTenant;
+window.removeWorkspaceFromTenant = removeWorkspaceFromTenant;
 window.deleteEnvironment = deleteEnvironment;
 window.deleteTenant = deleteTenant;
+window.deleteSharedUri = deleteSharedUri;
+window.showWorkspaceManager = showWorkspaceManager;
+window.editWorkspace = editWorkspace;
+window.saveWorkspaceEdit = saveWorkspaceEdit;

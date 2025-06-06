@@ -97,23 +97,27 @@ function updateBookmarklet() {
                 workspaceSelect.innerHTML = '<option value="">Select...</option>';
                 pageSelect.innerHTML = '<option value="">Default</option>';
                 if (envKey && tenantKey && config.environments[envKey]?.tenants[tenantKey]) {
-                    Object.entries(config.environments[envKey].tenants[tenantKey].workspaces).forEach(([key, workspace]) => {
-                        workspaceSelect.innerHTML += \`<option value="\${key}">\${workspace.name}</option>\`;
+                    const workspaceKeys = config.environments[envKey].tenants[tenantKey].workspaces;
+                    workspaceKeys.forEach(workspaceKey => {
+                        const workspace = config.sharedUris.workspaces[workspaceKey];
+                        if (workspace) {
+                            workspaceSelect.innerHTML += \`<option value="\${workspaceKey}">\${workspace.name}</option>\`;
+                        }
                     });
                 }
             };
 
             workspaceSelect.onchange = function() {
-                const envKey = envSelect.value;
-                const tenantKey = tenantSelect.value;
                 const workspaceKey = this.value;
-                pageSelect.innerHTML = '<option value="">Default</option>';
-                if (envKey && tenantKey && workspaceKey &&
-                    config.environments[envKey]?.tenants[tenantKey]?.workspaces[workspaceKey]) {
-                    const pages = config.environments[envKey].tenants[tenantKey].workspaces[workspaceKey].pages;
-                    Object.entries(pages).forEach(([key, pageName]) => {
-                        pageSelect.innerHTML += \`<option value="\${key}">\${pageName}</option>\`;
-                    });
+                pageSelect.innerHTML = '<option value="">Home</option>';
+                if (workspaceKey && config.sharedUris.workspaces[workspaceKey]) {
+                    const workspace = config.sharedUris.workspaces[workspaceKey];
+                    // Only show pages for portal workspaces
+                    if (workspace.type === 'portal' && config.sharedUris.pages) {
+                        Object.entries(config.sharedUris.pages).forEach(([key, pageName]) => {
+                            pageSelect.innerHTML += \`<option value="\${key}">\${pageName}</option>\`;
+                        });
+                    }
                 }
             };
 
@@ -125,10 +129,18 @@ function updateBookmarklet() {
 
                 if (!envKey || !tenantKey) return null;
 
-                if (workspaceKey) {
-                    const pagePath = pageKey || '';
-                    const basePath = pageKey && workspaceKey.endsWith('/home') ? workspaceKey.replace('/home', '') : workspaceKey;
-                    return \`https://\${tenantKey}.\${envKey}.tricentis.com\${basePath}\${pagePath}\`;
+                if (workspaceKey && config.sharedUris.workspaces[workspaceKey]) {
+                    const workspace = config.sharedUris.workspaces[workspaceKey];
+                    
+                    if (workspace.type === 'portal') {
+                        // Portal workspace: /_portal/space/{WorkspaceName}{/page}
+                        const basePath = \`/_portal/space/\${workspace.workspace}\`;
+                        const pagePath = pageKey || '';
+                        return \`https://\${tenantKey}.\${envKey}.tricentis.com\${basePath}\${pagePath}\`;
+                    } else {
+                        // Custom workspace: direct path (no additional pages)
+                        return \`https://\${tenantKey}.\${envKey}.tricentis.com\${workspace.path}\`;
+                    }
                 } else {
                     return \`https://\${tenantKey}.\${envKey}.tricentis.com\`;
                 }

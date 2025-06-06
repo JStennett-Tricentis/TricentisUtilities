@@ -106,6 +106,57 @@
 							<button class="btn-secondary" onclick="addEnvironment()"
 								style="width: 100%; margin-bottom: 20px;">➕ Add Environment</button>
 
+							<div class="form-group">
+								<label for="tenantEnvSelect">Select Environment for Tenant:</label>
+								<select id="tenantEnvSelect">
+									<option value="">-- Select Environment --</option>
+								</select>
+							</div>
+
+							<div class="form-group">
+								<label for="newTenantName">Tenant Name:</label>
+								<input type="text" id="newTenantName" placeholder="e.g., FusionX" />
+							</div>
+
+							<div class="form-group">
+								<label for="newTenantKey">Tenant Key:</label>
+								<input type="text" id="newTenantKey" placeholder="e.g., fusionx" />
+							</div>
+
+							<button class="btn-secondary" onclick="addTenant()"
+								style="width: 100%; margin-bottom: 20px;">➕ Add Tenant</button>
+
+							<div class="form-group">
+								<label for="newUriName">Workspace Name:</label>
+								<input type="text" id="newUriName" placeholder="e.g., Admin Panel" />
+							</div>
+
+							<div class="form-group">
+								<label for="newUriKey">Workspace Key:</label>
+								<input type="text" id="newUriKey" placeholder="e.g., admin-panel" />
+							</div>
+
+							<div class="form-group">
+								<label for="newUriType">Workspace Type:</label>
+								<select id="newUriType">
+									<option value="portal">Portal Workspace (/_portal/space/...)</option>
+									<option value="custom">Custom Path</option>
+								</select>
+							</div>
+
+							<div class="form-group" id="workspaceNameGroup">
+								<label for="newUriWorkspace">Portal Workspace Name:</label>
+								<input type="text" id="newUriWorkspace" placeholder="e.g., MyWorkspace" />
+							</div>
+
+							<div class="form-group" id="customPathGroup" style="display: none;">
+								<label for="newUriPath">Custom Path:</label>
+								<input type="text" id="newUriPath" placeholder="e.g., /_admin/dashboard" />
+							</div>
+
+							<button class="btn-secondary" onclick="addSharedUri()"
+								style="width: 100%; margin-bottom: 20px;">➕ Add Workspace</button>
+
 							<div id="configEditor">
 								<!-- Dynamic config editor will appear here -->
 							</div>

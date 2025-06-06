@@ -39,11 +39,15 @@ function updateWorkspaces() {
 	workspaceSelect.innerHTML = '<option value="">-- Select Workspace --</option>';
 
 	if (envKey && tenantKey && config.environments[envKey]?.tenants[tenantKey]) {
-		for (const [key, workspace] of Object.entries(config.environments[envKey].tenants[tenantKey].workspaces)) {
-			const option = document.createElement('option');
-			option.value = key;
-			option.textContent = workspace.name;
-			workspaceSelect.appendChild(option);
+		const workspaceKeys = config.environments[envKey].tenants[tenantKey].workspaces;
+		for (const workspaceKey of workspaceKeys) {
+			const workspace = config.sharedUris.workspaces[workspaceKey];
+			if (workspace) {
+				const option = document.createElement('option');
+				option.value = workspaceKey;
+				option.textContent = workspace.name;
+				workspaceSelect.appendChild(option);
+			}
 		}
 	}
 
@@ -51,22 +55,23 @@ function updateWorkspaces() {
 }
 
 function updatePages() {
-	const envKey = document.getElementById('environment').value;
-	const tenantKey = document.getElementById('tenant').value;
 	const workspaceKey = document.getElementById('workspace').value;
 	const pageSelect = document.getElementById('page');
-	pageSelect.innerHTML = '<option value="">-- Default (Workspace Home) --</option>';
+	pageSelect.innerHTML = '<option value="">-- Home --</option>';
 
-	if (envKey && tenantKey && workspaceKey &&
-		config.environments[envKey]?.tenants[tenantKey]?.workspaces[workspaceKey]) {
-
-		const pages = config.environments[envKey].tenants[tenantKey].workspaces[workspaceKey].pages;
-		for (const [key, pageName] of Object.entries(pages)) {
-			const option = document.createElement('option');
-			option.value = key;
-			option.textContent = pageName;
-			pageSelect.appendChild(option);
+	if (workspaceKey && config.sharedUris.workspaces[workspaceKey]) {
+		const workspace = config.sharedUris.workspaces[workspaceKey];
+		
+		// For portal workspaces, show universal pages
+		if (workspace.type === 'portal' && config.sharedUris.pages) {
+			for (const [pageKey, pageName] of Object.entries(config.sharedUris.pages)) {
+				const option = document.createElement('option');
+				option.value = pageKey;
+				option.textContent = pageName;
+				pageSelect.appendChild(option);
+			}
 		}
+		// For custom workspaces, no additional pages (they're direct links)
 	}
 
 	updateUrlPreview();
@@ -88,10 +93,18 @@ function updateUrlPreview() {
 
 	if (customPath) {
 		fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${customPath}`;
-	} else if (workspaceKey) {
-		const pagePath = pageKey || '';
-		const basePath = pageKey && workspaceKey.endsWith('/home') ? workspaceKey.replace('/home', '') : workspaceKey;
-		fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${basePath}${pagePath}`;
+	} else if (workspaceKey && config.sharedUris.workspaces[workspaceKey]) {
+		const workspace = config.sharedUris.workspaces[workspaceKey];
+		
+		if (workspace.type === 'portal') {
+			// Portal workspace: /_portal/space/{WorkspaceName}{/page}
+			const basePath = `/_portal/space/${workspace.workspace}`;
+			const pagePath = pageKey || '';
+			fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${basePath}${pagePath}`;
+		} else {
+			// Custom workspace: direct path (no additional pages)
+			fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${workspace.path}`;
+		}
 	} else {
 		fullUrl = `https://${tenantKey}.${envKey}.tricentis.com`;
 	}
@@ -115,10 +128,18 @@ function navigateToUrl(newTab = false) {
 
 	if (customPath) {
 		fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${customPath}`;
-	} else if (workspaceKey) {
-		const pagePath = pageKey || '';
-		const basePath = pageKey && workspaceKey.endsWith('/home') ? workspaceKey.replace('/home', '') : workspaceKey;
-		fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${basePath}${pagePath}`;
+	} else if (workspaceKey && config.sharedUris.workspaces[workspaceKey]) {
+		const workspace = config.sharedUris.workspaces[workspaceKey];
+		
+		if (workspace.type === 'portal') {
+			// Portal workspace: /_portal/space/{WorkspaceName}{/page}
+			const basePath = `/_portal/space/${workspace.workspace}`;
+			const pagePath = pageKey || '';
+			fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${basePath}${pagePath}`;
+		} else {
+			// Custom workspace: direct path (no additional pages)
+			fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${workspace.path}`;
+		}
 	} else {
 		fullUrl = `https://${tenantKey}.${envKey}.tricentis.com`;
 	}
