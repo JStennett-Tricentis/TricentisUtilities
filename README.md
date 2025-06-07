@@ -1,6 +1,10 @@
-# Tricentis Navigator
+# Tosca Cloud Navigator
 
-A browser-based tool for quick navigation between Tricentis cloud environments, tenants, and workspaces.
+A browser-based tool for quick navigation between Tosca Cloud environments, tenants, and workspaces.
+
+![Tosca Cloud Navigation](./assets/images/tosca_cloud_navigation.png)
+
+![Swagger Navigation](./assets/images/swagger_navigation.png)
 
 ## 🚀 Quick Start
 
@@ -43,7 +47,7 @@ A browser-based tool for quick navigation between Tricentis cloud environments, 
 
 1. Visit the tool at `http://localhost:8000`
 2. Go to the **Bookmarklet** tab
-3. Drag the "📌 Tricentis Navigator" link to your browser's bookmark bar
+3. Drag the "📌 Tosca Cloud Navigator" link to your browser's bookmark bar
 4. Click the bookmark from any page to open the quick navigator popup
 
 ### Option 2: Direct Access
@@ -57,7 +61,7 @@ Open the tool directly in your browser to access the full interface with configu
 ### Smart Defaults
 
 - **Auto-selects FusionX** as the default tenant and workspace when available
-- **Auto-populates fields** when you're already on a Tricentis page
+- **Auto-populates fields** when you're already on a Tosca Cloud page
 - **Remembers your configuration** using local storage
 
 ### Navigation Options
@@ -91,7 +95,7 @@ Open the tool directly in your browser to access the full interface with configu
 
 ### Smart Auto-Population
 
-When you're already on a Tricentis page (like `https://fusionx.my-dev.tricentis.com/_portal/space/FusionX/home`):
+When you're already on a Tosca Cloud page (like `https://fusionx.my-dev.tricentis.com/_portal/space/FusionX/home`):
 
 - Environment automatically selects "Development"
 - Tenant automatically selects "FusionX"
@@ -126,7 +130,7 @@ When you're already on a Tricentis page (like `https://fusionx.my-dev.tricentis.
 1. In the **Configure** tab, add workspaces to the shared library
 2. Assign workspaces to specific tenant/environment combinations
 3. Choose workspace types:
-   - **Portal Workspace**: Standard Tricentis portal spaces
+   - **Portal Workspace**: Standard Tosca Cloud portal spaces
    - **Custom Path**: Direct links to specific URLs
    - **Swagger**: API documentation endpoints
 
@@ -172,7 +176,7 @@ When you're already on a Tricentis page (like `https://fusionx.my-dev.tricentis.
 
 ### Workflow Optimization
 
-1. **Start from Tricentis pages** to leverage auto-population
+1. **Start from Tosca Cloud pages** to leverage auto-population
 2. **Use FusionX defaults** for most common navigation scenarios
 3. **Save custom configurations** for team-specific setups
 4. **Share configuration JSON** with team members for consistency

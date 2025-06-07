@@ -94,3 +94,5 @@ window.deleteSharedUri = deleteSharedUri;
 window.showWorkspaceManager = showWorkspaceManager;
 window.editWorkspace = editWorkspace;
 window.saveWorkspaceEdit = saveWorkspaceEdit;
+window.openJiraTicket = openJiraTicket;
+window.handleJiraEnter = handleJiraEnter;

@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Tricentis Navigator</title>
+	<title>Tosca Cloud Navigator</title>
 	<link rel="icon" type="image/jpeg" sizes="16x16" href="assets/images/Tricentis_Logo_16x16.jpeg">
 	<link rel="icon" type="image/jpeg" sizes="32x32" href="assets/images/Tricentis_Logo_28x28.jpeg">
 	<link rel="icon" type="image/jpeg" sizes="48x48" href="assets/images/Tricentis_Logo_48x48.jpeg">
@@ -16,13 +16,14 @@
 <body>
 	<div class="container">
 		<div class="header">
-			<h1>🚀 Tricentis Navigator</h1>
+			<h1>🚀 Tosca Cloud Navigator</h1>
 			<p>Quick navigation tool for your cloud environments</p>
 		</div>
 
 		<div class="content">
 			<div class="tabs">
 				<button class="tab active" onclick="switchTab('navigate')">🎯 Navigate</button>
+				<button class="tab" onclick="switchTab('jira')">🎫 JIRA</button>
 				<button class="tab" onclick="switchTab('config')">⚙️ Configure</button>
 				<button class="tab" onclick="switchTab('bookmarklet')">📌 Bookmarklet</button>
 			</div>
@@ -73,6 +74,36 @@
 						<button class="btn-primary" onclick="navigateToUrl()">🔗 Open in Current Tab</button>
 						<button class="btn-secondary" onclick="navigateToUrl(true)">🆕 Open in New Tab</button>
 					</div>
+				</div>
+			</div>
+
+			<!-- JIRA Tab -->
+			<div id="jira-tab" class="tab-content">
+				<div class="section">
+					<h2>🎫 JIRA Ticket Lookup</h2>
+
+					<div class="form-group">
+						<label for="jiraTicket">Ticket Number or ID:</label>
+						<input type="text" id="jiraTicket" placeholder="e.g., 12345 or TPI-12345"
+							onkeydown="handleJiraEnter(event)" />
+						<p style="margin-top: 8px; color: #6c757d; font-size: 14px;">
+							Enter just the number (e.g., 12345) to auto-prefix with "TPI-", or enter the full ticket ID
+							(e.g., TPI-12345)
+						</p>
+					</div>
+
+					<div class="button-group">
+						<button class="btn-primary" onclick="openJiraTicket()">🔗 Open in Current Tab</button>
+						<button class="btn-secondary" onclick="openJiraTicket(true)">🆕 Open in New Tab</button>
+					</div>
+				</div>
+
+				<div class="section">
+					<h2>📌 JIRA Bookmarklet</h2>
+					<p style="margin-bottom: 15px;">Drag this link to your bookmarks bar for quick JIRA ticket lookup
+						from any page:</p>
+					<a href="javascript:(function(){var id=prompt('Enter the Jira ticket number:');if(id){var url=isNaN(id)?id:'TPI-'+id;window.open('https://tricentis.atlassian.net/browse/'+url,'_blank');}})();"
+						class="bookmarklet-link">🎫 JIRA Lookup</a>
 				</div>
 			</div>
 
@@ -173,10 +204,18 @@
 			<!-- Bookmarklet Tab -->
 			<div id="bookmarklet-tab" class="tab-content">
 				<div class="section bookmarklet-section">
-					<h2>📌 Bookmarklet (Drag to Bookmarks Bar)</h2>
-					<p style="margin-bottom: 15px;">Drag this link to your bookmarks bar for quick access from any page:
-					</p>
-					<a href="#" id="bookmarkletLink" class="bookmarklet-link">📌 Tricentis Navigator</a>
+					<h2>📌 Tosca Cloud Navigator Bookmarklet</h2>
+					<p style="margin-bottom: 15px;">Drag this link to your bookmarks bar for quick Tosca Cloud
+						navigation from any page:</p>
+					<a href="#" id="bookmarkletLink" class="bookmarklet-link">📌 Tosca Cloud Navigator</a>
+				</div>
+
+				<div class="section bookmarklet-section">
+					<h2>🎫 JIRA Lookup Bookmarklet</h2>
+					<p style="margin-bottom: 15px;">Drag this link to your bookmarks bar for quick JIRA ticket lookup
+						from any page:</p>
+					<a href="javascript:(function(){var id=prompt('Enter the Jira ticket number:');if(id){var url=isNaN(id)?id:'TPI-'+id;window.open('https://tricentis.atlassian.net/browse/'+url,'_blank');}})();"
+						class="bookmarklet-link">🎫 JIRA Lookup</a>
 				</div>
 
 				<div class="section">
@@ -184,10 +223,12 @@
 					<ol style="padding-left: 20px; line-height: 1.6;">
 						<li><strong>Navigate Tab:</strong> Use the dropdowns to select your environment, tenant,
 							workspace, and page, then click to navigate.</li>
+						<li><strong>JIRA Tab:</strong> Enter a ticket number or full ticket ID to quickly open JIRA
+							tickets in Tosca Cloud Atlassian.</li>
 						<li><strong>Configure Tab:</strong> Add or modify environments, tenants, and workspaces using
 							either JSON or the visual editor.</li>
-						<li><strong>Bookmarklet:</strong> Drag the bookmarklet above to your bookmarks bar, then click
-							it from any page to open the quick navigator.</li>
+						<li><strong>Bookmarklets:</strong> Drag the bookmarklets above to your bookmarks bar for quick
+							access from any page.</li>
 						<li><strong>Custom Paths:</strong> Enter any custom path in the text field to navigate to
 							specific pages not listed in the dropdown.</li>
 					</ol>

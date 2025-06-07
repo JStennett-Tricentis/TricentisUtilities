@@ -314,3 +314,29 @@ function navigateToUrl(newTab = false) {
 		window.location.href = fullUrl;
 	}
 }
+
+// JIRA Functions
+function openJiraTicket(newTab = false) {
+	const ticketInput = document.getElementById('jiraTicket').value.trim();
+	
+	if (!ticketInput) {
+		alert('Please enter a ticket number or ID');
+		return;
+	}
+	
+	// Check if it's already a full ticket ID or just a number
+	const url = isNaN(ticketInput) ? ticketInput : 'TPI-' + ticketInput;
+	const fullUrl = `https://tricentis.atlassian.net/browse/${url}`;
+	
+	if (newTab) {
+		window.open(fullUrl, '_blank');
+	} else {
+		window.location.href = fullUrl;
+	}
+}
+
+function handleJiraEnter(event) {
+	if (event.key === 'Enter') {
+		openJiraTicket();
+	}
+}

@@ -21,3 +21,6 @@ Thumbs.db
 
 # Personal configuration (if you want to keep your personal config private)
 config.json
+
+# Misc
+notes.txt
