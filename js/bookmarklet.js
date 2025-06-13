@@ -30,7 +30,7 @@ function updateBookmarklet() {
                     <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAyOCAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI4IiBoZWlnaHQ9IjI4IiByeD0iNCIgZmlsbD0iIzJjM2U1MCIvPgo8dGV4dCB4PSI1IiB5PSIxOSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPlQ8L3RleHQ+Cjx0ZXh0IHg9IjE1IiB5PSIxOSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNjdlZWEiPk48L3RleHQ+Cjwvc3ZnPgo="
                          style="width: 28px; height: 28px; margin-right: 10px; border-radius: 4px;"
                          alt="Tosca Cloud">
-                    <h2 style="margin: 0; color: #2c3e50;">Tosca Cloud/Swagger Quick Navigate</h2>
+                    <h2 style="margin: 0; color: #2c3e50;">Tosca Cloud/Swagger Quick Navigation</h2>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                     <div>

@@ -53,8 +53,8 @@ function loadBuiltInConfig() {
 			"pages": {
 				"/home": "Home",
 				"/agents/all": "Agents (All)",
-				"/reporting": "Reporting",
-				"/reporting/create": "Create Report",
+				"/reports": "Reports",
+				"/reports/create": "Create Report",
 				"/builder": "Test Case Builder",
 				"/inventory/testcases": "Test Cases Inventory",
 				"/playlists": "Playlists",

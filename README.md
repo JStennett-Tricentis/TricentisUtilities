@@ -157,7 +157,7 @@ When you're already on a Tosca Cloud page (like `https://fusionx.my-dev.tricenti
 - **Builder**: Test case and module builders
 - **Playlists**: Test execution playlists
 - **API Playground**: Interactive API testing
-- **Reporting**: Report creation and viewing
+- **Reports**: Report creation and viewing
 - **TDM**: Test Data Management
 
 ## 🌐 Supported Environments
