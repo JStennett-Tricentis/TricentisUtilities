@@ -45,6 +45,21 @@ function loadBuiltInConfig() {
 					"type": "portal",
 					"workspace": "API-Simulator"
 				},
+				"always-empty": {
+					"name": "Always Empty Workspace",
+					"type": "portal",
+					"workspace": "Always Empty Workspace"
+				},
+				"large-data": {
+					"name": "Large Data Creation",
+					"type": "portal",
+					"workspace": "Large Data Creation"
+				},
+				"default": {
+					"name": "Default",
+					"type": "portal",
+					"workspace": "Default"
+				},
 				"swagger-docs": {
 					"name": "Swagger Docs",
 					"type": "swagger"

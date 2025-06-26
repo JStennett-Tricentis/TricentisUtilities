@@ -1,5 +1,7 @@
 // Bookmarklet generation and management
 
+// Bookmarklet generation and management
+
 function updateBookmarklet() {
 	const configStr = JSON.stringify(config).replace(/'/g, "\\'");
 	const bookmarkletCode = `
@@ -18,8 +20,14 @@ function updateBookmarklet() {
 
             const popup = document.createElement('div');
             popup.style.cssText = \`
-                background: white; padding: 30px; border-radius: 12px;
-                width: 600px; max-width: 90vw; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                background: white !important;
+                padding: 30px;
+                border-radius: 12px;
+                width: 600px;
+                max-width: 90vw;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                color: #333 !important;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             \`;
 
             const envOptions = Object.entries(config.environments).map(([key, env]) =>
@@ -30,46 +38,46 @@ function updateBookmarklet() {
                     <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAyOCAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI4IiBoZWlnaHQ9IjI4IiByeD0iNCIgZmlsbD0iIzJjM2U1MCIvPgo8dGV4dCB4PSI1IiB5PSIxOSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPlQ8L3RleHQ+Cjx0ZXh0IHg9IjE1IiB5PSIxOSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNjdlZWEiPk48L3RleHQ+Cjwvc3ZnPgo="
                          style="width: 28px; height: 28px; margin-right: 10px; border-radius: 4px;"
                          alt="Tosca Cloud">
-                    <h2 style="margin: 0; color: #2c3e50;">Tosca Cloud/Swagger Quick Navigation</h2>
+                    <h2 style="margin: 0; color: #2c3e50 !important;">Tosca Cloud/Swagger Quick Navigation</h2>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                     <div>
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Environment:</label>
-                        <select id="quickEnv" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333 !important;">Environment:</label>
+                        <select id="quickEnv" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; color: #333 !important; background: white !important;">
                             <option value="">Select...</option>
                             \${envOptions}
                         </select>
                     </div>
                     <div>
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Tenant:</label>
-                        <select id="quickTenant" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333 !important;">Tenant:</label>
+                        <select id="quickTenant" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; color: #333 !important; background: white !important;">
                             <option value="">Select...</option>
                         </select>
                     </div>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                     <div>
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Workspace:</label>
-                        <select id="quickWorkspace" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333 !important;">Workspace:</label>
+                        <select id="quickWorkspace" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; color: #333 !important; background: white !important;">
                             <option value="">Select...</option>
                         </select>
                     </div>
                     <div>
-                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Page:</label>
-                        <select id="quickPage" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333 !important;">Page:</label>
+                        <select id="quickPage" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; color: #333 !important; background: white !important;">
                             <option value="">Default</option>
                         </select>
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
-					<button onclick="document.getElementById('tricentis-nav-overlay').remove()"
-                            style="padding: 10px 15px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    <button onclick="document.getElementById('tricentis-nav-overlay').remove()"
+                            style="padding: 10px 15px; background: #6c757d; color: white !important; border: none; border-radius: 4px; cursor: pointer;">
                         ✕
                     </button>
-					<button id="currentTabBtn" style="flex: 1; padding: 10px; background: #11998e; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    <button id="currentTabBtn" style="flex: 1; padding: 10px; background: #11998e; color: white !important; border: none; border-radius: 4px; cursor: pointer;">
                         🔗 Current Tab
                     </button>
-                    <button id="newTabBtn" style="flex: 1; padding: 10px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    <button id="newTabBtn" style="flex: 1; padding: 10px; background: #667eea; color: white !important; border: none; border-radius: 4px; cursor: pointer;">
                         🆕 New Tab
                     </button>
                 </div>
