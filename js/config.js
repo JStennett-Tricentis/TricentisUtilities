@@ -104,12 +104,12 @@ function loadBuiltInConfig() {
 					"fusionx": {
 						"name": "FusionX",
 						"workspaces": [
-							"FusionX",
-							"Reporting",
-							"API-Simulator",
-							"Always Empty Workspace",
-							"Large Data Creation",
-							"Default",
+							"fusionx",
+							"reporting",
+							"api-simulator",
+							"always-empty",
+							"large-data",
+							"default",
 							"swagger-docs"
 						]
 					}
@@ -133,13 +133,12 @@ function loadBuiltInConfig() {
 					"tricentis-ci": {
 						"name": "Tricentis-CI",
 						"workspaces": [
-							"FusionX",
-							"TTAwTTA",
-							"Reporting",
-							"API-Simulator",
-							"Always Empty Workspace",
-							"Large Data Creation",
-							"Default",
+							"fusionx",
+							"reporting",
+							"api-simulator",
+							"always-empty",
+							"large-data",
+							"default",
 							"swagger-docs"
 						]
 					}
@@ -163,12 +162,12 @@ function loadBuiltInConfig() {
 					"tricentis": {
 						"name": "Tricentis",
 						"workspaces": [
-							"FusionX",
-							"Reporting",
-							"API-Simulator",
-							"Always Empty Workspace",
-							"Large Data Creation",
-							"Default",
+							"fusionx",
+							"reporting",
+							"api-simulator",
+							"always-empty",
+							"large-data",
+							"default",
 							"swagger-docs"
 						]
 					}
