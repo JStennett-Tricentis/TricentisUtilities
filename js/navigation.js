@@ -155,12 +155,26 @@ function updateWorkspaces() {
 			}
 		}
 		
-		// Auto-select FusionX if available and no current selection
-		if (fusionxFound && !workspaceSelect.value) {
-			for (let option of workspaceSelect.options) {
-				if (option.textContent === 'FusionX') {
-					workspaceSelect.value = option.value;
-					break;
+		// Auto-select default workspace (Reporting) if available and no current selection
+		if (!workspaceSelect.value) {
+			// First try to find the configured default workspace
+			const defaultWorkspace = config.defaults?.workspace;
+			if (defaultWorkspace) {
+				for (let option of workspaceSelect.options) {
+					if (option.value === defaultWorkspace) {
+						workspaceSelect.value = option.value;
+						break;
+					}
+				}
+			}
+			// Fallback to workspace marked as default
+			if (!workspaceSelect.value) {
+				for (let option of workspaceSelect.options) {
+					const workspace = config.sharedUris.workspaces[option.value];
+					if (workspace && workspace.default) {
+						workspaceSelect.value = option.value;
+						break;
+					}
 				}
 			}
 		}

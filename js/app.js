@@ -96,3 +96,4 @@ window.editWorkspace = editWorkspace;
 window.saveWorkspaceEdit = saveWorkspaceEdit;
 window.openJiraTicket = openJiraTicket;
 window.handleJiraEnter = handleJiraEnter;
+window.loadSelectedConfigFile = loadSelectedConfigFile;

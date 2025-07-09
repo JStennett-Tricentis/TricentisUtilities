@@ -207,10 +207,22 @@ function updateBookmarklet() {
                         }
                     });
 
-                    // Auto-select FusionX if available
-                    if (fusionxFound) {
+                    // Auto-select default workspace (Reporting) if available
+                    const defaultWorkspace = config.defaults?.workspace;
+                    if (defaultWorkspace) {
                         for (let option of workspaceSelect.options) {
-                            if (option.textContent === 'FusionX') {
+                            if (option.value === defaultWorkspace) {
+                                workspaceSelect.value = option.value;
+                                workspaceSelect.onchange();
+                                break;
+                            }
+                        }
+                    }
+                    // Fallback to workspace marked as default
+                    if (!workspaceSelect.value) {
+                        for (let option of workspaceSelect.options) {
+                            const workspace = config.sharedUris.workspaces[option.value];
+                            if (workspace && workspace.default) {
                                 workspaceSelect.value = option.value;
                                 workspaceSelect.onchange();
                                 break;

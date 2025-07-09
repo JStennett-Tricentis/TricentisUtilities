@@ -1,15 +1,19 @@
 {
+	"defaults": {
+		"workspace": "Reporting"
+	},
 	"sharedUris": {
 		"workspaces": {
+			"reporting": {
+				"name": "Reporting",
+				"type": "portal",
+				"workspace": "Reporting",
+				"default": true
+			},
 			"fusionx": {
 				"name": "FusionX",
 				"type": "portal",
 				"workspace": "FusionX"
-			},
-			"reporting": {
-				"name": "Reporting",
-				"type": "portal",
-				"workspace": "Reporting"
 			},
 			"api-simulator": {
 				"name": "API-Simulator",
@@ -43,25 +47,26 @@
 		"swaggerPages": {
 			"/_e2g/experimentalApis/swagger/index.html": "E2G Swagger API",
 			"/_identity/apiDocs/swagger/index.html": "Identity Swagger API",
-			"/_inv/experimentalApis/swagger/index.html": "INV Swagger API",
-			"/_playlists/experimentalApis/swagger/index.html": "Playlists Experimental Swagger",
+			"/_inv/experimentalApis/swagger/index.html": "Inventory Swagger API",
+			"/_playlists/experimentalApis/swagger/index.html": "Playlists Experimental Swagger API",
 			"/_playlists/apiDocs/swagger/index.html": "Playlists Swagger API",
-			"/_simulations/experimentalApis/swagger/index.html": "Simulations Experimental Swagger",
+			"/_simulations/experimentalApis/swagger/index.html": "Simulations Experimental Swagger API",
 			"/_simulations/apiDocs/swagger/index.html": "Simulations Swagger API",
 			"/_core/experimentalApis/swagger/index.html": "Core Swagger API",
 			"/_mbt/experimentalApis/swagger/index.html": "MBT Swagger API",
-			"/_tdm/experimentalApis/swagger/index.html": "TDM Experimental Swagger"
+			"/_tdm/experimentalApis/swagger/index.html": "TDM Experimental Swagger API"
 		}
 	},
 	"environments": {
 		"my-dev": {
-			"name": "Development",
+			"name": "Developments",
 			"tenants": {
 				"fusionx": {
 					"name": "FusionX",
 					"workspaces": [
-						"FusionX",
 						"Reporting",
+						"FusionX",
+						"Automated Reporting Tests ONLY",
 						"API-Simulator",
 						"Always Empty Workspace",
 						"Large Data Creation",
@@ -77,8 +82,9 @@
 				"fusionx": {
 					"name": "FusionX",
 					"workspaces": [
-						"FusionX",
 						"Reporting",
+						"FusionX",
+						"Automated Reporting Tests ONLY",
 						"API-Simulator",
 						"Always Empty Workspace",
 						"Large Data Creation",
@@ -105,8 +111,9 @@
 				"fusionx": {
 					"name": "FusionX",
 					"workspaces": [
-						"FusionX",
 						"Reporting",
+						"FusionX",
+						"Automated Reporting Tests ONLY",
 						"API-Simulator",
 						"Always Empty Workspace",
 						"Large Data Creation",
@@ -117,8 +124,45 @@
 				"tricentis": {
 					"name": "Tricentis",
 					"workspaces": [
-						"FusionX",
 						"Reporting",
+						"FusionX",
+						"Automated Reporting Tests ONLY",
+						"API-Simulator",
+						"Always Empty Workspace",
+						"Large Data Creation",
+						"Default",
+						"swagger-docs"
+					]
+				}
+			}
+		},
+		"my-saptest": {
+			"name": "SAP Staging",
+			"tenants": {
+				"fusionx": {
+					"name": "FusionX",
+					"workspaces": [
+						"Reporting",
+						"FusionX",
+						"Automated Reporting Tests ONLY",
+						"API-Simulator",
+						"Always Empty Workspace",
+						"Large Data Creation",
+						"Default",
+						"swagger-docs"
+					]
+				}
+			}
+		},
+		"my-sap": {
+			"name": "SAP Production",
+			"tenants": {
+				"fusionx": {
+					"name": "FusionX",
+					"workspaces": [
+						"Reporting",
+						"FusionX",
+						"Automated Reporting Tests ONLY",
 						"API-Simulator",
 						"Always Empty Workspace",
 						"Large Data Creation",

@@ -112,6 +112,18 @@
 				<div class="section">
 					<h2>⚙️ Configuration Manager</h2>
 
+					<div class="form-group">
+						<label for="configFileSelect">Configuration File:</label>
+						<select id="configFileSelect" onchange="loadSelectedConfigFile()">
+							<option value="config.json">config.json (Default)</option>
+							<option value="config.fusionx.json">config.fusionx.json</option>
+							<option value="config.example.json">config.example.json</option>
+						</select>
+						<p style="margin-top: 8px; color: #6c757d; font-size: 14px;">
+							Select which configuration file to load and use for the bookmarklet
+						</p>
+					</div>
+
 					<div class="form-row">
 						<div>
 							<h3>📝 JSON Configuration</h3>

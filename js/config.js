@@ -1,20 +1,22 @@
 // Default configuration from config.json
 let config = {};
+let currentConfigFile = 'config.json';
 
-// Load config from config.json
-async function loadConfigFromFile() {
+// Load config from specified file
+async function loadConfigFromFile(filename = 'config.json') {
 	try {
-		const response = await fetch('./config.json');
+		const response = await fetch(`./${filename}`);
 		if (response.ok) {
 			const fileConfig = await response.json();
 			config = fileConfig;
+			currentConfigFile = filename;
 			return true;
 		} else {
-			console.warn('Could not load config.json, using localStorage or defaults');
+			console.warn(`Could not load ${filename}, using localStorage or defaults`);
 			return false;
 		}
 	} catch (e) {
-		console.warn('Error loading config.json:', e.message);
+		console.warn(`Error loading ${filename}:`, e.message);
 		// If CORS error (file:// protocol), provide built-in config
 		if (e.message.includes('NetworkError') || e.message.includes('CORS')) {
 			console.log('Using built-in configuration due to CORS restrictions');
@@ -28,17 +30,21 @@ async function loadConfigFromFile() {
 // Built-in configuration as fallback
 function loadBuiltInConfig() {
 	config = {
+		"defaults": {
+			"workspace": "reporting"
+		},
 		"sharedUris": {
 			"workspaces": {
+				"reporting": {
+					"name": "Reporting",
+					"type": "portal",
+					"workspace": "Reporting",
+					"default": true
+				},
 				"fusionx": {
 					"name": "FusionX",
 					"type": "portal",
 					"workspace": "FusionX"
-				},
-				"reporting": {
-					"name": "Reporting",
-					"type": "portal",
-					"workspace": "Reporting"
 				},
 				"api-simulator": {
 					"name": "API-Simulator",
@@ -123,6 +129,7 @@ function loadBuiltInConfig() {
 						"workspaces": [
 							"FusionX",
 							"Reporting",
+							"Automated Reporting Tests ONLY",
 							"API-Simulator",
 							"Always Empty Workspace",
 							"Large Data Creation",
@@ -133,12 +140,13 @@ function loadBuiltInConfig() {
 					"tricentis-ci": {
 						"name": "Tricentis-CI",
 						"workspaces": [
-							"fusionx",
-							"reporting",
-							"api-simulator",
-							"always-empty",
-							"large-data",
-							"default",
+							"FusionX",
+							"Reporting",
+							"Automated Reporting Tests ONLY",
+							"API-Simulator",
+							"Always Empty Workspace",
+							"Large Data Creation",
+							"Default",
 							"swagger-docs"
 						]
 					}
@@ -162,12 +170,49 @@ function loadBuiltInConfig() {
 					"tricentis": {
 						"name": "Tricentis",
 						"workspaces": [
-							"fusionx",
-							"reporting",
-							"api-simulator",
-							"always-empty",
-							"large-data",
-							"default",
+							"FusionX",
+							"Reporting",
+							"Automated Reporting Tests ONLY",
+							"API-Simulator",
+							"Always Empty Workspace",
+							"Large Data Creation",
+							"Default",
+							"swagger-docs"
+						]
+					}
+				}
+			},
+			"my-saptest": {
+				"name": "SAP Staging",
+				"tenants": {
+					"fusionx": {
+						"name": "FusionX",
+						"workspaces": [
+							"FusionX",
+							"Reporting",
+							"Automated Reporting Tests ONLY",
+							"API-Simulator",
+							"Always Empty Workspace",
+							"Large Data Creation",
+							"Default",
+							"swagger-docs"
+						]
+					}
+				}
+			},
+			"my-sap": {
+				"name": "SAP Production",
+				"tenants": {
+					"fusionx": {
+						"name": "FusionX",
+						"workspaces": [
+							"FusionX",
+							"Reporting",
+							"Automated Reporting Tests ONLY",
+							"API-Simulator",
+							"Always Empty Workspace",
+							"Large Data Creation",
+							"Default",
 							"swagger-docs"
 						]
 					}
@@ -177,10 +222,39 @@ function loadBuiltInConfig() {
 	};
 }
 
+// Load selected config file
+async function loadSelectedConfigFile() {
+	const selectedFile = document.getElementById('configFileSelect').value;
+	const fileLoaded = await loadConfigFromFile(selectedFile);
+	
+	if (fileLoaded) {
+		// Save the selected file preference
+		localStorage.setItem('selectedConfigFile', selectedFile);
+		
+		updateConfigDisplay();
+		if (typeof updateEnvironments === 'function') {
+			updateEnvironments();
+		}
+		showStatus(`Configuration loaded from ${selectedFile}!`, 'success');
+	} else {
+		showStatus(`Failed to load ${selectedFile}`, 'error');
+	}
+}
+
 // Load config from localStorage or use default
 async function initConfig() {
-	// First try to load from config.json
-	const fileLoaded = await loadConfigFromFile();
+	// Check if there's a saved config file preference
+	const savedConfigFile = localStorage.getItem('selectedConfigFile');
+	if (savedConfigFile) {
+		const configFileSelect = document.getElementById('configFileSelect');
+		if (configFileSelect) {
+			configFileSelect.value = savedConfigFile;
+		}
+		currentConfigFile = savedConfigFile;
+	}
+	
+	// First try to load from selected config file
+	const fileLoaded = await loadConfigFromFile(currentConfigFile);
 
 	if (!fileLoaded) {
 		// Fallback to localStorage if config.json fails
