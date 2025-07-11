@@ -12,7 +12,7 @@ body {
 }
 
 .container {
-	max-width: 1000px;
+	max-width: 1400px;
 	margin: 0 auto;
 	background: white;
 	border-radius: 12px;
@@ -60,7 +60,25 @@ body {
 
 /* Log Parser Styles */
 .log-parser-input-section {
-	margin-bottom: 20px;
+	margin-bottom: 15px;
+}
+
+.log-parser-parse-button {
+	background: #007bff;
+	color: white;
+	border: none;
+	padding: 12px 24px;
+	border-radius: 6px;
+	font-size: 16px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background 0.2s;
+	width: 100%;
+	margin: 15px 0 10px 0;
+}
+
+.log-parser-parse-button:hover {
+	background: #0056b3;
 }
 
 .log-parser-input-tabs {
@@ -130,8 +148,29 @@ body {
 .log-parser-filters-content {
 	display: flex;
 	align-items: center;
-	gap: 10px;
+	gap: 15px;
 	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.log-parser-view-controls {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+
+.log-parser-action-controls {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+
+.search-input {
+	width: 200px;
+	padding: 8px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 14px;
 }
 
 .log-parser-view-btn {
@@ -169,16 +208,31 @@ body {
 	opacity: 0.9;
 }
 
+.log-parser-buffer-count {
+	background: #e8f5e8;
+	padding: 6px 12px;
+	border-radius: 4px;
+	font-size: 12px;
+	font-weight: bold;
+	color: #28a745;
+	border: 1px solid #d4edda;
+	white-space: nowrap;
+}
+
 .log-parser-results-section {
-	margin: 20px 0;
-	min-height: 300px;
+	margin: 15px 0;
+	min-height: 400px;
+	flex: 1;
 }
 
 .log-parser-results-container {
 	border: 1px solid #dee2e6;
 	border-radius: 4px;
-	padding: 20px;
+	padding: 15px;
 	background: #fff;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 .log-parser-results-placeholder {
@@ -192,6 +246,11 @@ body {
 .log-parser-table-view-content {
 	max-height: 500px;
 	overflow-y: auto;
+	flex: 1;
+}
+
+.log-parser-results-content {
+	padding: 10px;
 }
 
 .log-parser-debug-section {
@@ -211,9 +270,24 @@ body {
 
 .log-parser-footer {
 	text-align: center;
-	margin-top: 20px;
-	padding-top: 20px;
+	margin-top: 15px;
+	padding-top: 15px;
 	border-top: 1px solid #dee2e6;
+}
+
+.log-parser-footer .btn-warning {
+	background: #dc3545;
+	color: white;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background 0.2s;
+}
+
+.log-parser-footer .btn-warning:hover {
+	background: #c82333;
 }
 
 /* Log Parser Variable Styles */
@@ -289,6 +363,7 @@ body {
 .variable-table {
 	width: 100%;
 	border-collapse: collapse;
+	table-layout: fixed;
 }
 
 .variable-table th {
@@ -299,17 +374,27 @@ body {
 	background: #f8f9fa;
 }
 
+.variable-table th:nth-child(1) { width: 15%; } /* Name */
+.variable-table th:nth-child(2) { width: 50%; } /* Value */
+.variable-table th:nth-child(3) { width: 8%; }  /* Type */
+.variable-table th:nth-child(4) { width: 10%; } /* Line */
+.variable-table th:nth-child(5) { width: 17%; } /* Actions */
+
 .variable-table td {
 	padding: 8px 10px;
 	border-bottom: 1px solid #dee2e6;
-	vertical-align: middle;
+	vertical-align: top;
 	line-height: 1.4;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 
 .variable-table td.var-actions {
 	padding: 4px 8px;
 	vertical-align: middle;
 	height: auto;
+	width: 15%;
+	text-align: center;
 }
 
 .variable-table tr:nth-child(even) {
@@ -318,13 +403,22 @@ body {
 
 .variable-name {
 	font-weight: 500;
-	min-width: 120px;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 
 .variable-value {
 	font-family: monospace;
 	font-size: 11px;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	white-space: pre-wrap;
+	max-width: 100%;
+}
+
+.variable-value.type-url {
 	word-break: break-all;
+	white-space: normal;
 }
 
 .type-badge {
@@ -362,29 +456,31 @@ body {
 .line-number {
 	color: #666;
 	font-size: 11px;
+	text-align: center;
+	font-family: monospace;
 }
 
 .var-actions {
 	display: flex;
 	flex-direction: row;
-	gap: 3px;
+	gap: 4px;
 	align-items: center;
 	justify-content: flex-start;
-	min-height: 28px;
-	padding: 2px 0;
-	width: 80px;
+	min-height: 32px;
+	padding: 4px 2px;
+	width: 100%;
 	flex-wrap: nowrap;
 }
 
 .var-btn {
-	padding: 4px 6px;
+	padding: 6px 8px;
 	border: none;
-	border-radius: 3px;
+	border-radius: 4px;
 	cursor: pointer;
-	font-size: 10px;
+	font-size: 11px;
 	color: white;
-	min-width: 20px;
-	height: 22px;
+	min-width: 32px;
+	height: 28px;
 	text-align: center;
 	vertical-align: middle;
 	flex-shrink: 0;
@@ -393,6 +489,7 @@ body {
 	justify-content: center;
 	line-height: 1;
 	white-space: nowrap;
+	font-weight: 500;
 }
 
 .var-btn-copy {

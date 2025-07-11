@@ -54,23 +54,23 @@
 						</div>
 					</div>
 
-					<button id="parseBtn" class="btn-primary" style="margin: 20px 0;">🔄 Parse Logs</button>
+					<button id="parseBtn" class="log-parser-parse-button">🔄 Parse Logs</button>
 
 					<!-- Combined Header -->
 					<div id="combinedHeader" class="log-parser-filters-section" style="display: none;">
 						<div class="log-parser-filters-content">
-							<input type="text" id="searchFilter" placeholder="Search..." class="search-input"
-								style="width: 200px; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-							<span class="log-parser-action-buttons" style="margin-left: 15px;">
+							<input type="text" id="searchFilter" placeholder="Search..." class="search-input">
+							<div class="log-parser-view-controls">
 								<button id="variablesViewBtn" class="log-parser-view-btn active">📊 Variables</button>
 								<button id="logsViewBtn" class="log-parser-view-btn">📋 Logs</button>
 								<button id="tableViewBtn" class="log-parser-view-btn">📋 Table</button>
-								<button id="wordWrapBtn" class="log-parser-view-btn" style="display: none;">📄
-									Wrap</button>
+								<button id="wordWrapBtn" class="log-parser-view-btn" style="display: none;">📄 Wrap</button>
+							</div>
+							<div class="log-parser-action-controls">
 								<button id="copyAllBtn" class="log-parser-action-btn btn-copy">📋 Copy All</button>
 								<button id="exportBtn" class="log-parser-action-btn btn-export">💾 Export JSON</button>
-							</span>
-							<span id="combinedCount" class="log-parser-buffer-count" style="margin-left: auto;"></span>
+							</div>
+							<div id="combinedCount" class="log-parser-buffer-count"></div>
 						</div>
 					</div>
 
