@@ -182,18 +182,18 @@ body {
 }
 
 .search-input {
-	width: 200px;
+	width: 150px;
 	padding: 8px;
 	border: 1px solid #ddd;
 	border-radius: 4px;
 	font-size: 14px;
 	flex-shrink: 0;
-	min-width: 200px;
-	max-width: 200px;
+	min-width: 150px;
+	max-width: 150px;
 }
 
 .log-parser-view-btn {
-	padding: 6px 12px;
+	padding: 6px 10px;
 	background: #6c757d;
 	color: white;
 	border: none;
@@ -407,11 +407,31 @@ body {
 	background: #f8f9fa;
 }
 
-.variable-table th:nth-child(1) { width: 15%; } /* Name */
-.variable-table th:nth-child(2) { width: 50%; } /* Value */
-.variable-table th:nth-child(3) { width: 8%; }  /* Type */
-.variable-table th:nth-child(4) { width: 10%; } /* Line */
-.variable-table th:nth-child(5) { width: 17%; } /* Actions */
+.variable-table th:nth-child(1) {
+	width: 15%;
+}
+
+/* Name */
+.variable-table th:nth-child(2) {
+	width: 50%;
+}
+
+/* Value */
+.variable-table th:nth-child(3) {
+	width: 8%;
+}
+
+/* Type */
+.variable-table th:nth-child(4) {
+	width: 10%;
+}
+
+/* Line */
+.variable-table th:nth-child(5) {
+	width: 17%;
+}
+
+/* Actions */
 
 .variable-table td {
 	padding: 8px 10px;
