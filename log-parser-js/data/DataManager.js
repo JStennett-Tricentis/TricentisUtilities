@@ -5,6 +5,7 @@ class DataManager {
 		this.groupedData = [];
 		this.filteredData = [];
 		this.rawLogText = '';
+		this.debugMode = false;
 	}
 
 	// Set the parsed data and process it
@@ -14,13 +15,15 @@ class DataManager {
 		this.groupedData = this.groupLogsByContext(data);
 		this.filteredData = [...this.groupedData];
 
-		console.log('📊 DataManager: setParsedData called', {
-			parsedDataCount: data.length,
-			groupedDataCount: this.groupedData.length,
-			groupedDataDetails: this.groupedData.map(g => ({ name: g.name, variableCount: g.variables.length })),
-			filteredDataCount: this.filteredData.length,
-			filteredDataDetails: this.filteredData.map(g => ({ name: g.name, variableCount: g.variables.length }))
-		});
+		if (this.debugMode) {
+			console.log('📊 DataManager: setParsedData called', {
+				parsedDataCount: data.length,
+				groupedDataCount: this.groupedData.length,
+				groupedDataDetails: this.groupedData.map(g => ({ name: g.name, variableCount: g.variables.length })),
+				filteredDataCount: this.filteredData.length,
+				filteredDataDetails: this.filteredData.map(g => ({ name: g.name, variableCount: g.variables.length }))
+			});
+		}
 	}
 
 	// Get current data
@@ -80,7 +83,9 @@ class DataManager {
 
 	// Group variables by context (test case, operation, etc.)
 	groupLogsByContext(variables) {
-		console.log('📊 DataManager: groupLogsByContext called with', variables.length, 'variables');
+		if (this.debugMode) {
+			console.log('📊 DataManager: groupLogsByContext called with', variables.length, 'variables');
+		}
 		const groups = {};
 
 		variables.forEach((variable, index) => {
@@ -96,7 +101,9 @@ class DataManager {
 					timestamp: variable.timestamp,
 					context: context
 				};
-				console.log(`📊 DataManager: Created new group "${context.name}" for variable ${index}:`, variable.name);
+				if (this.debugMode) {
+					console.log(`📊 DataManager: Created new group "${context.name}" for variable ${index}:`, variable.name);
+				}
 			}
 
 			groups[contextKey].variables.push(variable);
@@ -109,10 +116,12 @@ class DataManager {
 		});
 
 		const result = Object.values(groups);
-		console.log('📊 DataManager: groupLogsByContext result:', {
-			groupCount: result.length,
-			groups: result.map(g => ({ name: g.name, variableCount: g.variables.length }))
-		});
+		if (this.debugMode) {
+			console.log('📊 DataManager: groupLogsByContext result:', {
+				groupCount: result.length,
+				groups: result.map(g => ({ name: g.name, variableCount: g.variables.length }))
+			});
+		}
 
 		// Handle the case where we only have a root group
 		if (result.length === 1 && result[0].name === 'Root' && result[0].variables.length > 0) {
@@ -139,7 +148,7 @@ class DataManager {
 				type: 'Authentication'
 			};
 		}
-		
+
 		if (name.includes('url') || name.includes('endpoint') || name.includes('tosca_url')) {
 			return {
 				key: 'endpoint_config',
@@ -147,7 +156,7 @@ class DataManager {
 				type: 'Configuration'
 			};
 		}
-		
+
 		if (name.includes('timestamp') || name.includes('time_stamp') || name.includes('date')) {
 			return {
 				key: 'timestamp_generation',
@@ -155,7 +164,7 @@ class DataManager {
 				type: 'Utility'
 			};
 		}
-		
+
 		if (name.includes('test_case') || name.includes('testcase') || variable.type === 'ID') {
 			return {
 				key: 'test_case_creation',
@@ -163,7 +172,7 @@ class DataManager {
 				type: 'Test Management'
 			};
 		}
-		
+
 		if (name.includes('playlist') || name.includes('run')) {
 			return {
 				key: 'playlist_management',
@@ -171,7 +180,7 @@ class DataManager {
 				type: 'Test Execution'
 			};
 		}
-		
+
 		if (name.includes('status') || name.includes('state') || name.includes('verification')) {
 			return {
 				key: 'status_verification',
@@ -179,7 +188,7 @@ class DataManager {
 				type: 'Validation'
 			};
 		}
-		
+
 		if (name.includes('json') || name.includes('body') || name.includes('response')) {
 			return {
 				key: 'api_response',
@@ -187,7 +196,7 @@ class DataManager {
 				type: 'API'
 			};
 		}
-		
+
 		if (name.includes('download') || name.includes('pdf') || name.includes('report')) {
 			return {
 				key: 'report_generation',
@@ -386,7 +395,7 @@ class DataManager {
 			// Handle operations and sub-operations
 			else if (logInfo.isOperation) {
 				const level = logInfo.indentLevel;
-				
+
 				// Find appropriate parent group
 				while (contextStack.length > level + 1) {
 					contextStack.pop();
@@ -408,7 +417,7 @@ class DataManager {
 				} else if (currentGroup) {
 					currentGroup.subGroups.push(operationGroup);
 				}
-				
+
 				contextStack.push(operationGroup);
 			}
 			// Handle regular log lines
@@ -472,20 +481,20 @@ class DataManager {
 
 		// Extract the main content after log prefixes
 		let content = line.replace(/^\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}:\d{2}[^[]*(?:\[[^\]]*\])*\s*/, '').trim();
-		
+
 		// Check for buffer variables
 		let variable = '';
 		let value = '';
 		let jsonBody = '';
 		let type = 'message';
-		
+
 		const bufferMatch = content.match(/(?:Message:\s*)?Buffer with name[:\s]*['"]([^'"]*)['"]\s*has been set to value[:\s]*['"]([^'"]*)['"]?/i);
 		if (bufferMatch) {
 			type = 'variable';
 			variable = bufferMatch[1];
 			value = bufferMatch[2];
 			content = `Set Buffer: ${variable}`;
-			
+
 			// Check if value is JSON
 			if (this.isValidJSON(value)) {
 				jsonBody = value;

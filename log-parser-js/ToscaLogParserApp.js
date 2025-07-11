@@ -63,15 +63,15 @@ class ToscaLogParserApp {
 
 	handleBookmarkletLogs(logs) {
 		this.log('Received logs from bookmarklet', { length: logs.length });
-		
+
 		// Paste logs into textarea
 		const logInput = document.getElementById('logInput');
 		if (logInput) {
 			logInput.value = logs;
-			
+
 			// Show toast notification
 			this.uiManager.showToast('Logs pasted automatically from bookmarklet!');
-			
+
 			// Auto-parse after a short delay
 			setTimeout(() => {
 				this.parseContent();
@@ -134,13 +134,15 @@ class ToscaLogParserApp {
 		// Store data and update UI
 		this.dataManager.setParsedData(parsedData, logText);
 
-		// Debug: Log what we found
-		console.log('🔍 Parse Results:', {
-			totalVariables: parsedData.length,
-			variables: parsedData.map(v => ({ name: v.name, type: v.type, value: v.value.substring(0, 50) + '...' })),
-			groupedData: this.dataManager.getGroupedData().length,
-			filteredData: this.dataManager.getFilteredData().length
-		});
+		// Debug: Log what we found (only when debug mode is enabled)
+		if (this.debugMode) {
+			console.log('🔍 Parse Results:', {
+				totalVariables: parsedData.length,
+				variables: parsedData.map(v => ({ name: v.name, type: v.type, value: v.value.substring(0, 50) + '...' })),
+				groupedData: this.dataManager.getGroupedData().length,
+				filteredData: this.dataManager.getFilteredData().length
+			});
+		}
 
 		this.updateUI();
 	}
@@ -207,20 +209,28 @@ class ToscaLogParserApp {
 
 	refreshCurrentView() {
 		const currentView = this.uiManager.currentView;
-		console.log('🔄 App: Refreshing current view:', currentView);
+		if (this.debugMode) {
+			console.log('🔄 App: Refreshing current view:', currentView);
+		}
 
 		try {
 			switch (currentView) {
 				case 'variables':
-					console.log('🔄 App: Displaying variables view');
+					if (this.debugMode) {
+						console.log('🔄 App: Displaying variables view');
+					}
 					this.uiManager.displayResults(this.dataManager.getFilteredData());
 					break;
 				case 'logs':
-					console.log('🔄 App: Displaying logs view');
+					if (this.debugMode) {
+						console.log('🔄 App: Displaying logs view');
+					}
 					this.displayLogsView();
 					break;
 				case 'table':
-					console.log('🔄 App: Displaying table view');
+					if (this.debugMode) {
+						console.log('🔄 App: Displaying table view');
+					}
 					this.displayTableView();
 					break;
 			}
@@ -312,7 +322,11 @@ class ToscaLogParserApp {
 
 	toggleDebug() {
 		this.debugMode = !this.debugMode;
+
+		// Synchronize debug mode across all components
 		this.logParser.debugMode = this.debugMode;
+		this.uiManager.debugMode = this.debugMode;
+		this.dataManager.debugMode = this.debugMode;
 
 		const debugSection = document.getElementById('debugSection');
 		const debugBtn = document.getElementById('debugBtn');

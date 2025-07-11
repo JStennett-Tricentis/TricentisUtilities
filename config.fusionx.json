@@ -1,6 +1,6 @@
 {
 	"defaults": {
-		"workspace": "Reporting"
+		"workspace": "reporting"
 	},
 	"sharedUris": {
 		"workspaces": {

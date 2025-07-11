@@ -3,6 +3,7 @@ class UIManager {
 	constructor() {
 		this.currentView = 'variables';
 		this.wordWrapEnabled = false;
+		this.debugMode = false;
 		this.setupEventListeners();
 	}
 
@@ -131,8 +132,10 @@ class UIManager {
 			btn.textContent = this.wordWrapEnabled ? '📄 Unwrap' : '📄 Wrap';
 			btn.classList.toggle('active', this.wordWrapEnabled);
 		}
-		
-		console.log('🖥️ UI: Word wrap toggled:', this.wordWrapEnabled, 'Element found:', !!logContent);
+
+		if (this.debugMode) {
+			console.log('🖥️ UI: Word wrap toggled:', this.wordWrapEnabled, 'Element found:', !!logContent);
+		}
 	}
 
 	// Show/hide loading state
@@ -163,10 +166,12 @@ class UIManager {
 
 	// Display results with improved performance
 	displayResults(filteredData) {
-		console.log('🖥️ UI: displayResults called with:', {
-			filteredDataLength: filteredData?.length,
-			filteredData: filteredData
-		});
+		if (this.debugMode) {
+			console.log('🖥️ UI: displayResults called with:', {
+				filteredDataLength: filteredData?.length,
+				filteredData: filteredData
+			});
+		}
 
 		// Store filtered data for view switching
 		this.lastFilteredData = filteredData;
@@ -174,13 +179,17 @@ class UIManager {
 		const resultsPlaceholder = document.getElementById('resultsPlaceholder');
 		const resultsContent = document.getElementById('resultsContent');
 
-		console.log('🖥️ UI: DOM elements found:', {
-			resultsPlaceholder: !!resultsPlaceholder,
-			resultsContent: !!resultsContent
-		});
+		if (this.debugMode) {
+			console.log('🖥️ UI: DOM elements found:', {
+				resultsPlaceholder: !!resultsPlaceholder,
+				resultsContent: !!resultsContent
+			});
+		}
 
 		if (!filteredData || filteredData.length === 0) {
-			console.log('🖥️ UI: No filtered data, showing placeholder');
+			if (this.debugMode) {
+				console.log('🖥️ UI: No filtered data, showing placeholder');
+			}
 			resultsPlaceholder.style.display = 'block';
 			resultsContent.style.display = 'none';
 			resultsPlaceholder.innerHTML = `
@@ -190,7 +199,9 @@ class UIManager {
 			return;
 		}
 
-		console.log('🖥️ UI: Has filtered data, showing results content');
+		if (this.debugMode) {
+			console.log('🖥️ UI: Has filtered data, showing results content');
+		}
 		resultsPlaceholder.style.display = 'none';
 
 		// Show content based on current view
@@ -214,10 +225,12 @@ class UIManager {
 		container.innerHTML = '';
 
 		// Debug: log what we're trying to render
-		console.log('🖥️ UI: Rendering groups:', {
-			totalGroups: groupedData.length,
-			groupDetails: groupedData.map(g => ({ name: g.name, variableCount: g.variables.length }))
-		});
+		if (this.debugMode) {
+			console.log('🖥️ UI: Rendering groups:', {
+				totalGroups: groupedData.length,
+				groupDetails: groupedData.map(g => ({ name: g.name, variableCount: g.variables.length }))
+			});
+		}
 
 		// If we have many groups, implement virtual scrolling
 		if (groupedData.length > 10) {
@@ -228,20 +241,28 @@ class UIManager {
 	}
 
 	renderAllGroups(container, groupedData) {
-		console.log('🖥️ UI: Creating group elements...', groupedData.length);
+		if (this.debugMode) {
+			console.log('🖥️ UI: Creating group elements...', groupedData.length);
+		}
 		const fragment = document.createDocumentFragment();
 
 		groupedData.forEach((group, index) => {
-			console.log(`🖥️ UI: Creating group ${index}: ${group.name} with ${group.variables.length} variables`);
+			if (this.debugMode) {
+				console.log(`🖥️ UI: Creating group ${index}: ${group.name} with ${group.variables.length} variables`);
+			}
 			const groupElement = this.createGroupElement(group, index);
 			fragment.appendChild(groupElement);
 		});
 
-		console.log('🖥️ UI: Appending fragment to container');
+		if (this.debugMode) {
+			console.log('🖥️ UI: Appending fragment to container');
+		}
 		container.appendChild(fragment);
-		console.log('🖥️ UI: Container now has', container.children.length, 'children');
-		console.log('🖥️ UI: Container innerHTML length:', container.innerHTML.length);
-		console.log('🖥️ UI: Container first child:', container.children[0]?.className, container.children[0]?.children.length, 'children');
+		if (this.debugMode) {
+			console.log('🖥️ UI: Container now has', container.children.length, 'children');
+			console.log('🖥️ UI: Container innerHTML length:', container.innerHTML.length);
+			console.log('🖥️ UI: Container first child:', container.children[0]?.className, container.children[0]?.children.length, 'children');
+		}
 	}
 
 	// Simple virtual scrolling implementation
@@ -338,12 +359,12 @@ class UIManager {
 	}
 
 	createOperationSections(variables) {
-		const requestVars = variables.filter(v => v.name.toLowerCase().includes('request') || 
-			v.name.toLowerCase().includes('endpoint') || 
+		const requestVars = variables.filter(v => v.name.toLowerCase().includes('request') ||
+			v.name.toLowerCase().includes('endpoint') ||
 			v.name.toLowerCase().includes('authorization'));
-		const responseVars = variables.filter(v => v.name.toLowerCase().includes('response') || 
-			v.name.toLowerCase().includes('status') || 
-			v.type === 'Token' || 
+		const responseVars = variables.filter(v => v.name.toLowerCase().includes('response') ||
+			v.name.toLowerCase().includes('status') ||
+			v.type === 'Token' ||
 			v.name.toLowerCase().includes('buffer'));
 		const otherVars = variables.filter(v => !requestVars.includes(v) && !responseVars.includes(v));
 
@@ -387,7 +408,7 @@ class UIManager {
 
 	createOperationItem(variable, itemType) {
 		const icon = itemType === 'ok' ? '✓' : itemType === 'buffer' ? '📋' : '🔍';
-		const truncatedValue = variable.value && variable.value.length > 50 ? 
+		const truncatedValue = variable.value && variable.value.length > 50 ?
 			variable.value.substring(0, 50) + '...' : variable.value;
 
 		return `
@@ -430,21 +451,25 @@ class UIManager {
 		const tableHTML = this.createVariableTable(group.variables);
 		contentDiv.innerHTML = tableHTML;
 
-		console.log('🖥️ UI: Group element created:', {
-			groupName: group.name,
-			variableCount: group.variables.length,
-			headerHTML: headerDiv.innerHTML.length,
-			tableHTML: tableHTML.length,
-			contentDivHTML: contentDiv.innerHTML.length
-		});
+		if (this.debugMode) {
+			console.log('🖥️ UI: Group element created:', {
+				groupName: group.name,
+				variableCount: group.variables.length,
+				headerHTML: headerDiv.innerHTML.length,
+				tableHTML: tableHTML.length,
+				contentDivHTML: contentDiv.innerHTML.length
+			});
+		}
 
 		groupDiv.appendChild(headerDiv);
 		groupDiv.appendChild(contentDiv);
 
-		console.log('🖥️ UI: Final group element:', {
-			groupDivChildren: groupDiv.children.length,
-			groupDivHTML: groupDiv.innerHTML.length
-		});
+		if (this.debugMode) {
+			console.log('🖥️ UI: Final group element:', {
+				groupDivChildren: groupDiv.children.length,
+				groupDivHTML: groupDiv.innerHTML.length
+			});
+		}
 
 		return groupDiv;
 	}
@@ -477,7 +502,9 @@ class UIManager {
 	}
 
 	createVariableTable(variables) {
-		console.log('🖥️ UI: Creating variable table for', variables.length, 'variables');
+		if (this.debugMode) {
+			console.log('🖥️ UI: Creating variable table for', variables.length, 'variables');
+		}
 		let html = '<table class="variable-table">';
 		html += '<thead><tr><th>Name</th><th>Value</th><th>Type</th><th>Line</th><th>Actions</th></tr></thead>';
 		html += '<tbody>';
@@ -487,16 +514,20 @@ class UIManager {
 		});
 
 		html += '</tbody></table>';
-		console.log('🖥️ UI: Generated table HTML length:', html.length);
+		if (this.debugMode) {
+			console.log('🖥️ UI: Generated table HTML length:', html.length);
+		}
 		return html;
 	}
 
 	createVariableRow(variable, index) {
-		console.log(`🖥️ UI: Creating row ${index} for variable:`, {
-			name: variable.name,
-			type: variable.type,
-			valueLength: variable.value?.length || 0
-		});
+		if (this.debugMode) {
+			console.log(`🖥️ UI: Creating row ${index} for variable:`, {
+				name: variable.name,
+				type: variable.type,
+				valueLength: variable.value?.length || 0
+			});
+		}
 
 		const typeClass = this.getTypeClass(variable.type);
 		const typeLabel = this.getTypeLabel(variable.type);
@@ -553,7 +584,9 @@ class UIManager {
 			<td class="var-actions"><div class="var-actions">${actionButtons}</div></td>
 		</tr>`;
 
-		console.log(`🖥️ UI: Generated row HTML for ${variable.name}:`, rowHTML.length, 'chars');
+		if (this.debugMode) {
+			console.log(`🖥️ UI: Generated row HTML for ${variable.name}:`, rowHTML.length, 'chars');
+		}
 		return rowHTML;
 	}
 
@@ -657,7 +690,9 @@ class UIManager {
 
 	// Error handling
 	showError(message, error = null) {
-		console.error('UI Error:', message, error);
+		if (this.debugMode || error) {
+			console.error('UI Error:', message, error);
+		}
 		this.showToast(`Error: ${message}`, 'error');
 		this.hideLoading();
 	}
@@ -693,7 +728,9 @@ class UIManager {
 		html += '</div>';
 
 		container.innerHTML = html;
-		console.log('🖥️ UI: Logs displayed, lines:', filteredLines.length);
+		if (this.debugMode) {
+			console.log('🖥️ UI: Logs displayed, lines:', filteredLines.length);
+		}
 	}
 
 
@@ -815,7 +852,9 @@ class UIManager {
 		// Generate table HTML
 		const tableHTML = this.generateTableHTML(filteredTableData);
 		container.innerHTML = tableHTML;
-		console.log('🖥️ UI: Table displayed, rows:', filteredTableData.length);
+		if (this.debugMode) {
+			console.log('🖥️ UI: Table displayed, rows:', filteredTableData.length);
+		}
 	}
 
 	// Parse logs into structured table format
@@ -994,7 +1033,9 @@ class UIManager {
 		html += '</div>';
 		container.innerHTML = html;
 
-		console.log('🖥️ UI: Structured table displayed, groups:', hierarchicalGroups.length);
+		if (this.debugMode) {
+			console.log('🖥️ UI: Structured table displayed, groups:', hierarchicalGroups.length);
+		}
 	}
 
 	// Check if string is valid JSON
@@ -1029,7 +1070,7 @@ class UIManager {
 	// Render structured logs following the formatting idea
 	renderStructuredLogs(group, searchTerm = '', level = 0) {
 		let html = '';
-		
+
 		// Render all lines from this group
 		group.lines?.forEach(logLine => {
 			html += this.renderStructuredLogLine(logLine, searchTerm, level);
@@ -1061,8 +1102,8 @@ class UIManager {
 				html += `
 					<div class="log-line-structured level-${level}">
 						<span class="log-indent">${indent}</span>
-						<span class="log-variable-name">"${this.escapeHtml(logInfo.variable)}"</span> - 
-						<span class="log-buffer-set">Buffer set:</span> 
+						<span class="log-variable-name">"${this.escapeHtml(logInfo.variable)}"</span> -
+						<span class="log-buffer-set">Buffer set:</span>
 						<span class="log-json-toggle" onclick="toggleStructuredJson('json-${logInfo.lineNumber}')">
 							{...} <span class="json-expand-icon">▼</span>
 						</span>
@@ -1076,8 +1117,8 @@ class UIManager {
 				html += `
 					<div class="log-line-structured level-${level}">
 						<span class="log-indent">${indent}</span>
-						<span class="log-variable-name">"${this.escapeHtml(logInfo.variable)}"</span> - 
-						<span class="log-buffer-set">Buffer set:</span> 
+						<span class="log-variable-name">"${this.escapeHtml(logInfo.variable)}"</span> -
+						<span class="log-buffer-set">Buffer set:</span>
 						<span class="log-buffer-value">${this.escapeHtml(logInfo.value)}</span>
 						<button class="structured-copy-btn" onclick="window.app.copyToClipboard('${this.escapeForJS(logInfo.value)}')" title="Copy">📋</button>
 					</div>
@@ -1107,7 +1148,7 @@ class UIManager {
 			html += `
 				<div class="log-line-structured level-${level}">
 					<span class="log-indent">${indent}</span>
-					<span class="log-operation-name">"${this.escapeHtml(logInfo.operation.replace(' - FAILED', ''))}"</span> - 
+					<span class="log-operation-name">"${this.escapeHtml(logInfo.operation.replace(' - FAILED', ''))}"</span> -
 					<span class="log-failed">FAILED</span>
 				</div>
 			`;
@@ -1135,7 +1176,7 @@ class UIManager {
 	// Render individual log table row
 	renderLogTableRow(logInfo, searchTerm = '', level = 0) {
 		const rowClass = `table-row-${logInfo.type || 'message'} level-${level}`;
-		
+
 		// Apply search filter
 		if (searchTerm && !this.matchesTableSearch(logInfo, searchTerm.toLowerCase())) {
 			return '';
@@ -1203,13 +1244,13 @@ class UIManager {
 	// Detect variable type (simplified version)
 	detectVariableType(value) {
 		if (!value || typeof value !== 'string') return 'Buffer Variable';
-		
+
 		if (this.isValidJSON(value)) return 'JSON';
 		if (value.match(/^https?:\/\//)) return 'URL';
 		if (value.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) return 'ID';
 		if (value.match(/^\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}:\d{2}/)) return 'Timestamp';
 		if (value.startsWith('ey') && value.length > 50) return 'Token';
-		
+
 		return 'Buffer Variable';
 	}
 
@@ -1247,10 +1288,10 @@ class UIManager {
 }
 
 // Global function for JSON toggling in structured view
-window.toggleStructuredJson = function(elementId) {
+window.toggleStructuredJson = function (elementId) {
 	const element = document.getElementById(elementId);
 	const toggle = element?.previousElementSibling?.querySelector('.json-expand-icon');
-	
+
 	if (element && toggle) {
 		if (element.style.display === 'none' || !element.style.display) {
 			element.style.display = 'block';

@@ -110,12 +110,12 @@ function loadBuiltInConfig() {
 					"fusionx": {
 						"name": "FusionX",
 						"workspaces": [
-							"fusionx",
-							"reporting",
-							"api-simulator",
-							"always-empty",
-							"large-data",
-							"default",
+							"FusionX",
+							"Reporting",
+							"API-Simulator",
+							"Always Empty Workspace",
+							"Large Data Creation",
+							"Default",
 							"swagger-docs"
 						]
 					}
@@ -226,11 +226,11 @@ function loadBuiltInConfig() {
 async function loadSelectedConfigFile() {
 	const selectedFile = document.getElementById('configFileSelect').value;
 	const fileLoaded = await loadConfigFromFile(selectedFile);
-	
+
 	if (fileLoaded) {
 		// Save the selected file preference
 		localStorage.setItem('selectedConfigFile', selectedFile);
-		
+
 		updateConfigDisplay();
 		if (typeof updateEnvironments === 'function') {
 			updateEnvironments();
@@ -252,7 +252,7 @@ async function initConfig() {
 		}
 		currentConfigFile = savedConfigFile;
 	}
-	
+
 	// First try to load from selected config file
 	const fileLoaded = await loadConfigFromFile(currentConfigFile);
 

@@ -12,7 +12,10 @@ class LogParser {
 		if (data) {
 			this.debugLogs.push(JSON.stringify(data, null, 2));
 		}
-		console.log(logEntry, data);
+		// Only log to console when debug mode is enabled
+		if (this.debugMode) {
+			console.log(logEntry, data);
+		}
 	}
 
 	// Simplified JSON detection
