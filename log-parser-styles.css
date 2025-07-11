@@ -699,6 +699,8 @@ body {
 	border-radius: 4px;
 	overflow-y: auto;
 	overflow-x: auto;
+	border: 1px solid #dee2e6;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .log-table {
@@ -706,11 +708,15 @@ body {
 	border-collapse: collapse;
 	font-family: 'Courier New', monospace;
 	font-size: 12px;
+	border: 3px solid #007bff !important;
+	border-radius: 4px;
+	overflow: hidden;
 }
 
 .log-table th {
 	background: #f8f9fa;
 	border: 1px solid #dee2e6;
+	border-bottom: 2px solid #adb5bd;
 	padding: 8px;
 	text-align: left;
 	font-weight: 600;
@@ -721,7 +727,7 @@ body {
 }
 
 .log-table td {
-	border: 1px solid #dee2e6;
+	border: 2px solid #28a745 !important;
 	padding: 6px 8px;
 	vertical-align: top;
 	word-wrap: break-word;
@@ -733,47 +739,67 @@ body {
 
 .log-table tr:hover {
 	background: #e8f4fd;
+	border-left: 3px solid #007bff;
+}
+
+.log-table tr {
+	border-bottom: 1px solid #dee2e6;
 }
 
 /* Table row type styling */
 .log-table-row.row-type-testcase {
 	background: #e8f5e8 !important;
 	font-weight: bold;
+	border-left: 4px solid #28a745 !important;
 }
 
 .log-table-row.row-type-testcase:hover {
 	background: #d4edda !important;
+	border-left: 4px solid #28a745 !important;
 }
 
 .log-table-row.row-type-variable {
 	background: #fff3cd !important;
+	border-left: 4px solid #ffc107 !important;
 }
 
 .log-table-row.row-type-variable:hover {
 	background: #ffeaa7 !important;
+	border-left: 4px solid #ffc107 !important;
 }
 
 .log-table-row.row-type-operation {
 	background: #f0f8ff;
+	border-left: 4px solid #007bff;
 }
 
 .log-table-row.row-type-operation:hover {
 	background: #e6f3ff;
+	border-left: 4px solid #007bff;
 }
 
 /* Table cell styling */
 .table-line-number {
 	width: 60px;
-	text-align: right;
+	text-align: center;
 	color: #6c757d;
 	font-size: 11px;
 	font-weight: normal;
 }
 
 .table-operation {
-	width: 400px;
+	width: 350px;
 	word-wrap: break-word;
 	font-family: inherit;
+	font-weight: 500;
+}
+
+.table-details {
+	width: 200px;
+	word-wrap: break-word;
+	font-size: 11px;
+	color: #6c757d;
+	font-style: italic;
 }
 
 .table-variable {
@@ -784,8 +810,24 @@ body {
 }
 
 .table-value {
-	width: 300px;
+	width: 250px;
 	word-wrap: break-word;
+}
+
+.table-status {
+	width: 70px;
+	text-align: center;
+}
+
+/* Status indicator styles */
+.status-success {
+	color: #28a745;
+	font-size: 14px;
+}
+
+.status-failed {
+	color: #dc3545;
+	font-size: 14px;
 }
 
 .table-value-code {
@@ -808,16 +850,16 @@ body {
 	white-space: nowrap;
 }
 
-/* Enhanced table button styles */
+/* Enhanced table button styles - matching variable button styles */
 .table-btn {
 	padding: 4px 6px;
 	border: none;
 	border-radius: 3px;
 	cursor: pointer;
-	font-size: 11px;
+	font-size: 10px;
 	color: white;
-	min-width: 24px;
-	height: 24px;
+	min-width: 20px;
+	height: 22px;
 	text-align: center;
 	margin-right: 2px;
 	display: inline-flex;
@@ -825,6 +867,7 @@ body {
 	justify-content: center;
 	line-height: 1;
 	white-space: nowrap;
+	flex-shrink: 0;
 	transition: all 0.2s ease;
 }
 
@@ -1381,7 +1424,7 @@ body {
 /* Enhanced table styles for hierarchy */
 .table-line-number {
 	width: 60px;
-	text-align: right;
+	text-align: center;
 	color: #666;
 	font-size: 11px;
 }
@@ -1749,21 +1792,25 @@ body {
 	word-break: break-word;
 }
 
-/* Table action buttons */
+/* Table action buttons - matching variable button styles exactly */
 .table-btn {
-	padding: 2px 4px;
+	padding: 4px 6px;
 	border: none;
-	border-radius: 2px;
+	border-radius: 3px;
 	cursor: pointer;
 	font-size: 10px;
 	color: white;
-	min-width: 18px;
-	height: 20px;
+	min-width: 20px;
+	height: 22px;
 	text-align: center;
-	margin-right: 2px;
+	vertical-align: middle;
+	flex-shrink: 0;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	line-height: 1;
+	white-space: nowrap;
+	margin-right: 2px;
 }
 
 .table-btn-postman {

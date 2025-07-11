@@ -865,12 +865,13 @@ class UIManager {
 				<table class="log-table">
 					<thead>
 						<tr>
-							<th style="width: 60px;">Line</th>
-							<th style="width: 400px;">Operation/Message</th>
-							<th style="width: 150px;">Variable</th>
-							<th style="width: 300px;">Value</th>
-							<th style="width: 80px;">Type</th>
-							<th style="width: 100px;">Actions</th>
+							<th style="width: 60px; text-align: center;">Line</th>
+							<th style="width: 350px;">Operation</th>
+							<th style="width: 200px; text-align: center;">Details</th>
+							<th style="width: 150px; text-align: center;">Variable</th>
+							<th style="width: 250px; text-align: center;">Value</th>
+							<th style="width: 100px; text-align: center;">Actions</th>
+							<th style="width: 70px; text-align: center;">Status</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -892,20 +893,22 @@ class UIManager {
 	// Generate a single table row for a log line
 	generateSimpleTableRow(logInfo) {
 		const rowClass = this.getRowClass(logInfo);
-		const operationDisplay = this.getOperationDisplay(logInfo);
+		const operationDisplay = this.getOperationNameDisplay(logInfo);
+		const detailsDisplay = this.getDetailsDisplay(logInfo);
 		const variableDisplay = logInfo.variable ? this.escapeHtml(logInfo.variable) : '';
-		const valueDisplay = this.getValueDisplay(logInfo);
-		const typeDisplay = this.getTypeDisplay(logInfo);
+		const valueDisplay = this.getCleanValueDisplay(logInfo);
+		const statusDisplay = this.getStatusDisplay(logInfo);
 		const actionsDisplay = this.getActionsDisplay(logInfo);
 
 		return `
 			<tr class="${rowClass}">
-				<td class="table-line-number">${logInfo.lineNumber}</td>
+				<td class="table-line-number" style="text-align: center;">${logInfo.lineNumber}</td>
 				<td class="table-operation">${operationDisplay}</td>
-				<td class="table-variable">${variableDisplay}</td>
-				<td class="table-value">${valueDisplay}</td>
-				<td class="table-type">${typeDisplay}</td>
-				<td class="table-actions">${actionsDisplay}</td>
+				<td class="table-details" style="text-align: center;">${detailsDisplay}</td>
+				<td class="table-variable" style="text-align: center;">${variableDisplay}</td>
+				<td class="table-value" style="text-align: center;">${valueDisplay}</td>
+				<td class="var-actions" style="text-align: center;"><div class="var-actions">${actionsDisplay}</div></td>
+				<td class="table-status" style="text-align: center;">${statusDisplay}</td>
 			</tr>
 		`;
 	}
@@ -927,11 +930,18 @@ class UIManager {
 
 
 
-	getOperationDisplay(logInfo) {
+	getOperationNameDisplay(logInfo) {
 		let operation = logInfo.operation || logInfo.content || '';
 
-		// Truncate long operations but keep full content in title - increased max length since we have more space
-		const maxLength = 80;
+		// Clean up operation names - remove common prefixes and suffixes
+		operation = operation.replace(/^Buffer with name[:\s]*['"]([^'"]*)['"]\s*has been set to value.*/, '$1 - Buffer Set');
+		operation = operation.replace(/^\[Succeeded\]\s*['"]?([^'"]*?)['"]?$/, '$1');
+		operation = operation.replace(/^\[Failed\]\s*['"]?([^'"]*?)['"]?$/, '$1 - FAILED');
+		operation = operation.replace(/^Starting:\s*/, '');
+		operation = operation.replace(/^Set Buffer:\s*/, '');
+
+		// Truncate long operations but keep full content in title
+		const maxLength = 60;
 		if (operation.length > maxLength) {
 			const truncated = operation.substring(0, maxLength) + '...';
 			return `<span title="${this.escapeHtml(operation)}">${this.escapeHtml(truncated)}</span>`;
@@ -940,13 +950,51 @@ class UIManager {
 		return this.escapeHtml(operation);
 	}
 
-	getValueDisplay(logInfo) {
+	getDetailsDisplay(logInfo) {
+		// For buffer variables, show context about when they were set
+		if (logInfo.variable && logInfo.value) {
+			// Check if this is part of a REQUEST/RESPONSE pattern by looking at the original line
+			const line = logInfo.originalLine || '';
+
+			if (line.includes('REQUEST:') || line.includes('RESPONSE:')) {
+				return 'API Operation';
+			} else if (line.includes('Expression')) {
+				return line.match(/Expression[^']*'([^']*)'/) ?
+					`Expression: ${line.match(/Expression[^']*'([^']*)'/)[1]}` : 'Expression Evaluation';
+			} else if (line.includes('Waited for')) {
+				return line.match(/Waited for (\d+ms)/) ?
+					`Wait: ${line.match(/Waited for (\d+ms)/)[1]}` : 'Wait Operation';
+			}
+			return 'Buffer Variable';
+		}
+
+		// For other operations, extract details
+		let operation = logInfo.operation || logInfo.content || '';
+
+		if (operation.includes('Starting TestCase')) {
+			return 'Test Case Start';
+		} else if (operation.includes('FAILED')) {
+			return 'Operation Failed';
+		} else if (operation.includes('Expression')) {
+			const match = operation.match(/'([^']*)'\s*evaluated to\s*'([^']*)'/);
+			return match ? `Expression: ${match[1]} → ${match[2]}` : 'Expression Evaluation';
+		} else if (operation.includes('Waited for')) {
+			const match = operation.match(/Waited for (\d+(?:ms|s))/);
+			return match ? `Wait: ${match[1]}` : 'Wait Operation';
+		} else if (operation.includes('REQUEST:') || operation.includes('RESPONSE:')) {
+			return 'API Operation';
+		}
+
+		return '';
+	}
+
+	getCleanValueDisplay(logInfo) {
 		if (!logInfo.value) return '';
 
 		// Handle JSON values
 		if (logInfo.jsonBody) {
 			const jsonId = `table-json-${logInfo.lineNumber}`;
-			const preview = logInfo.value.substring(0, 50) + (logInfo.value.length > 50 ? '...' : '');
+			const preview = logInfo.value.substring(0, 40) + (logInfo.value.length > 40 ? '...' : '');
 
 			return `
 				<div class="json-table-container">
@@ -962,8 +1010,8 @@ class UIManager {
 			`;
 		}
 
-		// Handle regular values - increased max length since we have more space
-		const maxLength = 150;
+		// Handle regular values - just show the value without variable name
+		const maxLength = 100;
 		if (logInfo.value.length > maxLength) {
 			const truncated = logInfo.value.substring(0, maxLength) + '...';
 			return `
@@ -976,15 +1024,43 @@ class UIManager {
 		return `<span class="table-value-code">${this.escapeHtml(logInfo.value)}</span>`;
 	}
 
-	getTypeDisplay(logInfo) {
-		if (!logInfo.variable || !logInfo.value) return '';
+	getStatusDisplay(logInfo) {
+		// Check for failure indicators
+		if (logInfo.status === 'Failed' ||
+			(logInfo.operation && logInfo.operation.includes('FAILED')) ||
+			(logInfo.content && logInfo.content.includes('FAILED'))) {
+			return '<span class="status-failed">❌</span>';
+		}
 
-		const type = this.detectVariableType(logInfo.value);
-		const typeClass = this.getTypeClass(type);
-		const typeLabel = this.getTypeLabel(type);
+		// Check for success indicators
+		if (logInfo.variable && logInfo.value) {
+			return '<span class="status-success">✅</span>';
+		}
 
-		return `<span class="type-badge ${typeClass}">${typeLabel}</span>`;
+		if (logInfo.status === 'Succeeded' ||
+			(logInfo.operation && logInfo.operation.includes('Succeeded'))) {
+			return '<span class="status-success">✅</span>';
+		}
+
+		// For expressions that evaluate to True
+		if (logInfo.content && logInfo.content.includes("evaluated to 'True'")) {
+			return '<span class="status-success">✅</span>';
+		}
+
+		// For expressions that evaluate to False
+		if (logInfo.content && logInfo.content.includes("evaluated to 'False'")) {
+			return '<span class="status-failed">❌</span>';
+		}
+
+		// Default for operations that completed
+		if (logInfo.operation || logInfo.content) {
+			return '<span class="status-success">✅</span>';
+		}
+
+		return '';
 	}
+
+	// Removed old getValueDisplay and getTypeDisplay methods - using new structure instead
 
 	getActionsDisplay(logInfo) {
 		if (!logInfo.variable || !logInfo.value) return '';
@@ -993,7 +1069,7 @@ class UIManager {
 
 		// Copy button - always available for variables
 		actions.push(`
-			<button class="table-btn table-btn-copy"
+			<button class="var-btn var-btn-copy"
 					onclick="window.app.copyToClipboard('${this.escapeForJS(logInfo.value)}')"
 					title="Copy Value">
 				📋
@@ -1003,7 +1079,7 @@ class UIManager {
 		// Postman button for JSON values
 		if (logInfo.jsonBody) {
 			actions.push(`
-				<button class="table-btn table-btn-postman"
+				<button class="var-btn var-btn-postman"
 						onclick="window.app.copyForPostman('${this.escapeForJS(logInfo.value)}')"
 						title="Copy for Postman">
 					🚀
@@ -1012,9 +1088,9 @@ class UIManager {
 		}
 
 		// View button for long values
-		if (logInfo.value.length > 100) {
+		if (logInfo.value && logInfo.value.length > 100) {
 			actions.push(`
-				<button class="table-btn table-btn-view"
+				<button class="var-btn var-btn-view"
 						onclick="window.app.showFullValue('${this.escapeForJS(logInfo.value)}', '${this.escapeForJS(logInfo.variable)}', ${logInfo.lineNumber})"
 						title="View Full Value">
 					👁️
