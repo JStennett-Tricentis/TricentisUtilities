@@ -792,6 +792,116 @@ body {
 	border-radius: 4px;
 }
 
+/* Table styling for log-parser-table-view-content in index.html */
+.log-parser-table-view-content {
+	padding: 10px;
+	background: white;
+	border-radius: 4px;
+	overflow-y: auto;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.log-parser-table-view-content .log-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-family: 'Courier New', monospace;
+	font-size: 12px;
+	border: 1px solid #dee2e6;
+}
+
+/* Table Headers */
+.log-parser-table-view-content .log-table th {
+	background: #f8f9fa;
+	border: 1px solid #adb5bd;
+	padding: 8px;
+	text-align: center;
+	font-weight: 600;
+	color: #495057;
+}
+
+.log-parser-table-view-content .th-line {
+	width: 60px;
+}
+
+.log-parser-table-view-content .th-operation {
+	width: 350px;
+	text-align: left;
+}
+
+.log-parser-table-view-content .th-details {
+	width: 200px;
+}
+
+.log-parser-table-view-content .th-variable {
+	width: 150px;
+}
+
+.log-parser-table-view-content .th-value {
+	width: 250px;
+}
+
+.log-parser-table-view-content .th-actions {
+	width: 100px;
+}
+
+.log-parser-table-view-content .th-status {
+	width: 70px;
+}
+
+/* Table Cells */
+.log-parser-table-view-content .log-table td {
+	border: 1px solid #dee2e6;
+	padding: 6px 8px;
+	vertical-align: top;
+}
+
+.log-parser-table-view-content .td-line {
+	text-align: center;
+	color: #6c757d;
+	font-size: 11px;
+}
+
+.log-parser-table-view-content .td-operation {
+	font-weight: 500;
+	word-wrap: break-word;
+}
+
+.log-parser-table-view-content .td-details {
+	text-align: center;
+	font-size: 11px;
+	color: #6c757d;
+	font-style: italic;
+}
+
+.log-parser-table-view-content .td-variable {
+	text-align: center;
+	font-weight: 500;
+	color: #6f42c1;
+}
+
+.log-parser-table-view-content .td-value {
+	text-align: center;
+	word-wrap: break-word;
+}
+
+.log-parser-table-view-content .td-actions {
+	text-align: center;
+	white-space: nowrap;
+}
+
+.log-parser-table-view-content .td-status {
+	text-align: center;
+}
+
+/* Table row styling */
+.log-parser-table-view-content .log-table tr:nth-child(even) {
+	background: #f8f9fa;
+}
+
+.log-parser-table-view-content .log-table tr:hover {
+	background: #e8f4fd;
+}
+
 /* Operation Card Styles */
 .operation-cards {
 	display: flex;

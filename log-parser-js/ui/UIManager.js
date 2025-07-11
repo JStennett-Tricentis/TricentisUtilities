@@ -865,13 +865,13 @@ class UIManager {
 				<table class="log-table">
 					<thead>
 						<tr>
-							<th style="width: 60px; text-align: center;">Line</th>
-							<th style="width: 350px;">Operation</th>
-							<th style="width: 200px; text-align: center;">Details</th>
-							<th style="width: 150px; text-align: center;">Variable</th>
-							<th style="width: 250px; text-align: center;">Value</th>
-							<th style="width: 100px; text-align: center;">Actions</th>
-							<th style="width: 70px; text-align: center;">Status</th>
+							<th class="th-line">Line</th>
+							<th class="th-operation">Operation</th>
+							<th class="th-details">Details</th>
+							<th class="th-variable">Variable</th>
+							<th class="th-value">Value</th>
+							<th class="th-actions">Actions</th>
+							<th class="th-status">Status</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -902,13 +902,13 @@ class UIManager {
 
 		return `
 			<tr class="${rowClass}">
-				<td class="table-line-number" style="text-align: center;">${logInfo.lineNumber}</td>
-				<td class="table-operation">${operationDisplay}</td>
-				<td class="table-details" style="text-align: center;">${detailsDisplay}</td>
-				<td class="table-variable" style="text-align: center;">${variableDisplay}</td>
-				<td class="table-value" style="text-align: center;">${valueDisplay}</td>
-				<td class="var-actions" style="text-align: center;"><div class="var-actions">${actionsDisplay}</div></td>
-				<td class="table-status" style="text-align: center;">${statusDisplay}</td>
+				<td class="td-line">${logInfo.lineNumber}</td>
+				<td class="td-operation">${operationDisplay}</td>
+				<td class="td-details">${detailsDisplay}</td>
+				<td class="td-variable">${variableDisplay}</td>
+				<td class="td-value">${valueDisplay}</td>
+				<td class="td-actions"><div class="var-actions">${actionsDisplay}</div></td>
+				<td class="td-status">${statusDisplay}</td>
 			</tr>
 		`;
 	}
