@@ -717,12 +717,14 @@ body {
 	position: sticky;
 	top: 0;
 	z-index: 10;
+	color: #495057;
 }
 
 .log-table td {
 	border: 1px solid #dee2e6;
 	padding: 6px 8px;
 	vertical-align: top;
+	word-wrap: break-word;
 }
 
 .log-table tr:nth-child(even) {
@@ -731,6 +733,128 @@ body {
 
 .log-table tr:hover {
 	background: #e8f4fd;
+}
+
+/* Table row type styling */
+.log-table-row.row-type-testcase {
+	background: #e8f5e8 !important;
+	font-weight: bold;
+}
+
+.log-table-row.row-type-testcase:hover {
+	background: #d4edda !important;
+}
+
+.log-table-row.row-type-variable {
+	background: #fff3cd !important;
+}
+
+.log-table-row.row-type-variable:hover {
+	background: #ffeaa7 !important;
+}
+
+.log-table-row.row-type-operation {
+	background: #f0f8ff;
+}
+
+.log-table-row.row-type-operation:hover {
+	background: #e6f3ff;
+}
+
+/* Table cell styling */
+.table-line-number {
+	width: 60px;
+	text-align: right;
+	color: #6c757d;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+.table-operation {
+	width: 400px;
+	word-wrap: break-word;
+	font-family: inherit;
+}
+
+.table-variable {
+	width: 150px;
+	word-wrap: break-word;
+	font-weight: 500;
+	color: #6f42c1;
+}
+
+.table-value {
+	width: 300px;
+	word-wrap: break-word;
+}
+
+.table-value-code {
+	font-family: 'Courier New', monospace;
+	font-size: 11px;
+	background: #f8f9fa;
+	padding: 2px 4px;
+	border-radius: 2px;
+	border: 1px solid #e9ecef;
+}
+
+.table-type {
+	width: 80px;
+	text-align: center;
+}
+
+.table-actions {
+	width: 100px;
+	text-align: center;
+	white-space: nowrap;
+}
+
+/* Enhanced table button styles */
+.table-btn {
+	padding: 4px 6px;
+	border: none;
+	border-radius: 3px;
+	cursor: pointer;
+	font-size: 11px;
+	color: white;
+	min-width: 24px;
+	height: 24px;
+	text-align: center;
+	margin-right: 2px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+	white-space: nowrap;
+	transition: all 0.2s ease;
+}
+
+.table-btn:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.table-btn-copy {
+	background: #28a745;
+}
+
+.table-btn-copy:hover {
+	background: #218838;
+}
+
+.table-btn-postman {
+	background: #ff6b35;
+}
+
+.table-btn-postman:hover {
+	background: #e55a2b;
+}
+
+.table-btn-view {
+	background: #17a2b8;
+}
+
+.table-btn-view:hover {
+	background: #138496;
 }
 
 .level-indicator {

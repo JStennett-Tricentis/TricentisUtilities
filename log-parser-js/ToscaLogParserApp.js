@@ -252,7 +252,7 @@ class ToscaLogParserApp {
 		// Get the raw log text from the data manager
 		const rawLogText = this.dataManager.getRawLogText();
 
-		// Use the UI manager to display the table with structured data
+		// Use the UI manager to display the simple table
 		this.uiManager.showTableView(rawLogText);
 	}
 
@@ -266,8 +266,7 @@ class ToscaLogParserApp {
 				this.uiManager.showLogsView(this.dataManager.getRawLogText());
 			} else if (this.uiManager.currentView === 'table') {
 				const rawLogText = this.dataManager.getRawLogText();
-				const hierarchicalGroups = this.dataManager.groupLogsByHierarchy(rawLogText);
-				this.uiManager.showTableView(rawLogText, hierarchicalGroups);
+				this.uiManager.showTableView(rawLogText);
 			} else {
 				this.refreshCurrentView();
 			}

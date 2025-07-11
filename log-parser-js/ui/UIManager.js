@@ -107,12 +107,8 @@ class UIManager {
 		const searchFilter = document.getElementById('searchFilter');
 		const searchTerm = searchFilter ? searchFilter.value : '';
 
-		// Display the table with hierarchical grouping if available
-		if (hierarchicalGroups && hierarchicalGroups.length > 0) {
-			this.displayHierarchicalTable(hierarchicalGroups, searchTerm);
-		} else {
-			this.displayTableView(rawLogText, searchTerm);
-		}
+		// Always use the simple table view - one line per row
+		this.displaySimpleTable(rawLogText, searchTerm);
 	}
 
 	updateViewButtons() {
@@ -832,8 +828,8 @@ class UIManager {
 		return highlighted;
 	}
 
-	// Display structured table view with JSON handling
-	displayTableView(rawLogText, searchTerm = '') {
+	// Display simple table view - one line per row
+	displaySimpleTable(rawLogText, searchTerm = '') {
 		const container = document.getElementById('tableViewContent');
 
 		if (!rawLogText) {
@@ -841,7 +837,7 @@ class UIManager {
 			return;
 		}
 
-		// Parse raw logs into structured table data
+		// Parse raw logs into table data
 		const tableData = this.parseLogsForTable(rawLogText);
 
 		// Apply search filter if active
@@ -849,12 +845,184 @@ class UIManager {
 			tableData.filter(row => this.matchesTableSearch(row, searchTerm.toLowerCase())) :
 			tableData;
 
-		// Generate table HTML
-		const tableHTML = this.generateTableHTML(filteredTableData);
+		// Generate simple table HTML
+		const tableHTML = this.generateSimpleTableHTML(filteredTableData);
 		container.innerHTML = tableHTML;
+
 		if (this.debugMode) {
-			console.log('🖥️ UI: Table displayed, rows:', filteredTableData.length);
+			console.log('🖥️ UI: Simple table displayed, rows:', filteredTableData.length);
 		}
+	}
+
+	// Generate clean HTML table with each log line as a row
+	generateSimpleTableHTML(tableData) {
+		if (!tableData || tableData.length === 0) {
+			return '<div class="table-view">No log entries to display</div>';
+		}
+
+		let html = `
+			<div class="table-view-content">
+				<table class="log-table">
+					<thead>
+						<tr>
+							<th style="width: 60px;">Line</th>
+							<th style="width: 400px;">Operation/Message</th>
+							<th style="width: 150px;">Variable</th>
+							<th style="width: 300px;">Value</th>
+							<th style="width: 80px;">Type</th>
+							<th style="width: 100px;">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+		`;
+
+		tableData.forEach(logInfo => {
+			html += this.generateSimpleTableRow(logInfo);
+		});
+
+		html += `
+					</tbody>
+				</table>
+			</div>
+		`;
+
+		return html;
+	}
+
+	// Generate a single table row for a log line
+	generateSimpleTableRow(logInfo) {
+		const rowClass = this.getRowClass(logInfo);
+		const operationDisplay = this.getOperationDisplay(logInfo);
+		const variableDisplay = logInfo.variable ? this.escapeHtml(logInfo.variable) : '';
+		const valueDisplay = this.getValueDisplay(logInfo);
+		const typeDisplay = this.getTypeDisplay(logInfo);
+		const actionsDisplay = this.getActionsDisplay(logInfo);
+
+		return `
+			<tr class="${rowClass}">
+				<td class="table-line-number">${logInfo.lineNumber}</td>
+				<td class="table-operation">${operationDisplay}</td>
+				<td class="table-variable">${variableDisplay}</td>
+				<td class="table-value">${valueDisplay}</td>
+				<td class="table-type">${typeDisplay}</td>
+				<td class="table-actions">${actionsDisplay}</td>
+			</tr>
+		`;
+	}
+
+	// Helper methods for table row generation
+	getRowClass(logInfo) {
+		let classes = ['log-table-row'];
+
+		if (logInfo.type) {
+			classes.push(`row-type-${logInfo.type}`);
+		}
+
+		if (logInfo.status) {
+			classes.push(`row-status-${logInfo.status.toLowerCase()}`);
+		}
+
+		return classes.join(' ');
+	}
+
+
+
+	getOperationDisplay(logInfo) {
+		let operation = logInfo.operation || logInfo.content || '';
+
+		// Truncate long operations but keep full content in title - increased max length since we have more space
+		const maxLength = 80;
+		if (operation.length > maxLength) {
+			const truncated = operation.substring(0, maxLength) + '...';
+			return `<span title="${this.escapeHtml(operation)}">${this.escapeHtml(truncated)}</span>`;
+		}
+
+		return this.escapeHtml(operation);
+	}
+
+	getValueDisplay(logInfo) {
+		if (!logInfo.value) return '';
+
+		// Handle JSON values
+		if (logInfo.jsonBody) {
+			const jsonId = `table-json-${logInfo.lineNumber}`;
+			const preview = logInfo.value.substring(0, 50) + (logInfo.value.length > 50 ? '...' : '');
+
+			return `
+				<div class="json-table-container">
+					<div class="json-preview-line" onclick="toggleTableJson('${jsonId}')" style="cursor: pointer;">
+						<span class="json-indicator">{ }</span>
+						<code style="font-size: 11px;">${this.escapeHtml(preview)}</code>
+						<span id="${jsonId}-toggle" class="json-toggle">▶</span>
+					</div>
+					<div id="${jsonId}" class="json-expanded-content" style="display: none; margin-top: 5px;">
+						<pre class="json-formatted-table">${this.formatJSONWithHighlighting(logInfo.value)}</pre>
+					</div>
+				</div>
+			`;
+		}
+
+		// Handle regular values - increased max length since we have more space
+		const maxLength = 150;
+		if (logInfo.value.length > maxLength) {
+			const truncated = logInfo.value.substring(0, maxLength) + '...';
+			return `
+				<span title="${this.escapeHtml(logInfo.value)}" class="table-value-code">
+					${this.escapeHtml(truncated)}
+				</span>
+			`;
+		}
+
+		return `<span class="table-value-code">${this.escapeHtml(logInfo.value)}</span>`;
+	}
+
+	getTypeDisplay(logInfo) {
+		if (!logInfo.variable || !logInfo.value) return '';
+
+		const type = this.detectVariableType(logInfo.value);
+		const typeClass = this.getTypeClass(type);
+		const typeLabel = this.getTypeLabel(type);
+
+		return `<span class="type-badge ${typeClass}">${typeLabel}</span>`;
+	}
+
+	getActionsDisplay(logInfo) {
+		if (!logInfo.variable || !logInfo.value) return '';
+
+		let actions = [];
+
+		// Copy button - always available for variables
+		actions.push(`
+			<button class="table-btn table-btn-copy"
+					onclick="window.app.copyToClipboard('${this.escapeForJS(logInfo.value)}')"
+					title="Copy Value">
+				📋
+			</button>
+		`);
+
+		// Postman button for JSON values
+		if (logInfo.jsonBody) {
+			actions.push(`
+				<button class="table-btn table-btn-postman"
+						onclick="window.app.copyForPostman('${this.escapeForJS(logInfo.value)}')"
+						title="Copy for Postman">
+					🚀
+				</button>
+			`);
+		}
+
+		// View button for long values
+		if (logInfo.value.length > 100) {
+			actions.push(`
+				<button class="table-btn table-btn-view"
+						onclick="window.app.showFullValue('${this.escapeForJS(logInfo.value)}', '${this.escapeForJS(logInfo.variable)}', ${logInfo.lineNumber})"
+						title="View Full Value">
+					👁️
+				</button>
+			`);
+		}
+
+		return actions.join('');
 	}
 
 	// Parse logs into structured table format
@@ -1001,42 +1169,7 @@ class UIManager {
 		);
 	}
 
-	// Display table with hierarchical formatting (like your formatting idea)
-	displayHierarchicalTable(hierarchicalGroups, searchTerm = '') {
-		const container = document.getElementById('tableViewContent');
-
-		if (!hierarchicalGroups || hierarchicalGroups.length === 0) {
-			container.innerHTML = '<div class="table-view">No logs to display</div>';
-			return;
-		}
-
-		let html = '<div class="structured-log-view">';
-
-		// Render each test case as a separate section
-		hierarchicalGroups.forEach(group => {
-			if (group.type === 'testcase') {
-				// Create test case header
-				html += `
-					<div class="test-case-header-new">
-						<div class="test-case-title">Starting TestCase "${this.escapeHtml(group.name)}"</div>
-					</div>
-				`;
-
-				// Render structured logs for this test case
-				html += this.renderStructuredLogs(group, searchTerm, 0);
-
-				// Test case completion
-				html += `<div class="test-case-completion">TestCase COMPLETED</div>`;
-			}
-		});
-
-		html += '</div>';
-		container.innerHTML = html;
-
-		if (this.debugMode) {
-			console.log('🖥️ UI: Structured table displayed, groups:', hierarchicalGroups.length);
-		}
-	}
+	// Removed displayHierarchicalTable - using simple table view instead
 
 	// Check if string is valid JSON
 	isValidJSON(str) {
@@ -1067,171 +1200,7 @@ class UIManager {
 		return JSON.stringify(str).slice(1, -1);
 	}
 
-	// Render structured logs following the formatting idea
-	renderStructuredLogs(group, searchTerm = '', level = 0) {
-		let html = '';
-
-		// Render all lines from this group
-		group.lines?.forEach(logLine => {
-			html += this.renderStructuredLogLine(logLine, searchTerm, level);
-		});
-
-		// Recursively render sub-groups
-		group.subGroups?.forEach(subGroup => {
-			html += this.renderStructuredLogs(subGroup, searchTerm, level + 1);
-		});
-
-		return html;
-	}
-
-	// Render a single structured log line
-	renderStructuredLogLine(logInfo, searchTerm = '', level = 0) {
-		// Apply search filter
-		if (searchTerm && !this.matchesTableSearch(logInfo, searchTerm.toLowerCase())) {
-			return '';
-		}
-
-		const indent = '    '.repeat(level);
-		let html = '';
-
-		// Handle different log types
-		if (logInfo.type === 'variable' && logInfo.variable && logInfo.value) {
-			// Buffer variable line
-			if (logInfo.jsonBody) {
-				// JSON buffer variable with expansion
-				html += `
-					<div class="log-line-structured level-${level}">
-						<span class="log-indent">${indent}</span>
-						<span class="log-variable-name">"${this.escapeHtml(logInfo.variable)}"</span> -
-						<span class="log-buffer-set">Buffer set:</span>
-						<span class="log-json-toggle" onclick="toggleStructuredJson('json-${logInfo.lineNumber}')">
-							{...} <span class="json-expand-icon">▼</span>
-						</span>
-						<div id="json-${logInfo.lineNumber}" class="structured-json-content">
-							<pre class="structured-json">${this.formatJSONWithHighlighting(logInfo.value)}</pre>
-						</div>
-					</div>
-				`;
-			} else {
-				// Regular buffer variable
-				html += `
-					<div class="log-line-structured level-${level}">
-						<span class="log-indent">${indent}</span>
-						<span class="log-variable-name">"${this.escapeHtml(logInfo.variable)}"</span> -
-						<span class="log-buffer-set">Buffer set:</span>
-						<span class="log-buffer-value">${this.escapeHtml(logInfo.value)}</span>
-						<button class="structured-copy-btn" onclick="window.app.copyToClipboard('${this.escapeForJS(logInfo.value)}')" title="Copy">📋</button>
-					</div>
-				`;
-			}
-		} else if (logInfo.operation && logInfo.operation.includes('REQUEST:')) {
-			// REQUEST section
-			html += `
-				<div class="log-line-structured level-${level}">
-					<span class="log-indent">${indent}</span>
-					<span class="log-request-label">REQUEST:</span>
-				</div>
-			`;
-		} else if (logInfo.operation && logInfo.operation.includes('RESPONSE:')) {
-			// RESPONSE section with timing
-			const timing = logInfo.operation.match(/\((\d+)\s*ms\)/);
-			const timingStr = timing ? ` (${timing[1]} ms)` : '';
-			html += `
-				<div class="log-line-structured level-${level}">
-					<span class="log-indent">${indent}</span>
-					<span class="log-response-label">RESPONSE:</span>
-					<span class="log-timing">${timingStr}</span>
-				</div>
-			`;
-		} else if (logInfo.operation && logInfo.operation.includes('FAILED')) {
-			// Failed operation
-			html += `
-				<div class="log-line-structured level-${level}">
-					<span class="log-indent">${indent}</span>
-					<span class="log-operation-name">"${this.escapeHtml(logInfo.operation.replace(' - FAILED', ''))}"</span> -
-					<span class="log-failed">FAILED</span>
-				</div>
-			`;
-		} else if (logInfo.operation) {
-			// Regular operation
-			html += `
-				<div class="log-line-structured level-${level}">
-					<span class="log-indent">${indent}</span>
-					<span class="log-operation-name">"${this.escapeHtml(logInfo.operation)}"</span>
-				</div>
-			`;
-		} else {
-			// Generic message
-			html += `
-				<div class="log-line-structured level-${level}">
-					<span class="log-indent">${indent}</span>
-					<span class="log-message">${this.escapeHtml(logInfo.content || logInfo.originalLine || '')}</span>
-				</div>
-			`;
-		}
-
-		return html;
-	}
-
-	// Render individual log table row
-	renderLogTableRow(logInfo, searchTerm = '', level = 0) {
-		const rowClass = `table-row-${logInfo.type || 'message'} level-${level}`;
-
-		// Apply search filter
-		if (searchTerm && !this.matchesTableSearch(logInfo, searchTerm.toLowerCase())) {
-			return '';
-		}
-
-		let actionButtons = '';
-		if (logInfo.variable && logInfo.value) {
-			if (logInfo.jsonBody) {
-				actionButtons = `
-					<button class="table-btn table-btn-postman" onclick="window.app.copyForPostman('${this.escapeForJS(logInfo.value)}')" title="Copy for Postman">🚀</button>
-					<button class="table-btn table-btn-copy" onclick="window.app.copyToClipboard('${this.escapeForJS(logInfo.value)}')" title="Copy">📋</button>
-				`;
-			} else {
-				actionButtons = `
-					<button class="table-btn table-btn-copy" onclick="window.app.copyToClipboard('${this.escapeForJS(logInfo.value)}')" title="Copy">📋</button>
-				`;
-			}
-		}
-
-		let valueDisplay = '';
-		if (logInfo.value) {
-			if (logInfo.jsonBody) {
-				const jsonId = `json-${logInfo.lineNumber}`;
-				valueDisplay = `
-					<div class="json-table-container">
-						<div class="json-preview-line" onclick="toggleTableJson('${jsonId}')">
-							<span class="json-indicator">📋</span>
-							<code>${this.escapeHtml(logInfo.value.substring(0, 50))}${logInfo.value.length > 50 ? '...' : ''}</code>
-							<span id="${jsonId}-toggle" class="json-toggle">▶</span>
-						</div>
-						<div id="${jsonId}" class="json-expanded-content" style="display: none;">
-							<pre class="json-formatted-table">${this.formatJSONWithHighlighting(logInfo.value)}</pre>
-						</div>
-					</div>
-				`;
-			} else {
-				valueDisplay = `<span class="table-value-code">${this.escapeHtml(logInfo.value.length > 100 ? logInfo.value.substring(0, 100) + '...' : logInfo.value)}</span>`;
-			}
-		}
-
-		const typeDisplay = logInfo.variable ? this.getVariableTypeBadge(logInfo.value) : '';
-
-		return `<tr class="${rowClass}">
-			<td class="table-line-number">${logInfo.lineNumber}</td>
-			<td class="table-timestamp">${this.formatTimestamp(logInfo.timestamp)}</td>
-			<td class="table-type-badge">
-				<span class="table-type table-type-${logInfo.level?.toLowerCase() || 'inf'}">${logInfo.level || 'INF'}</span>
-			</td>
-			<td class="table-operation">${this.escapeHtml(logInfo.operation || logInfo.content || '')}</td>
-			<td class="table-variable">${this.escapeHtml(logInfo.variable || '')}</td>
-			<td class="table-value">${valueDisplay}</td>
-			<td class="table-type-badge">${typeDisplay}</td>
-			<td class="table-actions">${actionButtons}</td>
-		</tr>`;
-	}
+	// Removed old structured rendering methods - using simple table approach instead
 
 	// Get variable type badge for table display
 	getVariableTypeBadge(value) {
@@ -1254,37 +1223,11 @@ class UIManager {
 		return 'Buffer Variable';
 	}
 
-	// Format timestamp for display
-	formatTimestamp(timestamp) {
-		if (!timestamp) return '';
-		try {
-			return new Date(timestamp).toLocaleTimeString();
-		} catch {
-			return timestamp;
-		}
-	}
 
-	// Setup table functionality (simplified - no groups to toggle)
-	setupTableGroupToggles() {
-		// Table view doesn't need group toggles - it shows all logs in flat structure
-		// This method is kept for compatibility but doesn't do anything
-	}
 
-	// Check if log info matches search term for table view
-	matchesTableSearch(logInfo, searchTerm) {
-		const searchableFields = [
-			logInfo.operation,
-			logInfo.variable,
-			logInfo.value,
-			logInfo.content,
-			logInfo.level,
-			logInfo.component
-		];
+	// Removed setupTableGroupToggles - using simple flat table structure
 
-		return searchableFields.some(field =>
-			field && field.toString().toLowerCase().includes(searchTerm)
-		);
-	}
+	// Removed duplicate matchesTableSearch method - using the one defined earlier
 }
 
 // Global function for JSON toggling in structured view
