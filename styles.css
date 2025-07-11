@@ -17,7 +17,7 @@ body {
 	background: white;
 	border-radius: 12px;
 	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-	overflow: hidden;
+	overflow: visible;
 }
 
 .header {
@@ -61,6 +61,15 @@ body {
 /* Log Parser Styles */
 .log-parser-input-section {
 	margin-bottom: 15px;
+}
+
+/* Remove height constraints for natural page flow */
+#logparser-tab .section {
+	min-height: auto;
+}
+
+#logparser-tab .tab-content {
+	min-height: auto;
 }
 
 .log-parser-parse-button {
@@ -221,8 +230,7 @@ body {
 
 .log-parser-results-section {
 	margin: 15px 0;
-	min-height: 400px;
-	flex: 1;
+	min-height: auto;
 }
 
 .log-parser-results-container {
@@ -230,9 +238,6 @@ body {
 	border-radius: 4px;
 	padding: 15px;
 	background: #fff;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
 }
 
 .log-parser-results-placeholder {
@@ -244,9 +249,8 @@ body {
 .log-parser-results-content,
 .log-parser-log-view-content,
 .log-parser-table-view-content {
-	max-height: 500px;
-	overflow-y: auto;
-	flex: 1;
+	max-height: none;
+	overflow-y: visible;
 }
 
 .log-parser-results-content {
