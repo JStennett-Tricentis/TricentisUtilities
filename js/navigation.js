@@ -4,11 +4,11 @@
 function autoPopulateFromCurrentUrl() {
 	const currentUrl = window.location.href;
 	const tricentisMatch = currentUrl.match(/https:\/\/([^.]+)\.([^.]+)\.tricentis\.com/);
-	
+
 	if (tricentisMatch) {
 		const tenant = tricentisMatch[1];
 		const environment = tricentisMatch[2];
-		
+
 		// Try to find matching environment
 		const envSelect = document.getElementById('environment');
 		for (let option of envSelect.options) {
@@ -18,7 +18,7 @@ function autoPopulateFromCurrentUrl() {
 				break;
 			}
 		}
-		
+
 		// Try to find matching tenant
 		setTimeout(() => {
 			const tenantSelect = document.getElementById('tenant');
@@ -29,7 +29,7 @@ function autoPopulateFromCurrentUrl() {
 					break;
 				}
 			}
-			
+
 			// Auto-populate workspace from URL path
 			setTimeout(() => {
 				const pathMatch = currentUrl.match(/\/_portal\/space\/([^\/\?]+)/);
@@ -63,7 +63,7 @@ function updateEnvironments() {
 
 	// Auto-populate if on Tricentis domain
 	autoPopulateFromCurrentUrl();
-	
+
 	updateTenants();
 }
 
@@ -74,19 +74,19 @@ function updateTenants() {
 
 	if (envKey && config.environments[envKey]) {
 		let fusionxFound = false;
-		
+
 		for (const [key, tenant] of Object.entries(config.environments[envKey].tenants)) {
 			const option = document.createElement('option');
 			option.value = key;
 			option.textContent = tenant.name;
 			tenantSelect.appendChild(option);
-			
+
 			// Check if this is FusionX tenant
 			if (tenant.name === 'FusionX' || key === 'fusionx') {
 				fusionxFound = true;
 			}
 		}
-		
+
 		// Auto-select FusionX if available and no current selection
 		if (fusionxFound && !tenantSelect.value) {
 			for (let option of tenantSelect.options) {
@@ -110,33 +110,33 @@ function updateWorkspaces() {
 	if (envKey && tenantKey && config.environments[envKey]?.tenants[tenantKey]) {
 		const workspaceNames = config.environments[envKey].tenants[tenantKey].workspaces;
 		let fusionxFound = false;
-		
+
 		for (const workspaceName of workspaceNames) {
 			// Look for matching workspace in sharedUris - check direct key match first, then workspace property, then name
 			let workspaceKey = null;
 			let workspace = null;
-			
+
 			// First check if workspaceName is directly a key in sharedUris.workspaces
 			if (config.sharedUris.workspaces[workspaceName]) {
 				workspaceKey = workspaceName;
 				workspace = config.sharedUris.workspaces[workspaceName];
 			} else {
 				// If not, look for matching workspace property or name
-				workspaceKey = Object.keys(config.sharedUris.workspaces).find(key => 
-					config.sharedUris.workspaces[key].workspace === workspaceName || 
+				workspaceKey = Object.keys(config.sharedUris.workspaces).find(key =>
+					config.sharedUris.workspaces[key].workspace === workspaceName ||
 					config.sharedUris.workspaces[key].name === workspaceName
 				);
 				if (workspaceKey) {
 					workspace = config.sharedUris.workspaces[workspaceKey];
 				}
 			}
-			
+
 			if (workspace) {
 				const option = document.createElement('option');
 				option.value = workspaceKey;
 				option.textContent = workspace.name;
 				workspaceSelect.appendChild(option);
-				
+
 				// Check if this is FusionX
 				if (workspace.name === 'FusionX' || workspaceName === 'FusionX') {
 					fusionxFound = true;
@@ -147,14 +147,14 @@ function updateWorkspaces() {
 				option.value = workspaceName;
 				option.textContent = workspaceName;
 				workspaceSelect.appendChild(option);
-				
+
 				// Check if this is FusionX
 				if (workspaceName === 'FusionX') {
 					fusionxFound = true;
 				}
 			}
 		}
-		
+
 		// Auto-select default workspace (Reporting) if available and no current selection
 		if (!workspaceSelect.value) {
 			// First try to find the configured default workspace
@@ -190,7 +190,7 @@ function updatePages() {
 
 	if (workspaceKey && config.sharedUris.workspaces[workspaceKey]) {
 		const workspace = config.sharedUris.workspaces[workspaceKey];
-		
+
 		// For portal workspaces, show universal pages
 		if (workspace.type === 'portal' && config.sharedUris.pages) {
 			for (const [pageKey, pageName] of Object.entries(config.sharedUris.pages)) {
@@ -243,7 +243,7 @@ function updateUrlPreview() {
 		fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${customPath}`;
 	} else if (workspaceKey) {
 		const workspace = config.sharedUris.workspaces[workspaceKey];
-		
+
 		if (workspace) {
 			// Found workspace in sharedUris
 			if (workspace.type === 'portal') {
@@ -275,7 +275,7 @@ function updateUrlPreview() {
 	document.getElementById('urlPreview').textContent = `URL Preview: ${fullUrl}`;
 }
 
-function navigateToUrl(newTab = false) {
+function navigationToUrl(newTab = false) {
 	const envKey = document.getElementById('environment').value;
 	const tenantKey = document.getElementById('tenant').value;
 	const workspaceKey = document.getElementById('workspace').value;
@@ -293,7 +293,7 @@ function navigateToUrl(newTab = false) {
 		fullUrl = `https://${tenantKey}.${envKey}.tricentis.com${customPath}`;
 	} else if (workspaceKey) {
 		const workspace = config.sharedUris.workspaces[workspaceKey];
-		
+
 		if (workspace) {
 			// Found workspace in sharedUris
 			if (workspace.type === 'portal') {
@@ -332,16 +332,16 @@ function navigateToUrl(newTab = false) {
 // JIRA Functions
 function openJiraTicket(newTab = false) {
 	const ticketInput = document.getElementById('jiraTicket').value.trim();
-	
+
 	if (!ticketInput) {
 		alert('Please enter a ticket number or ID');
 		return;
 	}
-	
+
 	// Check if it's already a full ticket ID or just a number
 	const url = isNaN(ticketInput) ? ticketInput : 'TPI-' + ticketInput;
 	const fullUrl = `https://tricentis.atlassian.net/browse/${url}`;
-	
+
 	if (newTab) {
 		window.open(fullUrl, '_blank');
 	} else {

@@ -158,20 +158,27 @@ body {
 	display: flex;
 	align-items: center;
 	gap: 15px;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	justify-content: space-between;
+	min-height: 40px;
+	overflow: hidden;
 }
 
 .log-parser-view-controls {
 	display: flex;
 	gap: 5px;
 	align-items: center;
+	flex-shrink: 0;
+	min-width: 450px;
+	max-width: 450px;
+	width: 450px;
 }
 
 .log-parser-action-controls {
 	display: flex;
 	gap: 5px;
 	align-items: center;
+	flex-shrink: 0;
 }
 
 .search-input {
@@ -180,6 +187,9 @@ body {
 	border: 1px solid #ddd;
 	border-radius: 4px;
 	font-size: 14px;
+	flex-shrink: 0;
+	min-width: 200px;
+	max-width: 200px;
 }
 
 .log-parser-view-btn {
@@ -199,6 +209,23 @@ body {
 
 .log-parser-view-btn:hover {
 	opacity: 0.9;
+}
+
+#wordWrapBtn {
+	flex-shrink: 0;
+	white-space: nowrap;
+	visibility: hidden;
+	width: 0;
+	padding: 0;
+	margin: 0;
+	transition: all 0.2s ease;
+}
+
+#wordWrapBtn:not([style*="display: none"]) {
+	visibility: visible;
+	width: auto;
+	padding: 6px 12px;
+	margin-left: 5px;
 }
 
 .log-parser-action-btn {
@@ -226,6 +253,7 @@ body {
 	color: #28a745;
 	border: 1px solid #d4edda;
 	white-space: nowrap;
+	flex-shrink: 0;
 }
 
 .log-parser-results-section {
@@ -247,6 +275,7 @@ body {
 }
 
 .log-parser-results-content,
+.log-parser-cards-view-content,
 .log-parser-log-view-content,
 .log-parser-table-view-content {
 	max-height: none;
@@ -741,6 +770,185 @@ body {
 	padding: 10px;
 	background: white;
 	border-radius: 4px;
+}
+
+/* Operation Card Styles */
+.operation-cards {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding: 10px;
+}
+
+.operation-card {
+	border: 1px solid #dee2e6;
+	border-radius: 8px;
+	background: white;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+}
+
+.operation-card-header {
+	background: #f8f9fa;
+	padding: 15px 20px;
+	border-bottom: 1px solid #dee2e6;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.operation-card-title {
+	font-size: 16px;
+	font-weight: 600;
+	color: #333;
+	margin: 0;
+}
+
+.operation-card-status {
+	padding: 4px 8px;
+	border-radius: 4px;
+	font-size: 12px;
+	font-weight: 500;
+	text-transform: uppercase;
+}
+
+.operation-card-status.success {
+	background: #d4edda;
+	color: #155724;
+}
+
+.operation-card-status.failed {
+	background: #f8d7da;
+	color: #721c24;
+}
+
+.operation-card-body {
+	padding: 20px;
+}
+
+.operation-section {
+	margin-bottom: 20px;
+}
+
+.operation-section:last-child {
+	margin-bottom: 0;
+}
+
+.operation-section-title {
+	font-size: 14px;
+	font-weight: 600;
+	color: #495057;
+	margin-bottom: 10px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.operation-section-title.request {
+	color: #007bff;
+}
+
+.operation-section-title.response {
+	color: #28a745;
+}
+
+.operation-items {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-left: 15px;
+}
+
+.operation-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 8px 12px;
+	background: #f8f9fa;
+	border-radius: 4px;
+	border-left: 3px solid #dee2e6;
+}
+
+.operation-item.ok {
+	border-left-color: #28a745;
+	background: #f8fff8;
+}
+
+.operation-item.buffer {
+	border-left-color: #007bff;
+	background: #f8fbff;
+}
+
+.operation-item.verification {
+	border-left-color: #17a2b8;
+	background: #f7fdff;
+}
+
+.operation-item-icon {
+	font-size: 12px;
+	width: 16px;
+	text-align: center;
+}
+
+.operation-item-name {
+	font-weight: 500;
+	color: #333;
+	min-width: 120px;
+}
+
+.operation-item-value {
+	font-family: monospace;
+	font-size: 12px;
+	color: #666;
+	word-break: break-word;
+}
+
+.operation-item-value.truncated {
+	max-width: 300px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.operation-timing {
+	font-size: 12px;
+	color: #6c757d;
+	font-style: italic;
+}
+
+.operation-card-actions {
+	padding: 15px 20px;
+	border-top: 1px solid #dee2e6;
+	background: #f8f9fa;
+	display: flex;
+	gap: 10px;
+}
+
+.operation-action-btn {
+	padding: 6px 12px;
+	border: none;
+	border-radius: 4px;
+	font-size: 12px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.operation-action-btn.copy {
+	background: #28a745;
+	color: white;
+}
+
+.operation-action-btn.view {
+	background: #17a2b8;
+	color: white;
+}
+
+.operation-action-btn.variables {
+	background: #6f42c1;
+	color: white;
+}
+
+.operation-action-btn:hover {
+	opacity: 0.9;
 }
 
 .table-view-group {

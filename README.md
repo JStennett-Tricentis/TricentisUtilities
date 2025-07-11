@@ -47,7 +47,7 @@ A comprehensive browser-based toolkit for Tosca Cloud environments, featuring cl
 
 1. Visit the tool at `http://localhost:8000`
 2. Go to the **Bookmarklet** tab
-3. Drag the "📌 Tosca Cloud Navigator" link to your browser's bookmark bar
+3. Drag the "📌 Tosca Cloud Navigation" link to your browser's bookmark bar
 4. Click the bookmark from any page to open the quick navigator popup
 
 ### Option 2: Direct Access
@@ -76,7 +76,7 @@ Open the tool directly in your browser to access the full interface with configu
 
 #### Multiple Access Methods
 
-- **Current Tab**: Navigate in the same tab
+- **Current Tab**: Navigation in the same tab
 - **New Tab**: Open in a new browser tab
 - **Bookmarklet**: Quick access from any page
 
@@ -144,7 +144,7 @@ Open the tool directly in your browser to access the full interface with configu
 
 ### Custom Navigation
 
-- Use the "Custom Path" field to navigate to specific URLs like `/your/custom/path`
+- Use the "Custom Path" field to navigation to specific URLs like `/your/custom/path`
 - The tool will build the complete URL: `https://fusionx.my-dev.tricentis.com/your/custom/path`
 
 ### Smart Auto-Population
@@ -154,7 +154,7 @@ When you're already on a Tosca Cloud page (like `https://fusionx.my-dev.tricenti
 - Environment automatically selects "Development"
 - Tenant automatically selects "FusionX"
 - Workspace automatically selects "Reporting"
-- Ready to navigate to other pages in the same context
+- Ready to navigation to other pages in the same context
 
 ## 🔧 Configuration
 
@@ -199,7 +199,7 @@ When you're already on a Tosca Cloud page (like `https://fusionx.my-dev.tricenti
 ### Main Tools
 
 - **📊 Log Parser**: Advanced Tosca Cloud log analysis and variable extraction
-- **🎯 Navigate**: Quick navigation between Tosca Cloud environments
+- **🎯 Navigation**: Quick navigation between Tosca Cloud environments
 - **🎫 JIRA**: Quick ticket lookup and access
 - **📌 Bookmarklet**: Browser bookmarks for instant access
 - **⚙️ Configure**: Environment and workspace configuration

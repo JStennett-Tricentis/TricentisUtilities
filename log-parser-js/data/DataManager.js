@@ -129,12 +129,77 @@ class DataManager {
 	extractContext(variable) {
 		// Try to extract context from the original line or surrounding context
 		const line = variable.originalLine || '';
+		const name = variable.name.toLowerCase();
 
-		// For now, use a simple approach - group by variable type
-		// since context extraction from individual lines is complex
+		// Group by operation type based on variable names
+		if (name.includes('token') || name.includes('access') || name.includes('bearer')) {
+			return {
+				key: 'auth_token',
+				name: 'Authentication Token',
+				type: 'Authentication'
+			};
+		}
+		
+		if (name.includes('url') || name.includes('endpoint') || name.includes('tosca_url')) {
+			return {
+				key: 'endpoint_config',
+				name: 'Endpoint Configuration',
+				type: 'Configuration'
+			};
+		}
+		
+		if (name.includes('timestamp') || name.includes('time_stamp') || name.includes('date')) {
+			return {
+				key: 'timestamp_generation',
+				name: 'Timestamp Generation',
+				type: 'Utility'
+			};
+		}
+		
+		if (name.includes('test_case') || name.includes('testcase') || variable.type === 'ID') {
+			return {
+				key: 'test_case_creation',
+				name: 'Test Case Creation',
+				type: 'Test Management'
+			};
+		}
+		
+		if (name.includes('playlist') || name.includes('run')) {
+			return {
+				key: 'playlist_management',
+				name: 'Playlist Management',
+				type: 'Test Execution'
+			};
+		}
+		
+		if (name.includes('status') || name.includes('state') || name.includes('verification')) {
+			return {
+				key: 'status_verification',
+				name: 'Status Verification',
+				type: 'Validation'
+			};
+		}
+		
+		if (name.includes('json') || name.includes('body') || name.includes('response')) {
+			return {
+				key: 'api_response',
+				name: 'API Response Data',
+				type: 'API'
+			};
+		}
+		
+		if (name.includes('download') || name.includes('pdf') || name.includes('report')) {
+			return {
+				key: 'report_generation',
+				name: 'Report Generation',
+				type: 'Reporting'
+			};
+		}
+
+		// Default fallback
 		return {
-			key: `extracted_variables`,
-			name: 'Extracted Variables',
+			key: 'other_variables',
+			name: 'Other Variables',
 			type: 'Variables'
 		};
 	}

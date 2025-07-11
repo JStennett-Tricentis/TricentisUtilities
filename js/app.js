@@ -34,17 +34,17 @@ function setupEventListeners() {
 	// Handle Enter key in custom path field
 	document.getElementById('customPath').addEventListener('keypress', function (e) {
 		if (e.key === 'Enter') {
-			navigateToUrl();
+			navigationToUrl();
 		}
 	});
 
 	// Handle workspace type switching
 	const typeSelect = document.getElementById('newUriType');
 	if (typeSelect) {
-		typeSelect.addEventListener('change', function() {
+		typeSelect.addEventListener('change', function () {
 			const workspaceGroup = document.getElementById('workspaceNameGroup');
 			const customGroup = document.getElementById('customPathGroup');
-			
+
 			if (this.value === 'portal') {
 				workspaceGroup.style.display = 'block';
 				customGroup.style.display = 'none';
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
 // Export functions for global use
 window.switchTab = switchTab;
-window.navigateToUrl = navigateToUrl;
+window.navigationToUrl = navigationToUrl;
 window.updateTenants = updateTenants;
 window.updateWorkspaces = updateWorkspaces;
 window.updatePages = updatePages;

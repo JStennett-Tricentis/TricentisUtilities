@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Tosca Cloud Navigator</title>
+	<title>Tosca Cloud Navigation</title>
 	<link rel="icon" type="image/jpeg" sizes="16x16" href="assets/images/Tricentis_Logo_16x16.jpeg">
 	<link rel="icon" type="image/jpeg" sizes="32x32" href="assets/images/Tricentis_Logo_28x28.jpeg">
 	<link rel="icon" type="image/jpeg" sizes="48x48" href="assets/images/Tricentis_Logo_48x48.jpeg">
@@ -23,7 +23,7 @@
 		<div class="content">
 			<div class="tabs">
 				<button class="tab active" onclick="switchTab('logparser')">📊 Log Parser</button>
-				<button class="tab" onclick="switchTab('navigate')">🎯 Navigate</button>
+				<button class="tab" onclick="switchTab('navigation')">🎯 Navigation</button>
 				<button class="tab" onclick="switchTab('jira')">🎫 JIRA</button>
 				<button class="tab" onclick="switchTab('bookmarklet')">📌 Bookmarklet</button>
 				<button class="tab" onclick="switchTab('config')">⚙️ Configure</button>
@@ -59,18 +59,21 @@
 					<!-- Combined Header -->
 					<div id="combinedHeader" class="log-parser-filters-section" style="display: none;">
 						<div class="log-parser-filters-content">
-							<input type="text" id="searchFilter" placeholder="Search..." class="search-input">
+
 							<div class="log-parser-view-controls">
 								<button id="variablesViewBtn" class="log-parser-view-btn active">📊 Variables</button>
+								<button id="cardsViewBtn" class="log-parser-view-btn">🗂️ Cards</button>
 								<button id="logsViewBtn" class="log-parser-view-btn">📋 Logs</button>
 								<button id="tableViewBtn" class="log-parser-view-btn">📋 Table</button>
-								<button id="wordWrapBtn" class="log-parser-view-btn" style="display: none;">📄 Wrap</button>
+								<button id="wordWrapBtn" class="log-parser-view-btn" style="display: none;">📄
+									Wrap</button>
 							</div>
 							<div class="log-parser-action-controls">
 								<button id="copyAllBtn" class="log-parser-action-btn btn-copy">📋 Copy All</button>
 								<button id="exportBtn" class="log-parser-action-btn btn-export">💾 Export JSON</button>
 							</div>
 							<div id="combinedCount" class="log-parser-buffer-count"></div>
+							<input type="text" id="searchFilter" placeholder="Search..." class="search-input">
 						</div>
 					</div>
 
@@ -82,6 +85,11 @@
 								<p>Parse logs to see extracted variables here</p>
 							</div>
 							<div id="resultsContent" class="log-parser-results-content"></div>
+							<div id="cardsViewContent" class="log-parser-cards-view-content" style="display: none;">
+								<div class="operation-cards">
+									<!-- Cards will be dynamically generated here -->
+								</div>
+							</div>
 							<div id="logViewContent" class="log-parser-log-view-content" style="display: none;"></div>
 							<div id="tableViewContent" class="log-parser-table-view-content" style="display: none;">
 							</div>
@@ -100,10 +108,10 @@
 				</div>
 			</div>
 
-			<!-- Navigate Tab -->
-			<div id="navigate-tab" class="tab-content">
+			<!-- Navigation Tab -->
+			<div id="navigation-tab" class="tab-content">
 				<div class="section">
-					<h2>🎯 Environment Navigator</h2>
+					<h2>🎯 Environment Navigation</h2>
 
 					<div class="form-row">
 						<div class="form-group">
@@ -143,8 +151,8 @@
 					</div>
 
 					<div class="button-group">
-						<button class="btn-primary" onclick="navigateToUrl()">🔗 Open in Current Tab</button>
-						<button class="btn-secondary" onclick="navigateToUrl(true)">🆕 Open in New Tab</button>
+						<button class="btn-primary" onclick="navigationToUrl()">🔗 Open in Current Tab</button>
+						<button class="btn-secondary" onclick="navigationToUrl(true)">🆕 Open in New Tab</button>
 					</div>
 				</div>
 			</div>
@@ -182,10 +190,10 @@
 			<!-- Bookmarklet Tab -->
 			<div id="bookmarklet-tab" class="tab-content">
 				<div class="section bookmarklet-section">
-					<h2>📌 Tosca Cloud Navigator Bookmarklet</h2>
+					<h2>📌 Tosca Cloud Navigation Bookmarklet</h2>
 					<p style="margin-bottom: 15px;">Drag this link to your bookmarks bar for quick Tosca Cloud
 						navigation from any page:</p>
-					<a href="#" id="bookmarkletLink" class="bookmarklet-link">📌 Tosca Cloud Navigator</a>
+					<a href="#" id="bookmarkletLink" class="bookmarklet-link">📌 Tosca Cloud Navigation</a>
 				</div>
 
 				<div class="section bookmarklet-section">
@@ -199,15 +207,15 @@
 				<div class="section">
 					<h2>📋 How to Use</h2>
 					<ol style="padding-left: 20px; line-height: 1.6;">
-						<li><strong>Navigate Tab:</strong> Use the dropdowns to select your environment, tenant,
-							workspace, and page, then click to navigate.</li>
+						<li><strong>Navigation Tab:</strong> Use the dropdowns to select your environment, tenant,
+							workspace, and page, then click to navigation.</li>
 						<li><strong>JIRA Tab:</strong> Enter a ticket number or full ticket ID to quickly open JIRA
 							tickets in Tosca Cloud Atlassian.</li>
 						<li><strong>Configure Tab:</strong> Add or modify environments, tenants, and workspaces using
 							either JSON or the visual editor.</li>
 						<li><strong>Bookmarklets:</strong> Drag the bookmarklets above to your bookmarks bar for quick
 							access from any page.</li>
-						<li><strong>Custom Paths:</strong> Enter any custom path in the text field to navigate to
+						<li><strong>Custom Paths:</strong> Enter any custom path in the text field to navigation to
 							specific pages not listed in the dropdown.</li>
 					</ol>
 				</div>

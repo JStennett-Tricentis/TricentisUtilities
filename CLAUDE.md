@@ -7,7 +7,7 @@ This is a comprehensive web application toolkit for Tosca Cloud environments. It
 ## Key Features
 
 - **Log Parser**: Advanced Tosca Cloud execution log analysis with variable extraction
-- **Environment Navigator**: Dropdown-based navigation for environments, tenants, workspaces, and pages
+- **Environment Navigation**: Dropdown-based navigation for environments, tenants, workspaces, and pages
 - **JIRA Integration**: Quick ticket lookup functionality
 - **Configuration Manager**: Visual and JSON-based configuration editing
 - **Bookmarklet**: Browser bookmarklet for quick navigation from any page
@@ -107,7 +107,7 @@ This is a comprehensive web application toolkit for Tosca Cloud environments. It
 
 - `updateWorkspaces()`: Populates workspace dropdown with auto-selection of default
 - `updateUrlPreview()`: Builds and displays URL preview
-- `navigateToUrl()`: Navigates to constructed URL
+- `navigationToUrl()`: Navigations to constructed URL
 
 ### bookmarklet.js
 

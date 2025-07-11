@@ -13,6 +13,7 @@ class UIManager {
 
 		// View buttons
 		document.getElementById('variablesViewBtn')?.addEventListener('click', () => this.showVariablesView());
+		document.getElementById('cardsViewBtn')?.addEventListener('click', () => this.showCardsView());
 		document.getElementById('logsViewBtn')?.addEventListener('click', () => this.showLogsView());
 		document.getElementById('tableViewBtn')?.addEventListener('click', () => this.showTableView());
 		document.getElementById('wordWrapBtn')?.addEventListener('click', () => this.toggleWordWrap());
@@ -51,9 +52,26 @@ class UIManager {
 		this.updateViewButtons();
 
 		document.getElementById('resultsContent').style.display = 'block';
+		document.getElementById('cardsViewContent').style.display = 'none';
 		document.getElementById('logViewContent').style.display = 'none';
 		document.getElementById('tableViewContent').style.display = 'none';
 		document.getElementById('wordWrapBtn').style.display = 'none';
+	}
+
+	showCardsView() {
+		this.currentView = 'cards';
+		this.updateViewButtons();
+
+		document.getElementById('resultsContent').style.display = 'none';
+		document.getElementById('cardsViewContent').style.display = 'block';
+		document.getElementById('logViewContent').style.display = 'none';
+		document.getElementById('tableViewContent').style.display = 'none';
+		document.getElementById('wordWrapBtn').style.display = 'none';
+
+		// If we have data, render it in cards format
+		if (this.lastFilteredData && this.lastFilteredData.length > 0) {
+			this.renderCardsView(this.lastFilteredData);
+		}
 	}
 
 	showLogsView(rawLogText = '', hierarchicalGroups = null) {
@@ -61,6 +79,7 @@ class UIManager {
 		this.updateViewButtons();
 
 		document.getElementById('resultsContent').style.display = 'none';
+		document.getElementById('cardsViewContent').style.display = 'none';
 		document.getElementById('logViewContent').style.display = 'block';
 		document.getElementById('tableViewContent').style.display = 'none';
 		document.getElementById('wordWrapBtn').style.display = 'inline-block';
@@ -78,6 +97,7 @@ class UIManager {
 		this.updateViewButtons();
 
 		document.getElementById('resultsContent').style.display = 'none';
+		document.getElementById('cardsViewContent').style.display = 'none';
 		document.getElementById('logViewContent').style.display = 'none';
 		document.getElementById('tableViewContent').style.display = 'block';
 		document.getElementById('wordWrapBtn').style.display = 'none';
@@ -95,7 +115,7 @@ class UIManager {
 	}
 
 	updateViewButtons() {
-		document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+		document.querySelectorAll('.log-parser-view-btn').forEach(btn => btn.classList.remove('active'));
 		document.getElementById(`${this.currentView}ViewBtn`)?.classList.add('active');
 	}
 
@@ -148,6 +168,9 @@ class UIManager {
 			filteredData: filteredData
 		});
 
+		// Store filtered data for view switching
+		this.lastFilteredData = filteredData;
+
 		const resultsPlaceholder = document.getElementById('resultsPlaceholder');
 		const resultsContent = document.getElementById('resultsContent');
 
@@ -169,9 +192,17 @@ class UIManager {
 
 		console.log('🖥️ UI: Has filtered data, showing results content');
 		resultsPlaceholder.style.display = 'none';
-		resultsContent.style.display = 'block';
 
-		this.renderGroupedResults(filteredData);
+		// Show content based on current view
+		if (this.currentView === 'cards') {
+			resultsContent.style.display = 'none';
+			document.getElementById('cardsViewContent').style.display = 'block';
+			this.renderCardsView(filteredData);
+		} else {
+			resultsContent.style.display = 'block';
+			document.getElementById('cardsViewContent').style.display = 'none';
+			this.renderGroupedResults(filteredData);
+		}
 	}
 
 	// Render grouped results with virtual scrolling for large datasets
@@ -241,6 +272,131 @@ class UIManager {
 
 			container.appendChild(loadMoreBtn);
 		}
+	}
+
+	// Render cards view
+	renderCardsView(groupedData) {
+		const container = document.getElementById('cardsViewContent');
+		if (!container) return;
+
+		// Clear existing content but keep the operation-cards wrapper
+		const operationCards = container.querySelector('.operation-cards');
+		if (operationCards) {
+			operationCards.innerHTML = '';
+		}
+
+		if (!groupedData || groupedData.length === 0) {
+			if (operationCards) {
+				operationCards.innerHTML = '<div class="operation-card"><div class="operation-card-body"><p style="text-align: center; color: #6c757d;">No operations to display</p></div></div>';
+			}
+			return;
+		}
+
+		// Generate cards from grouped data
+		groupedData.forEach(group => {
+			const cardElement = this.createOperationCard(group);
+			operationCards.appendChild(cardElement);
+		});
+	}
+
+	createOperationCard(group) {
+		const card = document.createElement('div');
+		card.className = 'operation-card';
+
+		// Determine status based on group name or variables
+		const status = group.name.includes('FAILED') ? 'failed' : 'success';
+		const statusText = status === 'failed' ? 'Failed' : 'Success';
+
+		card.innerHTML = `
+			<div class="operation-card-header">
+				<h3 class="operation-card-title">${this.getOperationIcon(group)} "${group.name}"</h3>
+				<span class="operation-card-status ${status}">${statusText}</span>
+			</div>
+			<div class="operation-card-body">
+				${this.createOperationSections(group.variables)}
+			</div>
+			<div class="operation-card-actions">
+				<button class="operation-action-btn copy" onclick="this.copyGroup('${group.name}')">📋 Copy</button>
+				<button class="operation-action-btn view" onclick="this.viewGroup('${group.name}')">👁️ View Details</button>
+				<button class="operation-action-btn variables">🔗 Variables: ${group.variables.length}</button>
+			</div>
+		`;
+
+		return card;
+	}
+
+	getOperationIcon(group) {
+		const name = group.name.toLowerCase();
+		if (name.includes('token') || name.includes('auth')) return '🔑';
+		if (name.includes('request') || name.includes('post') || name.includes('get')) return '📡';
+		if (name.includes('response')) return '📨';
+		if (name.includes('url') || name.includes('endpoint')) return '🔗';
+		if (name.includes('test') || name.includes('verify')) return '✅';
+		if (name.includes('wait') || name.includes('time')) return '⏱️';
+		if (name.includes('generate') || name.includes('create')) return '⚡';
+		return '📋';
+	}
+
+	createOperationSections(variables) {
+		const requestVars = variables.filter(v => v.name.toLowerCase().includes('request') || 
+			v.name.toLowerCase().includes('endpoint') || 
+			v.name.toLowerCase().includes('authorization'));
+		const responseVars = variables.filter(v => v.name.toLowerCase().includes('response') || 
+			v.name.toLowerCase().includes('status') || 
+			v.type === 'Token' || 
+			v.name.toLowerCase().includes('buffer'));
+		const otherVars = variables.filter(v => !requestVars.includes(v) && !responseVars.includes(v));
+
+		let sections = '';
+
+		if (requestVars.length > 0) {
+			sections += `
+				<div class="operation-section">
+					<div class="operation-section-title request">REQUEST:</div>
+					<div class="operation-items">
+						${requestVars.map(v => this.createOperationItem(v, 'ok')).join('')}
+					</div>
+				</div>
+			`;
+		}
+
+		if (responseVars.length > 0) {
+			sections += `
+				<div class="operation-section">
+					<div class="operation-section-title response">RESPONSE:</div>
+					<div class="operation-items">
+						${responseVars.map(v => this.createOperationItem(v, v.type === 'Token' ? 'buffer' : 'verification')).join('')}
+					</div>
+				</div>
+			`;
+		}
+
+		if (otherVars.length > 0) {
+			sections += `
+				<div class="operation-section">
+					<div class="operation-section-title">VARIABLES:</div>
+					<div class="operation-items">
+						${otherVars.map(v => this.createOperationItem(v, 'buffer')).join('')}
+					</div>
+				</div>
+			`;
+		}
+
+		return sections;
+	}
+
+	createOperationItem(variable, itemType) {
+		const icon = itemType === 'ok' ? '✓' : itemType === 'buffer' ? '📋' : '🔍';
+		const truncatedValue = variable.value && variable.value.length > 50 ? 
+			variable.value.substring(0, 50) + '...' : variable.value;
+
+		return `
+			<div class="operation-item ${itemType}">
+				<span class="operation-item-icon">${icon}</span>
+				<span class="operation-item-name">"${variable.name}"</span>
+				<span class="operation-item-value ${variable.value && variable.value.length > 50 ? 'truncated' : ''}">${truncatedValue || 'Ok'}</span>
+			</div>
+		`;
 	}
 
 	createGroupElement(group, groupIndex) {
