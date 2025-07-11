@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tosca Log Parser</title>
+	<link rel="stylesheet" href="log-parser-styles.css">
+</head>
+
+<body>
+	<div class="container">
+		<div class="header">
+			<h1>📊 Tosca Log Parser</h1>
+			<p>Advanced log parsing and analysis tool</p>
+			<div class="nav-links">
+				<a href="index.html" class="nav-link">🚀 Tosca Tools</a>
+			</div>
+		</div>
+
+		<div class="main-content">
+			<!-- Input Section -->
+			<div class="input-section">
+				<div class="input-tabs">
+					<button id="pasteBtn" class="input-btn active">📝 Paste Logs</button>
+					<button id="fileBtn" class="input-btn">📁 Load File</button>
+					<button id="debugBtn" class="debug-toggle">🐛 Debug</button>
+				</div>
+
+				<div id="pasteMode" class="input-mode active">
+					<textarea id="logInput" placeholder="Paste your Tosca logs here..."></textarea>
+				</div>
+
+				<div id="fileMode" class="input-mode">
+					<input type="file" id="fileInput" accept=".json,.txt,.log" class="file-input">
+				</div>
+			</div>
+
+			<button id="parseBtn" class="parse-btn">🔄 Parse Logs</button>
+
+			<!-- Combined Header -->
+			<div id="combinedHeader" class="filters-section" style="display: none;">
+				<div class="filters-content">
+					<input type="text" id="searchFilter" placeholder="Search..." class="search-input"
+						style="width: 200px;">
+					<span class="action-buttons" style="margin-left: 15px;">
+						<button id="variablesViewBtn" class="view-btn active">📊 Variables</button>
+						<button id="logsViewBtn" class="view-btn">📋 Logs</button>
+						<button id="tableViewBtn" class="view-btn">📋 Table</button>
+						<button id="wordWrapBtn" class="view-btn" style="display: none;">📄 Wrap</button>
+						<button id="copyAllBtn" class="action-btn btn-copy">📋 Copy All</button>
+						<button id="exportBtn" class="action-btn btn-export">💾 Export JSON</button>
+					</span>
+					<span id="combinedCount" class="buffer-count" style="margin-left: auto;"></span>
+				</div>
+			</div>
+
+			<!-- Results Section -->
+			<div class="results-section">
+				<div class="results-container">
+					<div id="resultsPlaceholder" class="results-placeholder">
+						<p>📊</p>
+						<p>Parse logs to see extracted variables here</p>
+					</div>
+					<div id="resultsContent" class="results-content"></div>
+					<div id="logViewContent" class="log-view-content" style="display: none;"></div>
+					<div id="tableViewContent" class="table-view-content" style="display: none;"></div>
+				</div>
+			</div>
+
+			<!-- Debug Section -->
+			<div id="debugSection" class="debug-section">
+				<div id="debugContent" class="debug-content"></div>
+			</div>
+
+			<!-- Footer -->
+			<div class="footer">
+				<button id="clearBtn" class="btn-clear">🗑️ Clear Results</button>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Global function for toggling JSON in table view
+		function toggleTableJson(jsonId) {
+			const content = document.getElementById(jsonId);
+			const toggle = document.getElementById(jsonId + '-toggle');
+
+			if (content && toggle) {
+				const isExpanded = content.style.display !== 'none';
+
+				if (isExpanded) {
+					content.style.display = 'none';
+					toggle.textContent = '▶';
+					toggle.classList.remove('expanded');
+				} else {
+					content.style.display = 'block';
+					toggle.textContent = '▼';
+					toggle.classList.add('expanded');
+				}
+			}
+		}
+	</script>
+	<script type="module" src="log-parser-js/ToscaLogParserApp.js"></script>
+</body>
+
+</html>
