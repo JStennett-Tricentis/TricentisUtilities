@@ -1,9 +1,10 @@
 // UI Manager - Handles all user interface interactions
 class UIManager {
-	constructor() {
+	constructor(dataManager = null) {
 		this.currentView = 'variables';
 		this.wordWrapEnabled = false;
 		this.debugMode = false;
+		this.dataManager = dataManager;
 		this.setupEventListeners();
 	}
 
@@ -14,7 +15,14 @@ class UIManager {
 
 		// View buttons
 		document.getElementById('variablesViewBtn')?.addEventListener('click', () => this.showVariablesView());
-		document.getElementById('cardsViewBtn')?.addEventListener('click', () => this.showCardsView());
+		document.getElementById('cardsViewBtn')?.addEventListener('click', () => {
+			if (this.dataManager) {
+				const rawLogText = this.dataManager.getRawLogText();
+				this.showCardsView(rawLogText);
+			} else {
+				this.showCardsView();
+			}
+		});
 		document.getElementById('logsViewBtn')?.addEventListener('click', () => this.showLogsView());
 		document.getElementById('tableViewBtn')?.addEventListener('click', () => this.showTableView());
 		document.getElementById('wordWrapBtn')?.addEventListener('click', () => this.toggleWordWrap());
@@ -59,7 +67,7 @@ class UIManager {
 		document.getElementById('wordWrapBtn').style.display = 'none';
 	}
 
-	showCardsView() {
+	showCardsView(rawLogText = '', hierarchicalGroups = null) {
 		this.currentView = 'cards';
 		this.updateViewButtons();
 
@@ -69,9 +77,20 @@ class UIManager {
 		document.getElementById('tableViewContent').style.display = 'none';
 		document.getElementById('wordWrapBtn').style.display = 'none';
 
-		// If we have data, render it in cards format
-		if (this.lastFilteredData && this.lastFilteredData.length > 0) {
-			this.renderCardsView(this.lastFilteredData);
+		// If hierarchical groups are provided, use them
+		if (hierarchicalGroups && hierarchicalGroups.length > 0) {
+			this.renderCardsView(hierarchicalGroups);
+		} else if (rawLogText && this.dataManager) {
+			// Generate hierarchical groups from raw log text
+			const groups = this.dataManager.groupLogsByHierarchy(rawLogText);
+			this.renderCardsView(groups);
+		} else {
+			// Fallback: show message that parsing is needed
+			const container = document.getElementById('cardsViewContent');
+			const operationCards = container?.querySelector('.operation-cards');
+			if (operationCards) {
+				operationCards.innerHTML = '<div class="operation-card"><div class="operation-card-body"><p style="text-align: center; color: #6c757d;">Parse logs first to see test cases and operations</p></div></div>';
+			}
 		}
 	}
 
@@ -320,9 +339,42 @@ class UIManager {
 		const card = document.createElement('div');
 		card.className = 'operation-card';
 
-		// Determine status based on group name or variables
-		const status = group.name.includes('FAILED') ? 'failed' : 'success';
-		const statusText = status === 'failed' ? 'Failed' : 'Success';
+		// Determine status based on group type and content
+		let status = 'success';
+		let statusText = 'Success';
+		
+		// Check if it's a test case
+		if (group.type === 'testcase') {
+			// Look for failure indicators in the lines
+			const hasFailure = group.lines && group.lines.some(line => 
+				line && line.level === 'ERR' || 
+				(line && line.message && line.message.toLowerCase().includes('failed')) ||
+				(line && line.message && line.message.toLowerCase().includes('error'))
+			);
+			status = hasFailure ? 'failed' : 'success';
+			statusText = hasFailure ? 'Failed' : 'Passed';
+		} else {
+			// For operations, check for success/failure patterns
+			const hasSuccess = group.lines && group.lines.some(line => 
+				(line && line.message && line.message.toLowerCase().includes('succeeded')) ||
+				(line && line.message && line.message.toLowerCase().includes('success'))
+			);
+			const hasFailure = group.lines && group.lines.some(line => 
+				line && line.level === 'ERR' || 
+				(line && line.message && line.message.toLowerCase().includes('failed'))
+			);
+			
+			if (hasFailure) {
+				status = 'failed';
+				statusText = 'Failed';
+			} else if (hasSuccess) {
+				status = 'success';
+				statusText = 'Success';
+			} else {
+				status = 'info';
+				statusText = 'Info';
+			}
+		}
 
 		card.innerHTML = `
 			<div class="operation-card-header">
@@ -330,12 +382,12 @@ class UIManager {
 				<span class="operation-card-status ${status}">${statusText}</span>
 			</div>
 			<div class="operation-card-body">
-				${this.createOperationSections(group.variables)}
+				${this.createOperationSections(group)}
 			</div>
 			<div class="operation-card-actions">
 				<button class="operation-action-btn copy" onclick="this.copyGroup('${group.name}')">📋 Copy</button>
 				<button class="operation-action-btn view" onclick="this.viewGroup('${group.name}')">👁️ View Details</button>
-				<button class="operation-action-btn variables">🔗 Variables: ${group.variables.length}</button>
+				<button class="operation-action-btn variables">📊 Lines: ${group.lines ? group.lines.length : 0}</button>
 			</div>
 		`;
 
@@ -354,49 +406,76 @@ class UIManager {
 		return '📋';
 	}
 
-	createOperationSections(variables) {
-		const requestVars = variables.filter(v => v.name.toLowerCase().includes('request') ||
-			v.name.toLowerCase().includes('endpoint') ||
-			v.name.toLowerCase().includes('authorization'));
-		const responseVars = variables.filter(v => v.name.toLowerCase().includes('response') ||
-			v.name.toLowerCase().includes('status') ||
-			v.type === 'Token' ||
-			v.name.toLowerCase().includes('buffer'));
-		const otherVars = variables.filter(v => !requestVars.includes(v) && !responseVars.includes(v));
+	getLogLevelIcon(level) {
+		switch (level) {
+			case 'ERR': return '❌';
+			case 'WRN': return '⚠️';
+			case 'INF': return 'ℹ️';
+			case 'DBG': return '🔍';
+			default: return '📄';
+		}
+	}
 
+	createOperationSections(group) {
 		let sections = '';
 
-		if (requestVars.length > 0) {
+		// Show test case info if available
+		if (group.type === 'testcase') {
 			sections += `
 				<div class="operation-section">
-					<div class="operation-section-title request">REQUEST:</div>
+					<div class="operation-section-title">TEST CASE INFO:</div>
 					<div class="operation-items">
-						${requestVars.map(v => this.createOperationItem(v, 'ok')).join('')}
+						<div class="operation-item">
+							<span class="operation-item-icon">🕐</span>
+							<span class="operation-item-label">Started:</span>
+							<span class="operation-item-value">${group.timestamp || 'N/A'}</span>
+						</div>
+						<div class="operation-item">
+							<span class="operation-item-icon">📋</span>
+							<span class="operation-item-label">Total Steps:</span>
+							<span class="operation-item-value">${group.subGroups ? group.subGroups.length : 0}</span>
+						</div>
 					</div>
 				</div>
 			`;
-		}
 
-		if (responseVars.length > 0) {
-			sections += `
-				<div class="operation-section">
-					<div class="operation-section-title response">RESPONSE:</div>
-					<div class="operation-items">
-						${responseVars.map(v => this.createOperationItem(v, v.type === 'Token' ? 'buffer' : 'verification')).join('')}
+			// Show sub-operations if any
+			if (group.subGroups && group.subGroups.length > 0) {
+				sections += `
+					<div class="operation-section">
+						<div class="operation-section-title">OPERATIONS:</div>
+						<div class="operation-items">
+							${group.subGroups.slice(0, 5).map(subGroup => `
+								<div class="operation-item">
+									<span class="operation-item-icon">${this.getOperationIcon(subGroup)}</span>
+									<span class="operation-item-label">${subGroup.name}</span>
+									<span class="operation-item-value">${subGroup.lines ? subGroup.lines.length : 0} lines</span>
+								</div>
+							`).join('')}
+							${group.subGroups.length > 5 ? `<div class="operation-item"><span style="color: #6c757d;">... and ${group.subGroups.length - 5} more operations</span></div>` : ''}
+						</div>
 					</div>
-				</div>
-			`;
-		}
-
-		if (otherVars.length > 0) {
-			sections += `
-				<div class="operation-section">
-					<div class="operation-section-title">VARIABLES:</div>
-					<div class="operation-items">
-						${otherVars.map(v => this.createOperationItem(v, 'buffer')).join('')}
+				`;
+			}
+		} else {
+			// For operations, show recent log messages
+			if (group.lines && group.lines.length > 0) {
+				const recentLines = group.lines.slice(-3); // Show last 3 lines
+				sections += `
+					<div class="operation-section">
+						<div class="operation-section-title">RECENT MESSAGES:</div>
+						<div class="operation-items">
+							${recentLines.filter(line => line && line.message).map(line => `
+								<div class="operation-item">
+									<span class="operation-item-icon">${this.getLogLevelIcon(line.level || 'INF')}</span>
+									<span class="operation-item-label">${line.level || 'INF'}:</span>
+									<span class="operation-item-value">${(line.message || '').substring(0, 80)}${(line.message || '').length > 80 ? '...' : ''}</span>
+								</div>
+							`).join('')}
+						</div>
 					</div>
-				</div>
-			`;
+				`;
+			}
 		}
 
 		return sections;

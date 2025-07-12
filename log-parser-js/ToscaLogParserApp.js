@@ -6,8 +6,8 @@ import DataManager from './data/DataManager.js';
 class ToscaLogParserApp {
 	constructor() {
 		this.logParser = new LogParser();
-		this.uiManager = new UIManager();
 		this.dataManager = new DataManager();
+		this.uiManager = new UIManager(this.dataManager);
 		this.debugMode = false;
 
 		this.setupEventHandlers();

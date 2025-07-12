@@ -1,9 +1,9 @@
-// Default configuration from config.json
+// Default configuration from config.fusionx.json
 let config = {};
-let currentConfigFile = 'config.json';
+let currentConfigFile = 'config.fusionx.json';
 
 // Load config from specified file
-async function loadConfigFromFile(filename = 'config.json') {
+async function loadConfigFromFile(filename = 'config.fusionx.json') {
 	try {
 		const response = await fetch(`./${filename}`);
 		if (response.ok) {
@@ -257,7 +257,7 @@ async function initConfig() {
 	const fileLoaded = await loadConfigFromFile(currentConfigFile);
 
 	if (!fileLoaded) {
-		// Fallback to localStorage if config.json fails
+		// Fallback to localStorage if config file fails
 		const saved = localStorage.getItem('tricentis-nav-config');
 		if (saved) {
 			try {
