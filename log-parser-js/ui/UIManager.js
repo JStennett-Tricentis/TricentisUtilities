@@ -315,6 +315,10 @@ class UIManager {
 		const container = document.getElementById('cardsViewContent');
 		if (!container) return;
 
+		// Debug: Log the grouped data structure
+		console.log('🎴 Cards View - Grouped Data:', groupedData);
+		console.log('🎴 Cards View - Number of groups:', groupedData ? groupedData.length : 0);
+
 		// Clear existing content but keep the operation-cards wrapper
 		const operationCards = container.querySelector('.operation-cards');
 		if (operationCards) {
@@ -328,16 +332,51 @@ class UIManager {
 			return;
 		}
 
-		// Generate cards from grouped data
-		groupedData.forEach(group => {
-			const cardElement = this.createOperationCard(group);
+		// Generate cards from grouped data - flatten all levels
+		const allOperations = this.flattenOperations(groupedData);
+		console.log('🎴 Cards View - Flattened operations:', allOperations.length);
+		
+		allOperations.forEach(operation => {
+			const cardElement = this.createOperationCard(operation);
 			operationCards.appendChild(cardElement);
 		});
+	}
+
+	// Helper method to recursively flatten all operations from hierarchical groups
+	flattenOperations(groups, maxDepth = 3, currentDepth = 0) {
+		const flattened = [];
+		
+		if (!groups || currentDepth >= maxDepth) {
+			return flattened;
+		}
+		
+		groups.forEach(group => {
+			// Add the current group with depth information
+			const groupWithDepth = { ...group, depth: currentDepth };
+			flattened.push(groupWithDepth);
+			
+			// Recursively add subgroups
+			if (group.subGroups && group.subGroups.length > 0) {
+				const subOperations = this.flattenOperations(group.subGroups, maxDepth, currentDepth + 1);
+				flattened.push(...subOperations);
+			}
+		});
+		
+		return flattened;
 	}
 
 	createOperationCard(group) {
 		const card = document.createElement('div');
 		card.className = 'operation-card';
+		
+		// Add depth-based styling
+		if (group.depth > 0) {
+			card.style.marginLeft = `${group.depth * 20}px`;
+			card.style.borderLeft = `3px solid ${group.depth === 1 ? '#007bff' : '#6c757d'}`;
+		}
+
+		// Debug: Log each group being processed
+		console.log('🎴 Creating card for group:', group.name, 'Type:', group.type, 'SubGroups:', group.subGroups?.length || 0, 'Lines:', group.lines?.length || 0);
 
 		// Determine status based on group type and content
 		let status = 'success';
@@ -396,13 +435,34 @@ class UIManager {
 
 	getOperationIcon(group) {
 		const name = group.name.toLowerCase();
+		
+		// Test case icons
+		if (group.type === 'testcase') return '🧪';
+		
+		// Browser/UI operations
+		if (name.includes('browser') || name.includes('open')) return '🌐';
+		if (name.includes('click') || name.includes('button')) return '👆';
+		if (name.includes('type') || name.includes('input') || name.includes('text')) return '⌨️';
+		if (name.includes('wait') || name.includes('sleep')) return '⏱️';
+		if (name.includes('screenshot') || name.includes('capture')) return '📸';
+		
+		// API/Network operations
 		if (name.includes('token') || name.includes('auth')) return '🔑';
 		if (name.includes('request') || name.includes('post') || name.includes('get')) return '📡';
 		if (name.includes('response')) return '📨';
 		if (name.includes('url') || name.includes('endpoint')) return '🔗';
-		if (name.includes('test') || name.includes('verify')) return '✅';
-		if (name.includes('wait') || name.includes('time')) return '⏱️';
+		
+		// Validation/Testing
+		if (name.includes('verify') || name.includes('assert') || name.includes('check')) return '✅';
+		if (name.includes('compare') || name.includes('match')) return '🔍';
+		
+		// Data operations
+		if (name.includes('download') || name.includes('save')) return '💾';
+		if (name.includes('upload') || name.includes('load')) return '📤';
 		if (name.includes('generate') || name.includes('create')) return '⚡';
+		if (name.includes('delete') || name.includes('remove')) return '🗑️';
+		
+		// Default
 		return '📋';
 	}
 
