@@ -83,7 +83,7 @@ class UIManager {
 		document.getElementById('cardsViewContent').style.display = 'none';
 		document.getElementById('logViewContent').style.display = 'block';
 		document.getElementById('tableViewContent').style.display = 'none';
-		document.getElementById('wordWrapBtn').style.display = 'inline-block';
+		document.getElementById('wordWrapBtn').style.display = '';
 
 		// Get search filter if active
 		const searchFilter = document.getElementById('searchFilter');

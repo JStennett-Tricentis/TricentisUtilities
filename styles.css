@@ -192,9 +192,9 @@ body {
 	gap: 5px;
 	align-items: center;
 	flex-shrink: 0;
-	min-width: 450px;
-	max-width: 450px;
-	width: 450px;
+	min-width: 550px;
+	max-width: 550px;
+	width: 550px;
 }
 
 .log-parser-action-controls {
@@ -224,6 +224,8 @@ body {
 	cursor: pointer;
 	font-size: 0.9em;
 	transition: background 0.2s;
+	flex-shrink: 0;
+	white-space: nowrap;
 }
 
 .log-parser-view-btn.active {
