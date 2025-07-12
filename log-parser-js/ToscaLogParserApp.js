@@ -30,6 +30,9 @@ class ToscaLogParserApp {
 
 		// Debug toggle
 		document.getElementById('debugBtn')?.addEventListener('click', () => this.toggleDebug());
+		
+		// Debug examples dropdown
+		document.getElementById('debugExamplesSelect')?.addEventListener('change', (e) => this.loadDebugExample(e.target.value));
 
 		// View switching buttons
 		document.getElementById('variablesViewBtn')?.addEventListener('click', () => {
@@ -348,6 +351,52 @@ class ToscaLogParserApp {
 			if (debugContent) {
 				debugContent.textContent = this.logParser.debugLogs.slice(-50).join('\n');
 			}
+		}
+	}
+
+	// Load debug example files
+	async loadDebugExample(filename) {
+		if (!filename) return;
+		
+		try {
+			const response = await fetch(`debug/${filename}`);
+			if (!response.ok) {
+				throw new Error(`Failed to load ${filename}: ${response.statusText}`);
+			}
+			
+			const logContent = await response.text();
+			
+			// Clear any existing content and set the new log content
+			const logInput = document.getElementById('logInput');
+			if (logInput) {
+				logInput.value = logContent;
+				
+				// Switch to paste mode if not already active
+				const pasteBtn = document.getElementById('pasteBtn');
+				const fileBtn = document.getElementById('fileBtn');
+				const pasteMode = document.getElementById('pasteMode');
+				const fileMode = document.getElementById('fileMode');
+				
+				if (pasteBtn && fileBtn && pasteMode && fileMode) {
+					pasteBtn.classList.add('active');
+					fileBtn.classList.remove('active');
+					pasteMode.classList.add('active');
+					fileMode.classList.remove('active');
+				}
+				
+				// Auto-parse the loaded content
+				this.parseContent();
+			}
+			
+			// Reset the dropdown
+			const select = document.getElementById('debugExamplesSelect');
+			if (select) {
+				select.value = '';
+			}
+			
+		} catch (error) {
+			console.error('Failed to load debug example:', error);
+			alert(`Failed to load debug example: ${error.message}`);
 		}
 	}
 

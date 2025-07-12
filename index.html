@@ -22,11 +22,11 @@
 
 		<div class="content">
 			<div class="tabs">
-				<button class="tab active" onclick="switchTab('logparser')">📊 Log Parser</button>
-				<button class="tab" onclick="switchTab('navigation')">🎯 Navigation</button>
-				<button class="tab" onclick="switchTab('jira')">🎫 JIRA</button>
-				<button class="tab" onclick="switchTab('bookmarklet')">📌 Bookmarklet</button>
-				<button class="tab" onclick="switchTab('config')">⚙️ Configure</button>
+				<button type="button" class="tab active" onclick="switchTab('logparser')">📊 Log Parser</button>
+				<button type="button" class="tab" onclick="switchTab('navigation')">🎯 Navigation</button>
+				<button type="button" class="tab" onclick="switchTab('jira')">🎫 JIRA</button>
+				<button type="button" class="tab" onclick="switchTab('bookmarklet')">📌 Bookmarklet</button>
+				<button type="button" class="tab" onclick="switchTab('config')">⚙️ Configure</button>
 			</div>
 
 			<!-- Log Parser Tab -->
@@ -39,9 +39,16 @@
 					<!-- Input Section -->
 					<div class="log-parser-input-section">
 						<div class="log-parser-input-tabs">
-							<button id="pasteBtn" class="log-parser-input-btn active">📝 Paste Logs</button>
-							<button id="fileBtn" class="log-parser-input-btn">📁 Load File</button>
-							<button id="debugBtn" class="log-parser-debug-toggle">🐛 Debug</button>
+							<button type="button" id="pasteBtn" class="log-parser-input-btn active">📝 Paste Logs</button>
+							<button type="button" id="fileBtn" class="log-parser-input-btn">📁 Load File</button>
+							<select id="debugExamplesSelect" class="log-parser-debug-examples" title="Load debug log examples for testing">
+								<option value="">📄 Load Debug Example</option>
+								<option value="logs-simple-example.txt">Simple Example</option>
+								<option value="logs-cleaned-up.txt">Cleaned Up</option>
+								<option value="logs-complete-logs-example.txt">Complete Example</option>
+								<option value="logs-formating-idea.txt">Formatting Idea</option>
+							</select>
+							<button type="button" id="debugBtn" class="log-parser-debug-toggle">🐛 Debug</button>
 						</div>
 
 						<div id="pasteMode" class="log-parser-input-mode active">
@@ -50,26 +57,26 @@
 						</div>
 
 						<div id="fileMode" class="log-parser-input-mode">
-							<input type="file" id="fileInput" accept=".json,.txt,.log" class="log-parser-file-input">
+							<input type="file" id="fileInput" accept=".json,.txt,.log" class="log-parser-file-input" title="Select a log file to upload and parse">
 						</div>
 					</div>
 
-					<button id="parseBtn" class="log-parser-parse-button">🔄 Parse Logs</button>
+					<button type="button" id="parseBtn" class="log-parser-parse-button">🔄 Parse Logs</button>
 
 					<!-- Combined Header -->
 					<div id="combinedHeader" class="log-parser-filters-section" style="display: none;">
 						<div class="log-parser-filters-content">
 
 							<div class="log-parser-view-controls">
-								<button id="variablesViewBtn" class="log-parser-view-btn active">📊 Variables</button>
-								<button id="cardsViewBtn" class="log-parser-view-btn">🗂️ Cards</button>
-								<button id="logsViewBtn" class="log-parser-view-btn">📋 Logs</button>
-								<button id="tableViewBtn" class="log-parser-view-btn">📋 Table</button>
-								<button id="wordWrapBtn" class="log-parser-view-btn" style="display: none;">📄 Wrap</button>
+								<button type="button" id="variablesViewBtn" class="log-parser-view-btn active">📊 Variables</button>
+								<button type="button" id="cardsViewBtn" class="log-parser-view-btn">🗂️ Cards</button>
+								<button type="button" id="logsViewBtn" class="log-parser-view-btn">📋 Logs</button>
+								<button type="button" id="tableViewBtn" class="log-parser-view-btn">📋 Table</button>
+								<button type="button" id="wordWrapBtn" class="log-parser-view-btn" style="display: none;">📄 Wrap</button>
 							</div>
 							<div class="log-parser-action-controls">
-								<button id="copyAllBtn" class="log-parser-action-btn btn-copy">📋 Copy All</button>
-								<button id="exportBtn" class="log-parser-action-btn btn-export">💾 Export JSON</button>
+								<button type="button" id="copyAllBtn" class="log-parser-action-btn btn-copy">📋 Copy All</button>
+								<button type="button" id="exportBtn" class="log-parser-action-btn btn-export">💾 Export JSON</button>
 							</div>
 							<div id="combinedCount" class="log-parser-buffer-count"></div>
 							<input type="text" id="searchFilter" placeholder="Search..." class="search-input">
@@ -102,7 +109,7 @@
 
 					<!-- Footer -->
 					<div class="log-parser-footer">
-						<button id="clearBtn" class="btn-warning">🗑️ Clear Results</button>
+						<button type="button" id="clearBtn" class="btn-warning">🗑️ Clear Results</button>
 					</div>
 				</div>
 			</div>
@@ -150,8 +157,8 @@
 					</div>
 
 					<div class="button-group">
-						<button class="btn-primary" onclick="navigationToUrl()">🔗 Open in Current Tab</button>
-						<button class="btn-secondary" onclick="navigationToUrl(true)">🆕 Open in New Tab</button>
+						<button type="button" class="btn-primary" onclick="navigationToUrl()">🔗 Open in Current Tab</button>
+						<button type="button" class="btn-secondary" onclick="navigationToUrl(true)">🆕 Open in New Tab</button>
 					</div>
 				</div>
 			</div>
@@ -172,8 +179,8 @@
 					</div>
 
 					<div class="button-group">
-						<button class="btn-primary" onclick="openJiraTicket()">🔗 Open in Current Tab</button>
-						<button class="btn-secondary" onclick="openJiraTicket(true)">🆕 Open in New Tab</button>
+						<button type="button" class="btn-primary" onclick="openJiraTicket()">🔗 Open in Current Tab</button>
+						<button type="button" class="btn-secondary" onclick="openJiraTicket(true)">🆕 Open in New Tab</button>
 					</div>
 				</div>
 
@@ -244,8 +251,8 @@
 								bulk changes:</p>
 							<textarea id="configJson" placeholder="Configuration will appear here..."></textarea>
 							<div class="button-group">
-								<button class="btn-info" onclick="loadConfig()">📥 Load from JSON</button>
-								<button class="btn-warning" onclick="resetToDefault()">🔄 Reset to Default</button>
+								<button type="button" class="btn-info" onclick="loadConfig()">📥 Load from JSON</button>
+								<button type="button" class="btn-warning" onclick="resetToDefault()">🔄 Reset to Default</button>
 							</div>
 							<div id="configStatus"></div>
 						</div>
@@ -264,7 +271,7 @@
 								<input type="text" id="newEnvKey" placeholder="e.g., my-dev" />
 							</div>
 
-							<button class="btn-secondary" onclick="addEnvironment()"
+							<button type="button" class="btn-secondary" onclick="addEnvironment()"
 								style="width: 100%; margin-bottom: 20px;">➕ Add Environment</button>
 
 							<div class="form-group">
@@ -284,7 +291,7 @@
 								<input type="text" id="newTenantKey" placeholder="e.g., fusionx" />
 							</div>
 
-							<button class="btn-secondary" onclick="addTenant()"
+							<button type="button" class="btn-secondary" onclick="addTenant()"
 								style="width: 100%; margin-bottom: 20px;">➕ Add Tenant</button>
 
 							<div class="form-group">
@@ -315,7 +322,7 @@
 								<input type="text" id="newUriPath" placeholder="e.g., /_admin/dashboard" />
 							</div>
 
-							<button class="btn-secondary" onclick="addSharedUri()"
+							<button type="button" class="btn-secondary" onclick="addSharedUri()"
 								style="width: 100%; margin-bottom: 20px;">➕ Add Workspace</button>
 
 							<div id="configEditor">
