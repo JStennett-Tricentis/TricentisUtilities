@@ -39,6 +39,14 @@ class ToscaLogParserApp {
 			this.uiManager.showVariablesView();
 			this.refreshCurrentView();
 		});
+		
+		// Variables view toggle buttons
+		document.getElementById('organizedViewBtn')?.addEventListener('click', () => {
+			this.uiManager.switchVariablesViewMode('organized');
+		});
+		document.getElementById('originalViewBtn')?.addEventListener('click', () => {
+			this.uiManager.switchVariablesViewMode('original');
+		});
 		document.getElementById('logsViewBtn')?.addEventListener('click', () => {
 			this.uiManager.showLogsView(this.dataManager.getRawLogText());
 		});

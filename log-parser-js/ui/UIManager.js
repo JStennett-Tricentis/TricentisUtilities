@@ -2,6 +2,7 @@
 class UIManager {
 	constructor(dataManager = null) {
 		this.currentView = 'variables';
+		this.variablesViewMode = 'organized'; // 'organized' or 'original'
 		this.wordWrapEnabled = false;
 		this.debugMode = false;
 		this.dataManager = dataManager;
@@ -26,6 +27,10 @@ class UIManager {
 		document.getElementById('logsViewBtn')?.addEventListener('click', () => this.showLogsView());
 		document.getElementById('tableViewBtn')?.addEventListener('click', () => this.showTableView());
 		document.getElementById('wordWrapBtn')?.addEventListener('click', () => this.toggleWordWrap());
+
+		// Variables view toggle buttons
+		document.getElementById('organizedViewBtn')?.addEventListener('click', () => this.switchVariablesViewMode('organized'));
+		document.getElementById('originalViewBtn')?.addEventListener('click', () => this.switchVariablesViewMode('original'));
 
 		// Action buttons
 		document.getElementById('copyAllBtn')?.addEventListener('click', () => this.onCopyAll());
@@ -59,12 +64,22 @@ class UIManager {
 	showVariablesView() {
 		this.currentView = 'variables';
 		this.updateViewButtons();
+		this.updateVariablesViewToggle();
 
-		document.getElementById('resultsContent').style.display = 'block';
+		// Show/hide the appropriate content based on variables view mode
+		if (this.variablesViewMode === 'organized') {
+			document.getElementById('resultsContent').style.display = 'block';
+			document.getElementById('originalViewContent').style.display = 'none';
+		} else {
+			document.getElementById('resultsContent').style.display = 'none';
+			document.getElementById('originalViewContent').style.display = 'block';
+		}
+
 		document.getElementById('cardsViewContent').style.display = 'none';
 		document.getElementById('logViewContent').style.display = 'none';
 		document.getElementById('tableViewContent').style.display = 'none';
 		document.getElementById('wordWrapBtn').style.display = 'none';
+		document.getElementById('variablesViewToggle').style.display = 'flex';
 	}
 
 	showCardsView(rawLogText = '', hierarchicalGroups = null) {
@@ -72,10 +87,12 @@ class UIManager {
 		this.updateViewButtons();
 
 		document.getElementById('resultsContent').style.display = 'none';
+		document.getElementById('originalViewContent').style.display = 'none';
 		document.getElementById('cardsViewContent').style.display = 'block';
 		document.getElementById('logViewContent').style.display = 'none';
 		document.getElementById('tableViewContent').style.display = 'none';
 		document.getElementById('wordWrapBtn').style.display = 'none';
+		document.getElementById('variablesViewToggle').style.display = 'none';
 
 		// If hierarchical groups are provided, use them
 		if (hierarchicalGroups && hierarchicalGroups.length > 0) {
@@ -99,10 +116,12 @@ class UIManager {
 		this.updateViewButtons();
 
 		document.getElementById('resultsContent').style.display = 'none';
+		document.getElementById('originalViewContent').style.display = 'none';
 		document.getElementById('cardsViewContent').style.display = 'none';
 		document.getElementById('logViewContent').style.display = 'block';
 		document.getElementById('tableViewContent').style.display = 'none';
 		document.getElementById('wordWrapBtn').style.display = '';
+		document.getElementById('variablesViewToggle').style.display = 'none';
 
 		// Get search filter if active
 		const searchFilter = document.getElementById('searchFilter');
@@ -117,10 +136,12 @@ class UIManager {
 		this.updateViewButtons();
 
 		document.getElementById('resultsContent').style.display = 'none';
+		document.getElementById('originalViewContent').style.display = 'none';
 		document.getElementById('cardsViewContent').style.display = 'none';
 		document.getElementById('logViewContent').style.display = 'none';
 		document.getElementById('tableViewContent').style.display = 'block';
 		document.getElementById('wordWrapBtn').style.display = 'none';
+		document.getElementById('variablesViewToggle').style.display = 'none';
 
 		// Get search filter if active
 		const searchFilter = document.getElementById('searchFilter');
@@ -133,6 +154,25 @@ class UIManager {
 	updateViewButtons() {
 		document.querySelectorAll('.log-parser-view-btn').forEach(btn => btn.classList.remove('active'));
 		document.getElementById(`${this.currentView}ViewBtn`)?.classList.add('active');
+	}
+
+	switchVariablesViewMode(mode) {
+		this.variablesViewMode = mode;
+		this.updateVariablesViewToggle();
+		
+		// Update the display based on the new mode
+		if (this.currentView === 'variables') {
+			this.showVariablesView();
+			// Re-render the current data in the new mode
+			if (this.lastFilteredData) {
+				this.displayResults(this.lastFilteredData);
+			}
+		}
+	}
+
+	updateVariablesViewToggle() {
+		document.querySelectorAll('.log-parser-view-toggle-btn').forEach(btn => btn.classList.remove('active'));
+		document.getElementById(`${this.variablesViewMode}ViewBtn`)?.classList.add('active');
 	}
 
 	toggleWordWrap() {
@@ -222,13 +262,176 @@ class UIManager {
 		// Show content based on current view
 		if (this.currentView === 'cards') {
 			resultsContent.style.display = 'none';
+			document.getElementById('originalViewContent').style.display = 'none';
 			document.getElementById('cardsViewContent').style.display = 'block';
+			document.getElementById('variablesViewToggle').style.display = 'none';
 			this.renderCardsView(filteredData);
+		} else if (this.currentView === 'variables') {
+			document.getElementById('cardsViewContent').style.display = 'none';
+			document.getElementById('variablesViewToggle').style.display = 'flex';
+			
+			if (this.variablesViewMode === 'organized') {
+				resultsContent.style.display = 'block';
+				document.getElementById('originalViewContent').style.display = 'none';
+				this.renderGroupedResults(filteredData);
+			} else {
+				resultsContent.style.display = 'none';
+				document.getElementById('originalViewContent').style.display = 'block';
+				this.renderOriginalView(filteredData);
+			}
 		} else {
 			resultsContent.style.display = 'block';
+			document.getElementById('originalViewContent').style.display = 'none';
 			document.getElementById('cardsViewContent').style.display = 'none';
+			document.getElementById('variablesViewToggle').style.display = 'none';
 			this.renderGroupedResults(filteredData);
 		}
+	}
+
+	// Render original chronological view
+	renderOriginalView(groupedData) {
+		const container = document.getElementById('originalViewContent');
+		if (!container) return;
+
+		// Clear existing content
+		container.innerHTML = '';
+
+		// Flatten all variables from all groups and sort by line number
+		const allVariables = [];
+		groupedData.forEach(group => {
+			if (group.variables) {
+				group.variables.forEach(variable => {
+					allVariables.push({
+						...variable,
+						groupName: group.name,
+						groupTimestamp: group.timestamp
+					});
+				});
+			}
+		});
+
+		// Sort by line number to preserve chronological order
+		allVariables.sort((a, b) => a.line - b.line);
+
+		if (this.debugMode) {
+			console.log('🖥️ UI: Rendering original view with', allVariables.length, 'variables');
+		}
+
+		if (allVariables.length === 0) {
+			container.innerHTML = '<div class="no-variables">No variables found</div>';
+			return;
+		}
+
+		// Create a single table with all variables in chronological order
+		const tableHTML = this.createOriginalViewTable(allVariables);
+		container.innerHTML = tableHTML;
+	}
+
+	createOriginalViewTable(variables) {
+		let html = `
+			<div class="original-view-header">
+				<h3>📅 Variables in Chronological Order</h3>
+				<p>Showing ${variables.length} variables in the order they appeared in the logs</p>
+			</div>
+			<table class="variable-table original-view-table">
+				<thead>
+					<tr>
+						<th>Line</th>
+						<th>Name</th>
+						<th>Value</th>
+						<th>Type</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+		`;
+
+		variables.forEach((variable, index) => {
+			html += this.createOriginalViewRow(variable, index);
+		});
+
+		html += '</tbody></table>';
+		return html;
+	}
+
+	createOriginalViewRow(variable, index) {
+		const typeClass = this.getTypeClass(variable.type);
+		const typeLabel = this.getTypeLabel(variable.type);
+		
+		let valueDisplay = '';
+		let actionButtons = '';
+
+		if (variable.type === 'JSON') {
+			valueDisplay = this.createJSONDisplayWithSyntaxHighlighting(variable);
+			actionButtons = `
+				<button onclick="window.app.copyForPostman('${this.escapeForJS(variable.value)}')" class="var-btn var-btn-postman" title="Copy for Postman">🚀</button>
+				<button onclick="window.app.copyToClipboard('${this.escapeForJS(variable.value)}')" class="var-btn var-btn-copy" title="Copy Raw">📄</button>
+			`;
+		} else if (variable.type === 'URL') {
+			valueDisplay = `<a href="${this.escapeHtml(variable.value)}" target="_blank" class="url-link original-view-url">${this.escapeHtml(variable.value)}</a>`;
+			actionButtons = `
+				<button onclick="window.app.copyToClipboard('${this.escapeForJS(variable.value)}')" class="var-btn var-btn-copy" title="Copy URL">📋</button>
+				<button onclick="window.open('${this.escapeForJS(variable.value)}', '_blank')" class="var-btn var-btn-view" title="Open URL">🔗</button>
+			`;
+		} else if (variable.type === 'Token') {
+			// Show first 15 characters of Bearer token
+			// Debug: Always log token info to help diagnose the issue
+			console.log('🔍 Token Debug:', {
+				name: variable.name,
+				value: variable.value,
+				valueLength: variable.value?.length,
+				first15: variable.value?.substring(0, 15)
+			});
+			const displayValue = variable.value.substring(0, 15) + '...';
+			valueDisplay = `<span class="variable-value token-value original-view-token">${this.escapeHtml(displayValue)}</span>`;
+			actionButtons = `
+				<button onclick="window.app.copyToClipboard('${this.escapeForJS(variable.value)}')" class="var-btn var-btn-copy" title="Copy Token">📋</button>
+				<button onclick="window.app.showFullValue('${this.escapeForJS(variable.value)}', '${this.escapeForJS(variable.name)}', ${variable.line})" class="var-btn var-btn-view" title="View Full">👁️</button>
+			`;
+		} else if (variable.type === 'ID') {
+			const displayValue = variable.value.length > 100 ?
+				variable.value.substring(0, 100) + '...' : variable.value;
+			valueDisplay = `<span class="variable-value id-value original-view-id">${this.escapeHtml(displayValue)}</span>`;
+			actionButtons = `
+				<button onclick="window.app.copyToClipboard('${this.escapeForJS(variable.value)}')" class="var-btn var-btn-copy" title="Copy Value">📋</button>
+				<button onclick="window.app.showFullValue('${this.escapeForJS(variable.value)}', '${this.escapeForJS(variable.name)}', ${variable.line})" class="var-btn var-btn-view" title="View Full">👁️</button>
+			`;
+		} else if (variable.type === 'Timestamp') {
+			valueDisplay = `<span class="variable-value timestamp-value original-view-timestamp">${this.escapeHtml(variable.value)}</span>`;
+			actionButtons = `
+				<button onclick="window.app.copyToClipboard('${this.escapeForJS(variable.value)}')" class="var-btn var-btn-copy" title="Copy Value">📋</button>
+				<button onclick="window.app.showFullValue('${this.escapeForJS(variable.value)}', '${this.escapeForJS(variable.name)}', ${variable.line})" class="var-btn var-btn-view" title="View Full">👁️</button>
+			`;
+		} else {
+			const displayValue = variable.value.length > 100 ?
+				variable.value.substring(0, 100) + '...' : variable.value;
+			valueDisplay = `<span class="variable-value original-view-buffer">${this.escapeHtml(displayValue)}</span>`;
+			actionButtons = `
+				<button onclick="window.app.copyToClipboard('${this.escapeForJS(variable.value)}')" class="var-btn var-btn-copy" title="Copy Value">📋</button>
+				<button onclick="window.app.showFullValue('${this.escapeForJS(variable.value)}', '${this.escapeForJS(variable.name)}', ${variable.line})" class="var-btn var-btn-view" title="View Full">👁️</button>
+			`;
+		}
+
+		const rowClass = variable.type === 'JSON' ? 'json-row' : '';
+
+		return `
+			<tr class="${rowClass}">
+				<td class="line-number">${variable.line}</td>
+				<td class="variable-name">${this.escapeHtml(variable.name)}</td>
+				<td class="variable-value-cell">${valueDisplay}</td>
+				<td><span class="type-badge ${typeClass}">${typeLabel}</span></td>
+				<td class="var-actions"><div class="var-actions">${actionButtons}</div></td>
+			</tr>
+		`;
+	}
+
+	createJSONDisplayWithSyntaxHighlighting(variable) {
+		const formatted = this.formatJSONWithHighlighting(variable.value);
+		return `<div class="json-container-original">
+			<div class="json-original-display">
+				<pre class="json-formatted-original">${formatted}</pre>
+			</div>
+		</div>`;
 	}
 
 	// Render grouped results with virtual scrolling for large datasets
@@ -777,9 +980,6 @@ class UIManager {
 		const combinedCount = document.getElementById('combinedCount');
 		if (!combinedCount || !parsedData.length) return;
 
-		const minLine = Math.min(...parsedData.map(item => item.line));
-		const maxLine = Math.max(...parsedData.map(item => item.line));
-
 		const jsonCount = parsedData.filter(item => item.type === 'JSON').length;
 		const urlCount = parsedData.filter(item => item.type === 'URL').length;
 		const tokenCount = parsedData.filter(item => item.type === 'Token').length;
@@ -788,7 +988,7 @@ class UIManager {
 		if (jsonCount > 0) summary += ` • ${jsonCount} JSON Payloads`;
 		if (urlCount > 0) summary += ` • ${urlCount} URLs`;
 		if (tokenCount > 0) summary += ` • ${tokenCount} Tokens`;
-		summary += ` • Lines ${minLine}-${maxLine}`;
+		// Line range removed per user request
 
 		combinedCount.textContent = summary;
 		document.getElementById('combinedHeader').style.display = 'block';

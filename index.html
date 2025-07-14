@@ -39,9 +39,11 @@
 					<!-- Input Section -->
 					<div class="log-parser-input-section">
 						<div class="log-parser-input-tabs">
-							<button type="button" id="pasteBtn" class="log-parser-input-btn active">📝 Paste Logs</button>
+							<button type="button" id="pasteBtn" class="log-parser-input-btn active">📝 Paste
+								Logs</button>
 							<button type="button" id="fileBtn" class="log-parser-input-btn">📁 Load File</button>
-							<select id="debugExamplesSelect" class="log-parser-debug-examples" title="Load debug log examples for testing">
+							<select id="debugExamplesSelect" class="log-parser-debug-examples"
+								title="Load debug log examples for testing">
 								<option value="">📄 Load Debug Example</option>
 								<option value="logs-simple-example.txt">Simple Example</option>
 								<option value="logs-cleaned-up.txt">Cleaned Up</option>
@@ -57,7 +59,8 @@
 						</div>
 
 						<div id="fileMode" class="log-parser-input-mode">
-							<input type="file" id="fileInput" accept=".json,.txt,.log" class="log-parser-file-input" title="Select a log file to upload and parse">
+							<input type="file" id="fileInput" accept=".json,.txt,.log" class="log-parser-file-input"
+								title="Select a log file to upload and parse">
 						</div>
 					</div>
 
@@ -68,15 +71,26 @@
 						<div class="log-parser-filters-content">
 
 							<div class="log-parser-view-controls">
-								<button type="button" id="variablesViewBtn" class="log-parser-view-btn active">📊 Variables</button>
+								<button type="button" id="variablesViewBtn" class="log-parser-view-btn active">📊
+									Variables</button>
 								<button type="button" id="cardsViewBtn" class="log-parser-view-btn">🗂️ Cards</button>
 								<button type="button" id="logsViewBtn" class="log-parser-view-btn">📋 Logs</button>
 								<button type="button" id="tableViewBtn" class="log-parser-view-btn">📋 Table</button>
-								<button type="button" id="wordWrapBtn" class="log-parser-view-btn" style="display: none;">📄 Wrap</button>
+								<button type="button" id="wordWrapBtn" class="log-parser-view-btn"
+									style="display: none;">📄 Wrap</button>
+								<div class="log-parser-variables-view-toggle" id="variablesViewToggle"
+									style="display: none;">
+									<button type="button" id="organizedViewBtn"
+										class="log-parser-view-toggle-btn active">📊 Organized</button>
+									<button type="button" id="originalViewBtn" class="log-parser-view-toggle-btn">⏰
+										Original</button>
+								</div>
 							</div>
 							<div class="log-parser-action-controls">
-								<button type="button" id="copyAllBtn" class="log-parser-action-btn btn-copy">📋 Copy All</button>
-								<button type="button" id="exportBtn" class="log-parser-action-btn btn-export">💾 Export JSON</button>
+								<button type="button" id="copyAllBtn" class="log-parser-action-btn btn-copy">📋 Copy
+									All</button>
+								<button type="button" id="exportBtn" class="log-parser-action-btn btn-export">💾
+									JSON</button>
 							</div>
 							<div id="combinedCount" class="log-parser-buffer-count"></div>
 							<input type="text" id="searchFilter" placeholder="Search..." class="search-input">
@@ -91,6 +105,8 @@
 								<p>Parse logs to see extracted variables here</p>
 							</div>
 							<div id="resultsContent" class="log-parser-results-content"></div>
+							<div id="originalViewContent" class="log-parser-original-view-content"
+								style="display: none;"></div>
 							<div id="cardsViewContent" class="log-parser-cards-view-content" style="display: none;">
 								<div class="operation-cards">
 									<!-- Cards will be dynamically generated here -->
@@ -157,8 +173,10 @@
 					</div>
 
 					<div class="button-group">
-						<button type="button" class="btn-primary" onclick="navigationToUrl()">🔗 Open in Current Tab</button>
-						<button type="button" class="btn-secondary" onclick="navigationToUrl(true)">🆕 Open in New Tab</button>
+						<button type="button" class="btn-primary" onclick="navigationToUrl()">🔗 Open in Current
+							Tab</button>
+						<button type="button" class="btn-secondary" onclick="navigationToUrl(true)">🆕 Open in New
+							Tab</button>
 					</div>
 				</div>
 			</div>
@@ -179,8 +197,10 @@
 					</div>
 
 					<div class="button-group">
-						<button type="button" class="btn-primary" onclick="openJiraTicket()">🔗 Open in Current Tab</button>
-						<button type="button" class="btn-secondary" onclick="openJiraTicket(true)">🆕 Open in New Tab</button>
+						<button type="button" class="btn-primary" onclick="openJiraTicket()">🔗 Open in Current
+							Tab</button>
+						<button type="button" class="btn-secondary" onclick="openJiraTicket(true)">🆕 Open in New
+							Tab</button>
 					</div>
 				</div>
 
@@ -252,7 +272,8 @@
 							<textarea id="configJson" placeholder="Configuration will appear here..."></textarea>
 							<div class="button-group">
 								<button type="button" class="btn-info" onclick="loadConfig()">📥 Load from JSON</button>
-								<button type="button" class="btn-warning" onclick="resetToDefault()">🔄 Reset to Default</button>
+								<button type="button" class="btn-warning" onclick="resetToDefault()">🔄 Reset to
+									Default</button>
 							</div>
 							<div id="configStatus"></div>
 						</div>
