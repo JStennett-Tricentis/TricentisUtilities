@@ -4,37 +4,43 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Tosca Cloud Navigation</title>
+	<title>Tricentis Tools</title>
 	<link rel="icon" type="image/jpeg" sizes="16x16" href="assets/images/Tricentis_Logo_16x16.jpeg">
 	<link rel="icon" type="image/jpeg" sizes="32x32" href="assets/images/Tricentis_Logo_28x28.jpeg">
 	<link rel="icon" type="image/jpeg" sizes="48x48" href="assets/images/Tricentis_Logo_48x48.jpeg">
 	<link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
 	<link rel="apple-touch-icon" sizes="128x128" href="assets/images/Tricentis_Logo_128x128.jpeg">
-	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="css/base.css">
+	<link rel="stylesheet" href="css/tabs.css">
+	<link rel="stylesheet" href="css/navigation.css">
+	<link rel="stylesheet" href="css/log-parser.css">
+	<link rel="stylesheet" href="css/components.css">
 </head>
 
 <body>
 	<div class="container">
 		<div class="header">
-			<h1>🚀 Tosca Tools</h1>
-			<p>Cloud navigation, log parsing, and productivity tools</p>
+			<h1>🚀 Tricentis Tools</h1>
+			<p>Enterprise testing utilities for cloud navigation, log parsing, and productivity</p>
 		</div>
 
 		<div class="content">
-			<div class="tabs">
-				<button type="button" class="tab active" onclick="switchTab('logparser')">📊 Log Parser</button>
-				<button type="button" class="tab" onclick="switchTab('navigation')">🎯 Navigation</button>
-				<button type="button" class="tab" onclick="switchTab('jira')">🎫 JIRA</button>
-				<button type="button" class="tab" onclick="switchTab('bookmarklet')">📌 Bookmarklet</button>
-				<button type="button" class="tab" onclick="switchTab('config')">⚙️ Configure</button>
+			<div class="tabs-container">
+				<button type="button" class="menu-toggle" onclick="toggleMenu()" title="Toggle Menu">☰</button>
+				<div class="tabs">
+					<button type="button" class="tab active" onclick="switchTab('logparser')">📊 Log Parser</button>
+					<button type="button" class="tab" onclick="switchTab('navigation')">🎯 Navigation</button>
+					<button type="button" class="tab" onclick="switchTab('jira')">🎫 JIRA</button>
+					<button type="button" class="tab" onclick="switchTab('bookmarklet')">📌 Bookmarklet</button>
+					<button type="button" class="tab" onclick="switchTab('config')">⚙️ Configure</button>
+				</div>
 			</div>
 
 			<!-- Log Parser Tab -->
 			<div id="logparser-tab" class="tab-content active">
 				<div class="section">
-					<h2>📊 Tosca Log Parser</h2>
-					<p style="margin-bottom: 20px; color: #6c757d;">Advanced log parsing and analysis tool for Tosca
-						Cloud execution logs.</p>
+					<h2>📊 Tricentis Log Parser</h2>
+					<p style="margin-bottom: 20px; color: #6c757d;">Advanced log parsing and analysis tool for Tricentis Cloud execution logs.</p>
 
 					<!-- Input Section -->
 					<div class="log-parser-input-section">
@@ -236,7 +242,7 @@
 						<li><strong>Navigation Tab:</strong> Use the dropdowns to select your environment, tenant,
 							workspace, and page, then click to navigation.</li>
 						<li><strong>JIRA Tab:</strong> Enter a ticket number or full ticket ID to quickly open JIRA
-							tickets in Tosca Cloud Atlassian.</li>
+							tickets in Tricentis Cloud Atlassian.</li>
 						<li><strong>Configure Tab:</strong> Add or modify environments, tenants, and workspaces using
 							either JSON or the visual editor.</li>
 						<li><strong>Bookmarklets:</strong> Drag the bookmarklets above to your bookmarks bar for quick

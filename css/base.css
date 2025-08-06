@@ -1,0 +1,158 @@
+/* Base/Common Styles */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	background: #f5f7fa;
+	min-height: 100vh;
+	padding: 20px;
+}
+
+.container {
+	max-width: 1400px;
+	margin: 0 auto;
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+	overflow: visible;
+}
+
+.header {
+	background: #ffffff;
+	color: #2c3e50;
+	padding: 30px;
+	text-align: center;
+	border-bottom: 1px solid #e1e8ed;
+}
+
+.header h1 {
+	font-size: 2.2em;
+	margin-bottom: 10px;
+	font-weight: 300;
+}
+
+.header p {
+	opacity: 0.9;
+	font-size: 1.1em;
+}
+
+.content {
+	padding: 30px;
+}
+
+.section {
+	background: #ffffff;
+	border-radius: 8px;
+	padding: 25px;
+	margin-bottom: 25px;
+	border: 1px solid #e1e8ed;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.section h2 {
+	color: #2c3e50;
+	margin-bottom: 20px;
+	font-size: 1.5em;
+	font-weight: 600;
+}
+
+/* Status Messages */
+.status-message {
+	padding: 10px;
+	border-radius: 4px;
+	margin: 10px 0;
+}
+
+.success {
+	background: #d4edda;
+	color: #155724;
+	border: 1px solid #c3e6cb;
+}
+
+.error {
+	background: #f8d7da;
+	color: #721c24;
+	border: 1px solid #f5c6cb;
+}
+
+/* Form Elements */
+.form-group {
+	margin-bottom: 20px;
+}
+
+label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 8px;
+	color: #495057;
+}
+
+input[type="text"],
+input[type="url"],
+select,
+textarea {
+	width: 100%;
+	padding: 10px 15px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	font-size: 14px;
+	transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus,
+select:focus,
+textarea:focus {
+	outline: none;
+	border-color: #0066cc;
+	box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+/* Buttons */
+button {
+	background: #0066cc;
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 6px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+button:hover {
+	background: #0052a3;
+}
+
+button:active {
+	transform: translateY(1px);
+}
+
+button:disabled {
+	background: #cccccc;
+	cursor: not-allowed;
+}
+
+/* Links */
+a {
+	color: #0066cc;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+/* Search Input */
+.search-input {
+	padding: 8px 15px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	font-size: 14px;
+	width: 200px;
+}

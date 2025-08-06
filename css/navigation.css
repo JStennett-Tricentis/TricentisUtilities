@@ -1,0 +1,66 @@
+/* Navigation Tab Styles */
+.url-preview {
+	background: #f8f9fa;
+	padding: 15px;
+	border-radius: 6px;
+	margin-top: 20px;
+	word-break: break-all;
+	font-family: monospace;
+	font-size: 0.9em;
+	color: #495057;
+}
+
+.button-group {
+	display: flex;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+.button-group button {
+	flex: 1;
+}
+
+/* Custom Path Input */
+.custom-path-container {
+	margin-top: 15px;
+}
+
+.custom-path-container input {
+	font-family: monospace;
+}
+
+/* Workspace Items */
+.workspace-item {
+	background: #f8f9fa;
+	padding: 10px;
+	border-radius: 4px;
+	margin-bottom: 5px;
+}
+
+/* Dropdown Styles */
+.navigation-select {
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 10px center;
+	padding-right: 30px;
+}
+
+/* Navigation Status */
+.navigation-status {
+	margin-top: 15px;
+	padding: 10px;
+	border-radius: 6px;
+	text-align: center;
+	font-size: 14px;
+}
+
+.navigation-status.success {
+	background: #d4edda;
+	color: #155724;
+}
+
+.navigation-status.error {
+	background: #f8d7da;
+	color: #721c24;
+}

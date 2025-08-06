@@ -9,6 +9,18 @@ function switchTab(tabName) {
 	// Show selected tab
 	document.getElementById(tabName + '-tab').classList.add('active');
 	event.target.classList.add('active');
+
+	// Hide mobile menu after selection
+	const tabs = document.querySelector('.tabs');
+	if (tabs.classList.contains('show')) {
+		tabs.classList.remove('show');
+	}
+}
+
+// Mobile menu toggle
+function toggleMenu() {
+	const tabs = document.querySelector('.tabs');
+	tabs.classList.toggle('show');
 }
 
 // Initialize the application

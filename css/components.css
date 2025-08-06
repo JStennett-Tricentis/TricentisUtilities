@@ -1,0 +1,236 @@
+/* Component Styles for JIRA, Config, Bookmarklet */
+
+/* JIRA Tab Styles */
+.jira-input-container {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 20px;
+}
+
+.jira-input {
+	flex: 1;
+	padding: 12px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	font-size: 16px;
+}
+
+.jira-btn {
+	background: #0052cc;
+	color: white;
+	border: none;
+	padding: 12px 24px;
+	border-radius: 6px;
+	font-size: 16px;
+	cursor: pointer;
+	transition: background 0.3s ease;
+}
+
+.jira-btn:hover {
+	background: #003d99;
+}
+
+/* Bookmarklet Styles */
+.bookmarklet-link {
+	display: inline-block;
+	padding: 15px 25px;
+	background: #007bff;
+	color: white !important;
+	text-decoration: none;
+	border-radius: 8px;
+	font-size: 16px;
+	font-weight: 600;
+	margin: 15px 0;
+	transition: all 0.3s ease;
+	box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.bookmarklet-link:hover {
+	background: #0056b3;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+	text-decoration: none;
+}
+
+.bookmarklet-instructions {
+	background: #f8f9fa;
+	padding: 20px;
+	border-radius: 8px;
+	margin: 20px 0;
+	border-left: 4px solid #007bff;
+}
+
+.bookmarklet-instructions h4 {
+	color: #0056b3;
+	margin-bottom: 10px;
+}
+
+/* Configuration Tab Styles */
+.config-section {
+	margin-bottom: 30px;
+}
+
+.config-selector {
+	margin-bottom: 20px;
+}
+
+.config-selector label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 600;
+}
+
+.config-selector select {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	font-size: 14px;
+}
+
+.config-editor {
+	margin-top: 20px;
+}
+
+.config-textarea {
+	width: 100%;
+	height: 400px;
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	font-family: monospace;
+	font-size: 12px;
+	resize: vertical;
+}
+
+.config-buttons {
+	display: flex;
+	gap: 10px;
+	margin-top: 15px;
+}
+
+.config-buttons button {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 6px;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background 0.3s ease;
+}
+
+.btn-primary {
+	background: #007bff;
+	color: white;
+}
+
+.btn-primary:hover {
+	background: #0056b3;
+}
+
+.btn-secondary {
+	background: #6c757d;
+	color: white;
+}
+
+.btn-secondary:hover {
+	background: #545b62;
+}
+
+.btn-danger {
+	background: #dc3545;
+	color: white;
+}
+
+.btn-danger:hover {
+	background: #c82333;
+}
+
+/* Visual Config Editor */
+.visual-editor {
+	background: #f8f9fa;
+	padding: 20px;
+	border-radius: 8px;
+	margin: 20px 0;
+}
+
+.visual-editor h4 {
+	color: #495057;
+	margin-bottom: 15px;
+}
+
+.environment-list {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.environment-item {
+	background: white;
+	padding: 15px;
+	border-radius: 6px;
+	border: 1px solid #dee2e6;
+}
+
+.environment-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.environment-name {
+	font-weight: 600;
+	color: #495057;
+}
+
+.environment-actions {
+	display: flex;
+	gap: 5px;
+}
+
+.btn-sm {
+	padding: 5px 10px;
+	font-size: 12px;
+}
+
+/* Workspace management */
+.workspace-management {
+	margin-top: 20px;
+}
+
+.workspace-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 15px;
+	margin-top: 15px;
+}
+
+.workspace-item {
+	background: #f8f9fa;
+	padding: 15px;
+	border-radius: 6px;
+	border: 1px solid #dee2e6;
+}
+
+.workspace-item h5 {
+	margin: 0 0 8px 0;
+	color: #495057;
+}
+
+.workspace-item .workspace-type {
+	display: inline-block;
+	padding: 2px 6px;
+	background: #007bff;
+	color: white;
+	border-radius: 3px;
+	font-size: 11px;
+	text-transform: uppercase;
+}
+
+.workspace-item .workspace-type.swagger {
+	background: #28a745;
+}
+
+.workspace-item .workspace-type.custom {
+	background: #fd7e14;
+}

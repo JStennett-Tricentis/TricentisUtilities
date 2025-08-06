@@ -2,9 +2,36 @@
 
 A comprehensive browser-based toolkit for Tosca Cloud environments, featuring cloud navigation, log parsing, and productivity tools.
 
-![Tosca Cloud Navigation](./assets/images/tosca_cloud_navigation.png)
+## 📁 Project Structure
 
-![Swagger Navigation](./assets/images/swagger_navigation.png)
+```plaintext
+/
+├── index.html                 # Main HTML file with tabs for all tools
+├── styles.css                 # Unified styling (1400px width optimized)
+├── log-parser-styles.css      # Additional styles for log parser
+├── log-parser.html            # Standalone log parser page
+├── README.md                  # This file
+├── CLAUDE.md                  # Detailed project documentation
+├── config.json                # Default configuration file
+├── config.fusionx.json        # FusionX-specific configuration
+├── config.example.json        # Example configuration template
+├── js/
+│   ├── app.js                 # Main application initialization
+│   ├── config.js              # Configuration management
+│   ├── navigation.js          # Navigation logic and URL building
+│   └── bookmarklet.js         # Bookmarklet generation
+├── log-parser-js/             # Log parser JavaScript modules
+│   ├── ToscaLogParserApp.js   # Main log parser application
+│   ├── core/
+│   │   └── LogParser.js       # Core parsing logic
+│   ├── ui/
+│   │   └── UIManager.js       # UI management and rendering
+│   └── data/
+│       └── DataManager.js     # Data processing and grouping
+├── assets/
+│   └── images/                # Logos and screenshots
+└── debug/                     # Development and testing files
+```
 
 ## 🚀 Quick Start
 
@@ -58,21 +85,25 @@ Open the tool directly in your browser to access the full interface with configu
 
 ## ✨ Features
 
+> **Note**: Log Parser is now the default first tab when opening the application.
+
 ### 🎯 Cloud Navigation
 
 #### Smart Defaults
 
-- **Auto-selects Reporting** as the default workspace when available
+- **Auto-selects Reporting** as the default workspace (configurable via `defaults` section)
 - **Auto-populates fields** when you're already on a Tosca Cloud page
 - **Remembers your configuration** using local storage
+- **Config file selector** persists your preferred configuration file
 
 #### Navigation Options
 
 - **Environment Selection**: Development, Staging, Production
 - **Tenant Selection**: FusionX, Tricentis-CI, Tricentis
-- **Workspace Selection**: Reporting, FusionX, API-Simulator, Swagger Docs, and more
+- **Workspace Selection**: Reporting (default), FusionX, API-Simulator, Swagger Docs, and more
 - **Page Selection**: Home, Agents, Test Cases, Reports, API Playground, etc.
 - **Custom Paths**: Enter any custom path for direct navigation
+- **Config File Selection**: Choose between config.json, config.fusionx.json, or config.example.json
 
 #### Multiple Access Methods
 
@@ -158,6 +189,20 @@ When you're already on a Tosca Cloud page (like `https://fusionx.my-dev.tricenti
 
 ## 🔧 Configuration
 
+### Configuration Structure
+
+The configuration now includes a `defaults` section for setting default values:
+
+```json
+{
+  "defaults": {
+    "workspace": "reporting"    // Default workspace to auto-select
+  },
+  "sharedUris": { ... },
+  "environments": { ... }
+}
+```
+
 ### Initial Setup
 
 1. **Copy the example config:**
@@ -167,11 +212,19 @@ When you're already on a Tosca Cloud page (like `https://fusionx.my-dev.tricenti
    ```
 
 2. **Edit `config.json`** to match your environments:
+   - Set your default workspace in the `defaults` section
    - Update environment URLs (`my-dev`, `my-test`, `my`)
    - Add your tenants and workspaces
    - Customize available pages and swagger endpoints
 
 3. **Refresh the browser** after making changes to load the new configuration
+
+### Config File Selection
+
+- Use the dropdown in the **Configure** tab to switch between configuration files
+- Available options: `config.json`, `config.fusionx.json`, `config.example.json`
+- Your selection is saved and persists across browser sessions
+- The bookmarklet automatically updates when you change config files
 
 ### Adding New Environments
 
@@ -228,7 +281,18 @@ When you're already on a Tosca Cloud page (like `https://fusionx.my-dev.tricenti
 - **Staging** (`my-test.tricentis.com`)
 - **Production** (`my.tricentis.com`)
 
+## 📚 Documentation
+
+- **CLAUDE.md**: Contains detailed project documentation, architecture details, and development notes
+- **README.md**: This file - quick start guide and feature overview
+
 ## 💡 Tips & Tricks
+
+### Interface Features
+
+- **Optimized Width**: The application uses a 1400px width for better log parser display
+- **Tab Order**: Log Parser is the default first tab for quick access to parsing functionality
+- **Config Persistence**: Your selected configuration file is remembered between sessions
 
 ### Bookmarklet Best Practices
 
