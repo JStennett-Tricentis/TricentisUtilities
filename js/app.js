@@ -1,14 +1,16 @@
 // Main application initialization and event handlers
 
 // Tab switching
-function switchTab(tabName) {
+function switchTab(tabName, event) {
 	// Hide all tab contents
 	document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
 	document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
 
 	// Show selected tab
 	document.getElementById(tabName + '-tab').classList.add('active');
-	event.target.classList.add('active');
+	if (event && event.target) {
+		event.target.classList.add('active');
+	}
 
 	// Hide mobile menu after selection
 	const tabs = document.querySelector('.tabs');

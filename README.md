@@ -1,20 +1,25 @@
-# Tosca Tools
+# Tricentis Tools
 
-A comprehensive browser-based toolkit for Tosca Cloud environments, featuring cloud navigation, log parsing, and productivity tools.
+A comprehensive browser-based toolkit for Tricentis Cloud environments, featuring cloud navigation, log parsing, and productivity tools.
 
 ## 📁 Project Structure
 
 ```plaintext
 /
 ├── index.html                 # Main HTML file with tabs for all tools
-├── styles.css                 # Unified styling (1400px width optimized)
-├── log-parser-styles.css      # Additional styles for log parser
+├── styles.css                 # CSS module imports (1400px width optimized)
 ├── log-parser.html            # Standalone log parser page
 ├── README.md                  # This file
 ├── CLAUDE.md                  # Detailed project documentation
 ├── config.json                # Default configuration file
 ├── config.fusionx.json        # FusionX-specific configuration
 ├── config.example.json        # Example configuration template
+├── css/                       # Modular CSS architecture
+│   ├── base.css               # Core styling, layout, forms, buttons
+│   ├── tabs.css               # Tab navigation with responsive design
+│   ├── navigation.css         # Navigation-specific styles
+│   ├── log-parser.css         # Log parser component styles
+│   └── components.css         # JIRA, config, bookmarklet styles
 ├── js/
 │   ├── app.js                 # Main application initialization
 │   ├── config.js              # Configuration management
