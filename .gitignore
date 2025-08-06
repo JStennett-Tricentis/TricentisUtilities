@@ -23,4 +23,4 @@ Thumbs.db
 config.json
 
 # Misc
-notes.txt
+debug/*

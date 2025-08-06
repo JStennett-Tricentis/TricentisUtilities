@@ -1,6 +1,6 @@
-# Tosca Cloud Navigator
+# Tosca Tools
 
-A browser-based tool for quick navigation between Tosca Cloud environments, tenants, and workspaces.
+A comprehensive browser-based toolkit for Tosca Cloud environments, featuring cloud navigation, log parsing, and productivity tools.
 
 ![Tosca Cloud Navigation](./assets/images/tosca_cloud_navigation.png)
 
@@ -47,7 +47,7 @@ A browser-based tool for quick navigation between Tosca Cloud environments, tena
 
 1. Visit the tool at `http://localhost:8000`
 2. Go to the **Bookmarklet** tab
-3. Drag the "📌 Tosca Cloud Navigator" link to your browser's bookmark bar
+3. Drag the "📌 Tosca Cloud Navigation" link to your browser's bookmark bar
 4. Click the bookmark from any page to open the quick navigator popup
 
 ### Option 2: Direct Access
@@ -58,49 +58,103 @@ Open the tool directly in your browser to access the full interface with configu
 
 ## ✨ Features
 
-### Smart Defaults
+### 🎯 Cloud Navigation
 
-- **Auto-selects FusionX** as the default tenant and workspace when available
+#### Smart Defaults
+
+- **Auto-selects Reporting** as the default workspace when available
 - **Auto-populates fields** when you're already on a Tosca Cloud page
 - **Remembers your configuration** using local storage
 
-### Navigation Options
+#### Navigation Options
 
 - **Environment Selection**: Development, Staging, Production
 - **Tenant Selection**: FusionX, Tricentis-CI, Tricentis
-- **Workspace Selection**: FusionX, Reporting, API-Simulator, Swagger Docs, and more
+- **Workspace Selection**: Reporting, FusionX, API-Simulator, Swagger Docs, and more
 - **Page Selection**: Home, Agents, Test Cases, Reports, API Playground, etc.
 - **Custom Paths**: Enter any custom path for direct navigation
 
-### Multiple Access Methods
+#### Multiple Access Methods
 
-- **Current Tab**: Navigate in the same tab
+- **Current Tab**: Navigation in the same tab
 - **New Tab**: Open in a new browser tab
 - **Bookmarklet**: Quick access from any page
 
+### 📊 Log Parser
+
+#### Advanced Log Analysis
+
+- **Buffer Variable Extraction**: Automatically extracts variables from Tosca Cloud execution logs
+- **Multi-line JSON Support**: Handles complex JSON payloads spanning multiple log lines
+- **Smart Variable Typing**: Categorizes variables as JSON, Token, URL, ID, Timestamp, or Buffer Variable
+- **Context Grouping**: Groups variables by TestCase and Operation context
+
+#### Variable Type Detection
+
+- **JSON**: Structured JSON objects/arrays with syntax highlighting
+- **Token**: Access tokens and authentication credentials (truncated for security)
+- **URL**: HTTP/HTTPS URLs with clickable links
+- **ID**: UUIDs and long alphanumeric identifiers
+- **Timestamp**: ISO datetime stamps
+- **Buffer Variable**: Standard string variables
+
+#### Multiple View Modes
+
+- **Variables View**: Grouped variable tables with enhanced display
+- **Logs View**: Syntax-highlighted log viewer with VS Code-style theming
+- **Table View**: Structured data view with collapsible groups
+
+#### Export & Copy Features
+
+- **Individual Variables**: Copy specific variables to clipboard
+- **Group Copy**: Copy entire variable groups
+- **JSON Export**: Export all parsed data as JSON
+- **Real-time Search**: Filter variables across all views
+
+### 🎫 JIRA Integration
+
+- **Quick Ticket Lookup**: Enter ticket numbers for instant JIRA access
+- **Smart Prefixing**: Automatically adds "TPI-" prefix to numeric tickets
+- **Bookmarklet Access**: JIRA lookup from any page
+
 ## 🎯 Usage Examples
 
-### Basic Navigation
+### Cloud Navigation
 
 1. Select your environment (e.g., "Development")
 2. Tenant automatically selects "FusionX"
-3. Workspace automatically selects "FusionX"
+3. Workspace automatically selects "Reporting"
 4. Choose a specific page or leave default
 5. Click "Open in Current Tab" or "Open in New Tab"
 
+### Log Parser Usage
+
+1. Switch to the **Log Parser** tab
+2. Paste your Tosca Cloud execution logs or upload a log file
+3. Click "Parse Logs" to extract variables
+4. Use the search filter to find specific variables
+5. Switch between Variables, Logs, and Table views
+6. Copy individual variables or export all data as JSON
+
+### JIRA Integration
+
+1. Switch to the **JIRA** tab
+2. Enter a ticket number (e.g., "12345" or "TPI-12345")
+3. Click to open the ticket in JIRA
+
 ### Custom Navigation
 
-- Use the "Custom Path" field to navigate to specific URLs like `/your/custom/path`
+- Use the "Custom Path" field to navigation to specific URLs like `/your/custom/path`
 - The tool will build the complete URL: `https://fusionx.my-dev.tricentis.com/your/custom/path`
 
 ### Smart Auto-Population
 
-When you're already on a Tosca Cloud page (like `https://fusionx.my-dev.tricentis.com/_portal/space/FusionX/home`):
+When you're already on a Tosca Cloud page (like `https://fusionx.my-dev.tricentis.com/_portal/space/Reporting/home`):
 
 - Environment automatically selects "Development"
 - Tenant automatically selects "FusionX"
-- Workspace automatically selects "FusionX"
-- Ready to navigate to other pages in the same context
+- Workspace automatically selects "Reporting"
+- Ready to navigation to other pages in the same context
 
 ## 🔧 Configuration
 
@@ -140,12 +194,20 @@ When you're already on a Tosca Cloud page (like `https://fusionx.my-dev.tricenti
 - **Import**: Paste configuration JSON to quickly set up the tool
 - **Reset**: Return to default configuration at any time
 
-## 📚 Available Workspaces
+## 📚 Available Tools & Workspaces
+
+### Main Tools
+
+- **📊 Log Parser**: Advanced Tosca Cloud log analysis and variable extraction
+- **🎯 Navigation**: Quick navigation between Tosca Cloud environments
+- **🎫 JIRA**: Quick ticket lookup and access
+- **📌 Bookmarklet**: Browser bookmarks for instant access
+- **⚙️ Configure**: Environment and workspace configuration
 
 ### Standard Workspaces
 
+- **Reporting**: Analytics and reporting tools (default)
 - **FusionX**: Main development workspace
-- **Reporting**: Analytics and reporting tools
 - **API-Simulator**: API testing and simulation
 - **Swagger Docs**: API documentation
 
@@ -177,9 +239,10 @@ When you're already on a Tosca Cloud page (like `https://fusionx.my-dev.tricenti
 ### Workflow Optimization
 
 1. **Start from Tosca Cloud pages** to leverage auto-population
-2. **Use FusionX defaults** for most common navigation scenarios
-3. **Save custom configurations** for team-specific setups
-4. **Share configuration JSON** with team members for consistency
+2. **Use Reporting defaults** for most common navigation scenarios
+3. **Parse logs regularly** to extract variables for API testing
+4. **Save custom configurations** for team-specific setups
+5. **Share configuration JSON** with team members for consistency
 
 ### Troubleshooting
 

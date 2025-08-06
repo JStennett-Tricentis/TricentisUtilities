@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Tosca Cloud Navigator</title>
+	<title>Tosca Cloud Navigation</title>
 	<link rel="icon" type="image/jpeg" sizes="16x16" href="assets/images/Tricentis_Logo_16x16.jpeg">
 	<link rel="icon" type="image/jpeg" sizes="32x32" href="assets/images/Tricentis_Logo_28x28.jpeg">
 	<link rel="icon" type="image/jpeg" sizes="48x48" href="assets/images/Tricentis_Logo_48x48.jpeg">
@@ -16,22 +16,124 @@
 <body>
 	<div class="container">
 		<div class="header">
-			<h1>🚀 Tosca Cloud Navigator</h1>
-			<p>Quick navigation tool for your cloud environments</p>
+			<h1>🚀 Tosca Tools</h1>
+			<p>Cloud navigation, log parsing, and productivity tools</p>
 		</div>
 
 		<div class="content">
 			<div class="tabs">
-				<button class="tab active" onclick="switchTab('navigate')">🎯 Navigate</button>
-				<button class="tab" onclick="switchTab('jira')">🎫 JIRA</button>
-				<button class="tab" onclick="switchTab('config')">⚙️ Configure</button>
-				<button class="tab" onclick="switchTab('bookmarklet')">📌 Bookmarklet</button>
+				<button type="button" class="tab active" onclick="switchTab('logparser')">📊 Log Parser</button>
+				<button type="button" class="tab" onclick="switchTab('navigation')">🎯 Navigation</button>
+				<button type="button" class="tab" onclick="switchTab('jira')">🎫 JIRA</button>
+				<button type="button" class="tab" onclick="switchTab('bookmarklet')">📌 Bookmarklet</button>
+				<button type="button" class="tab" onclick="switchTab('config')">⚙️ Configure</button>
 			</div>
 
-			<!-- Navigate Tab -->
-			<div id="navigate-tab" class="tab-content active">
+			<!-- Log Parser Tab -->
+			<div id="logparser-tab" class="tab-content active">
 				<div class="section">
-					<h2>🎯 Environment Navigator</h2>
+					<h2>📊 Tosca Log Parser</h2>
+					<p style="margin-bottom: 20px; color: #6c757d;">Advanced log parsing and analysis tool for Tosca
+						Cloud execution logs.</p>
+
+					<!-- Input Section -->
+					<div class="log-parser-input-section">
+						<div class="log-parser-input-tabs">
+							<button type="button" id="pasteBtn" class="log-parser-input-btn active">📝 Paste
+								Logs</button>
+							<button type="button" id="fileBtn" class="log-parser-input-btn">📁 Load File</button>
+							<select id="debugExamplesSelect" class="log-parser-debug-examples"
+								title="Load debug log examples for testing">
+								<option value="">📄 Load Debug Example</option>
+								<option value="logs-simple-example.txt">Simple Example</option>
+								<option value="logs-cleaned-up.txt">Cleaned Up</option>
+								<option value="logs-complete-logs-example.txt">Complete Example</option>
+								<option value="logs-formating-idea.txt">Formatting Idea</option>
+							</select>
+							<button type="button" id="debugBtn" class="log-parser-debug-toggle">🐛 Debug</button>
+						</div>
+
+						<div id="pasteMode" class="log-parser-input-mode active">
+							<textarea id="logInput" placeholder="Paste your Tosca logs here..."
+								style="width: 100%; height: 120px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; font-size: 12px; resize: vertical;"></textarea>
+						</div>
+
+						<div id="fileMode" class="log-parser-input-mode">
+							<input type="file" id="fileInput" accept=".json,.txt,.log" class="log-parser-file-input"
+								title="Select a log file to upload and parse">
+						</div>
+					</div>
+
+					<button type="button" id="parseBtn" class="log-parser-parse-button">🔄 Parse Logs</button>
+
+					<!-- Combined Header -->
+					<div id="combinedHeader" class="log-parser-filters-section" style="display: none;">
+						<div class="log-parser-filters-content">
+
+							<div class="log-parser-view-controls">
+								<button type="button" id="variablesViewBtn" class="log-parser-view-btn active">📊
+									Variables</button>
+								<button type="button" id="cardsViewBtn" class="log-parser-view-btn">🗂️ Cards</button>
+								<button type="button" id="logsViewBtn" class="log-parser-view-btn">📋 Logs</button>
+								<button type="button" id="tableViewBtn" class="log-parser-view-btn">📋 Table</button>
+								<button type="button" id="wordWrapBtn" class="log-parser-view-btn"
+									style="display: none;">📄 Wrap</button>
+								<div class="log-parser-variables-view-toggle" id="variablesViewToggle"
+									style="display: none;">
+									<button type="button" id="organizedViewBtn"
+										class="log-parser-view-toggle-btn active">📊 Organized</button>
+									<button type="button" id="originalViewBtn" class="log-parser-view-toggle-btn">⏰
+										Original</button>
+								</div>
+							</div>
+							<div class="log-parser-action-controls">
+								<button type="button" id="copyAllBtn" class="log-parser-action-btn btn-copy">📋 Copy
+									All</button>
+								<button type="button" id="exportBtn" class="log-parser-action-btn btn-export">💾
+									JSON</button>
+							</div>
+							<div id="combinedCount" class="log-parser-buffer-count"></div>
+							<input type="text" id="searchFilter" placeholder="Search..." class="search-input">
+						</div>
+					</div>
+
+					<!-- Results Section -->
+					<div class="log-parser-results-section">
+						<div class="log-parser-results-container">
+							<div id="resultsPlaceholder" class="log-parser-results-placeholder">
+								<p style="font-size: 2em;">📊</p>
+								<p>Parse logs to see extracted variables here</p>
+							</div>
+							<div id="resultsContent" class="log-parser-results-content"></div>
+							<div id="originalViewContent" class="log-parser-original-view-content"
+								style="display: none;"></div>
+							<div id="cardsViewContent" class="log-parser-cards-view-content" style="display: none;">
+								<div class="operation-cards">
+									<!-- Cards will be dynamically generated here -->
+								</div>
+							</div>
+							<div id="logViewContent" class="log-parser-log-view-content" style="display: none;"></div>
+							<div id="tableViewContent" class="log-parser-table-view-content" style="display: none;">
+							</div>
+						</div>
+					</div>
+
+					<!-- Debug Section -->
+					<div id="debugSection" class="log-parser-debug-section">
+						<div id="debugContent" class="log-parser-debug-content"></div>
+					</div>
+
+					<!-- Footer -->
+					<div class="log-parser-footer">
+						<button type="button" id="clearBtn" class="btn-warning">🗑️ Clear Results</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Navigation Tab -->
+			<div id="navigation-tab" class="tab-content">
+				<div class="section">
+					<h2>🎯 Environment Navigation</h2>
 
 					<div class="form-row">
 						<div class="form-group">
@@ -71,8 +173,10 @@
 					</div>
 
 					<div class="button-group">
-						<button class="btn-primary" onclick="navigateToUrl()">🔗 Open in Current Tab</button>
-						<button class="btn-secondary" onclick="navigateToUrl(true)">🆕 Open in New Tab</button>
+						<button type="button" class="btn-primary" onclick="navigationToUrl()">🔗 Open in Current
+							Tab</button>
+						<button type="button" class="btn-secondary" onclick="navigationToUrl(true)">🆕 Open in New
+							Tab</button>
 					</div>
 				</div>
 			</div>
@@ -93,8 +197,10 @@
 					</div>
 
 					<div class="button-group">
-						<button class="btn-primary" onclick="openJiraTicket()">🔗 Open in Current Tab</button>
-						<button class="btn-secondary" onclick="openJiraTicket(true)">🆕 Open in New Tab</button>
+						<button type="button" class="btn-primary" onclick="openJiraTicket()">🔗 Open in Current
+							Tab</button>
+						<button type="button" class="btn-secondary" onclick="openJiraTicket(true)">🆕 Open in New
+							Tab</button>
 					</div>
 				</div>
 
@@ -107,6 +213,40 @@
 				</div>
 			</div>
 
+			<!-- Bookmarklet Tab -->
+			<div id="bookmarklet-tab" class="tab-content">
+				<div class="section bookmarklet-section">
+					<h2>📌 Tosca Cloud Navigation Bookmarklet</h2>
+					<p style="margin-bottom: 15px;">Drag this link to your bookmarks bar for quick Tosca Cloud
+						navigation from any page:</p>
+					<a href="#" id="bookmarkletLink" class="bookmarklet-link">📌 Tosca Cloud Navigation</a>
+				</div>
+
+				<div class="section bookmarklet-section">
+					<h2>🎫 JIRA Lookup Bookmarklet</h2>
+					<p style="margin-bottom: 15px;">Drag this link to your bookmarks bar for quick JIRA ticket lookup
+						from any page:</p>
+					<a href="javascript:(function(){var id=prompt('Enter the Jira ticket number:');if(id){var url=isNaN(id)?id:'TPI-'+id;window.open('https://tricentis.atlassian.net/browse/'+url,'_blank');}})();"
+						class="bookmarklet-link">🎫 JIRA Lookup</a>
+				</div>
+
+				<div class="section">
+					<h2>📋 How to Use</h2>
+					<ol style="padding-left: 20px; line-height: 1.6;">
+						<li><strong>Navigation Tab:</strong> Use the dropdowns to select your environment, tenant,
+							workspace, and page, then click to navigation.</li>
+						<li><strong>JIRA Tab:</strong> Enter a ticket number or full ticket ID to quickly open JIRA
+							tickets in Tosca Cloud Atlassian.</li>
+						<li><strong>Configure Tab:</strong> Add or modify environments, tenants, and workspaces using
+							either JSON or the visual editor.</li>
+						<li><strong>Bookmarklets:</strong> Drag the bookmarklets above to your bookmarks bar for quick
+							access from any page.</li>
+						<li><strong>Custom Paths:</strong> Enter any custom path in the text field to navigation to
+							specific pages not listed in the dropdown.</li>
+					</ol>
+				</div>
+			</div>
+
 			<!-- Config Tab -->
 			<div id="config-tab" class="tab-content">
 				<div class="section">
@@ -115,8 +255,8 @@
 					<div class="form-group">
 						<label for="configFileSelect">Configuration File:</label>
 						<select id="configFileSelect" onchange="loadSelectedConfigFile()">
-							<option value="config.json">config.json (Default)</option>
-							<option value="config.fusionx.json">config.fusionx.json</option>
+							<option value="config.json">config.json</option>
+							<option value="config.fusionx.json" selected>config.fusionx.json (Default)</option>
 							<option value="config.example.json">config.example.json</option>
 						</select>
 						<p style="margin-top: 8px; color: #6c757d; font-size: 14px;">
@@ -131,8 +271,9 @@
 								bulk changes:</p>
 							<textarea id="configJson" placeholder="Configuration will appear here..."></textarea>
 							<div class="button-group">
-								<button class="btn-info" onclick="loadConfig()">📥 Load from JSON</button>
-								<button class="btn-warning" onclick="resetToDefault()">🔄 Reset to Default</button>
+								<button type="button" class="btn-info" onclick="loadConfig()">📥 Load from JSON</button>
+								<button type="button" class="btn-warning" onclick="resetToDefault()">🔄 Reset to
+									Default</button>
 							</div>
 							<div id="configStatus"></div>
 						</div>
@@ -151,7 +292,7 @@
 								<input type="text" id="newEnvKey" placeholder="e.g., my-dev" />
 							</div>
 
-							<button class="btn-secondary" onclick="addEnvironment()"
+							<button type="button" class="btn-secondary" onclick="addEnvironment()"
 								style="width: 100%; margin-bottom: 20px;">➕ Add Environment</button>
 
 							<div class="form-group">
@@ -171,7 +312,7 @@
 								<input type="text" id="newTenantKey" placeholder="e.g., fusionx" />
 							</div>
 
-							<button class="btn-secondary" onclick="addTenant()"
+							<button type="button" class="btn-secondary" onclick="addTenant()"
 								style="width: 100%; margin-bottom: 20px;">➕ Add Tenant</button>
 
 							<div class="form-group">
@@ -202,7 +343,7 @@
 								<input type="text" id="newUriPath" placeholder="e.g., /_admin/dashboard" />
 							</div>
 
-							<button class="btn-secondary" onclick="addSharedUri()"
+							<button type="button" class="btn-secondary" onclick="addSharedUri()"
 								style="width: 100%; margin-bottom: 20px;">➕ Add Workspace</button>
 
 							<div id="configEditor">
@@ -212,47 +353,35 @@
 					</div>
 				</div>
 			</div>
-
-			<!-- Bookmarklet Tab -->
-			<div id="bookmarklet-tab" class="tab-content">
-				<div class="section bookmarklet-section">
-					<h2>📌 Tosca Cloud Navigator Bookmarklet</h2>
-					<p style="margin-bottom: 15px;">Drag this link to your bookmarks bar for quick Tosca Cloud
-						navigation from any page:</p>
-					<a href="#" id="bookmarkletLink" class="bookmarklet-link">📌 Tosca Cloud Navigator</a>
-				</div>
-
-				<div class="section bookmarklet-section">
-					<h2>🎫 JIRA Lookup Bookmarklet</h2>
-					<p style="margin-bottom: 15px;">Drag this link to your bookmarks bar for quick JIRA ticket lookup
-						from any page:</p>
-					<a href="javascript:(function(){var id=prompt('Enter the Jira ticket number:');if(id){var url=isNaN(id)?id:'TPI-'+id;window.open('https://tricentis.atlassian.net/browse/'+url,'_blank');}})();"
-						class="bookmarklet-link">🎫 JIRA Lookup</a>
-				</div>
-
-				<div class="section">
-					<h2>📋 How to Use</h2>
-					<ol style="padding-left: 20px; line-height: 1.6;">
-						<li><strong>Navigate Tab:</strong> Use the dropdowns to select your environment, tenant,
-							workspace, and page, then click to navigate.</li>
-						<li><strong>JIRA Tab:</strong> Enter a ticket number or full ticket ID to quickly open JIRA
-							tickets in Tosca Cloud Atlassian.</li>
-						<li><strong>Configure Tab:</strong> Add or modify environments, tenants, and workspaces using
-							either JSON or the visual editor.</li>
-						<li><strong>Bookmarklets:</strong> Drag the bookmarklets above to your bookmarks bar for quick
-							access from any page.</li>
-						<li><strong>Custom Paths:</strong> Enter any custom path in the text field to navigate to
-							specific pages not listed in the dropdown.</li>
-					</ol>
-				</div>
-			</div>
 		</div>
 	</div>
 
+	<script>
+		// Global function for toggling JSON in table view
+		function toggleTableJson(jsonId) {
+			const content = document.getElementById(jsonId);
+			const toggle = document.getElementById(jsonId + '-toggle');
+
+			if (content && toggle) {
+				const isExpanded = content.style.display !== 'none';
+
+				if (isExpanded) {
+					content.style.display = 'none';
+					toggle.textContent = '▶';
+					toggle.classList.remove('expanded');
+				} else {
+					content.style.display = 'block';
+					toggle.textContent = '▼';
+					toggle.classList.add('expanded');
+				}
+			}
+		}
+	</script>
 	<script src="js/config.js"></script>
 	<script src="js/navigation.js"></script>
 	<script src="js/bookmarklet.js"></script>
 	<script src="js/app.js"></script>
+	<script type="module" src="log-parser-js/ToscaLogParserApp.js"></script>
 </body>
 
 </html>

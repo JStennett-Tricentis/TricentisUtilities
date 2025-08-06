@@ -1,9 +1,9 @@
-// Default configuration from config.json
+// Default configuration from config.fusionx.json
 let config = {};
-let currentConfigFile = 'config.json';
+let currentConfigFile = 'config.fusionx.json';
 
 // Load config from specified file
-async function loadConfigFromFile(filename = 'config.json') {
+async function loadConfigFromFile(filename = 'config.fusionx.json') {
 	try {
 		const response = await fetch(`./${filename}`);
 		if (response.ok) {
@@ -110,12 +110,12 @@ function loadBuiltInConfig() {
 					"fusionx": {
 						"name": "FusionX",
 						"workspaces": [
-							"fusionx",
-							"reporting",
-							"api-simulator",
-							"always-empty",
-							"large-data",
-							"default",
+							"FusionX",
+							"Reporting",
+							"API-Simulator",
+							"Always Empty Workspace",
+							"Large Data Creation",
+							"Default",
 							"swagger-docs"
 						]
 					}
@@ -226,11 +226,11 @@ function loadBuiltInConfig() {
 async function loadSelectedConfigFile() {
 	const selectedFile = document.getElementById('configFileSelect').value;
 	const fileLoaded = await loadConfigFromFile(selectedFile);
-	
+
 	if (fileLoaded) {
 		// Save the selected file preference
 		localStorage.setItem('selectedConfigFile', selectedFile);
-		
+
 		updateConfigDisplay();
 		if (typeof updateEnvironments === 'function') {
 			updateEnvironments();
@@ -252,12 +252,12 @@ async function initConfig() {
 		}
 		currentConfigFile = savedConfigFile;
 	}
-	
+
 	// First try to load from selected config file
 	const fileLoaded = await loadConfigFromFile(currentConfigFile);
 
 	if (!fileLoaded) {
-		// Fallback to localStorage if config.json fails
+		// Fallback to localStorage if config file fails
 		const saved = localStorage.getItem('tricentis-nav-config');
 		if (saved) {
 			try {

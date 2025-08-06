@@ -1,4 +1,7 @@
 {
+	"defaults": {
+		"workspace": "tricentis"
+	},
 	"sharedUris": {
 		"workspaces": {
 			"tricentis": {
