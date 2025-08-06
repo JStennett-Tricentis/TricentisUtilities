@@ -223,6 +223,14 @@ class LogParser {
 					} else {
 						// Multi-line value - use simplified extraction
 						const extractedJSON = this.extractMultilineJSON(lines, index, variableName);
+						// Debug: Log JSON_Body extraction
+						if (variableName === 'JSON_Body') {
+							console.log('🔍 JSON_Body extraction:', {
+								variableName,
+								extractedJSON: extractedJSON?.substring(0, 100) + '...',
+								extracted: !!extractedJSON
+							});
+						}
 						if (extractedJSON) {
 							variableValue = extractedJSON;
 						} else {
@@ -245,6 +253,17 @@ class LogParser {
 							timestamp: this.extractTimestamp(line),
 							originalLine: trimmedLine
 						};
+
+						// Debug: Log JSON_Body variable creation
+						if (variableName === 'JSON_Body') {
+							console.log('🔍 JSON_Body variable created:', {
+								name: variableName,
+								value: variableValue?.substring(0, 100) + '...',
+								type: variable.type,
+								line: lineNumber,
+								valueLength: variableValue?.length
+							});
+						}
 
 						variables.push(variable);
 						this.log(`Parsed ${variable.type}: ${variable.name}`);

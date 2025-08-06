@@ -159,7 +159,7 @@ class UIManager {
 	switchVariablesViewMode(mode) {
 		this.variablesViewMode = mode;
 		this.updateVariablesViewToggle();
-		
+
 		// Update the display based on the new mode
 		if (this.currentView === 'variables') {
 			this.showVariablesView();
@@ -269,7 +269,7 @@ class UIManager {
 		} else if (this.currentView === 'variables') {
 			document.getElementById('cardsViewContent').style.display = 'none';
 			document.getElementById('variablesViewToggle').style.display = 'flex';
-			
+
 			if (this.variablesViewMode === 'organized') {
 				resultsContent.style.display = 'block';
 				document.getElementById('originalViewContent').style.display = 'none';
@@ -357,7 +357,7 @@ class UIManager {
 	createOriginalViewRow(variable, index) {
 		const typeClass = this.getTypeClass(variable.type);
 		const typeLabel = this.getTypeLabel(variable.type);
-		
+
 		let valueDisplay = '';
 		let actionButtons = '';
 
@@ -538,7 +538,7 @@ class UIManager {
 		// Generate cards from grouped data - flatten all levels
 		const allOperations = this.flattenOperations(groupedData);
 		console.log('🎴 Cards View - Flattened operations:', allOperations.length);
-		
+
 		allOperations.forEach(operation => {
 			const cardElement = this.createOperationCard(operation);
 			operationCards.appendChild(cardElement);
@@ -548,30 +548,30 @@ class UIManager {
 	// Helper method to recursively flatten all operations from hierarchical groups
 	flattenOperations(groups, maxDepth = 3, currentDepth = 0) {
 		const flattened = [];
-		
+
 		if (!groups || currentDepth >= maxDepth) {
 			return flattened;
 		}
-		
+
 		groups.forEach(group => {
 			// Add the current group with depth information
 			const groupWithDepth = { ...group, depth: currentDepth };
 			flattened.push(groupWithDepth);
-			
+
 			// Recursively add subgroups
 			if (group.subGroups && group.subGroups.length > 0) {
 				const subOperations = this.flattenOperations(group.subGroups, maxDepth, currentDepth + 1);
 				flattened.push(...subOperations);
 			}
 		});
-		
+
 		return flattened;
 	}
 
 	createOperationCard(group) {
 		const card = document.createElement('div');
 		card.className = 'operation-card';
-		
+
 		// Add depth-based styling
 		if (group.depth > 0) {
 			card.style.marginLeft = `${group.depth * 20}px`;
@@ -584,12 +584,12 @@ class UIManager {
 		// Determine status based on group type and content
 		let status = 'success';
 		let statusText = 'Success';
-		
+
 		// Check if it's a test case
 		if (group.type === 'testcase') {
 			// Look for failure indicators in the lines
-			const hasFailure = group.lines && group.lines.some(line => 
-				line && line.level === 'ERR' || 
+			const hasFailure = group.lines && group.lines.some(line =>
+				line && line.level === 'ERR' ||
 				(line && line.message && line.message.toLowerCase().includes('failed')) ||
 				(line && line.message && line.message.toLowerCase().includes('error'))
 			);
@@ -597,15 +597,15 @@ class UIManager {
 			statusText = hasFailure ? 'Failed' : 'Passed';
 		} else {
 			// For operations, check for success/failure patterns
-			const hasSuccess = group.lines && group.lines.some(line => 
+			const hasSuccess = group.lines && group.lines.some(line =>
 				(line && line.message && line.message.toLowerCase().includes('succeeded')) ||
 				(line && line.message && line.message.toLowerCase().includes('success'))
 			);
-			const hasFailure = group.lines && group.lines.some(line => 
-				line && line.level === 'ERR' || 
+			const hasFailure = group.lines && group.lines.some(line =>
+				line && line.level === 'ERR' ||
 				(line && line.message && line.message.toLowerCase().includes('failed'))
 			);
-			
+
 			if (hasFailure) {
 				status = 'failed';
 				statusText = 'Failed';
@@ -638,33 +638,33 @@ class UIManager {
 
 	getOperationIcon(group) {
 		const name = group.name.toLowerCase();
-		
+
 		// Test case icons
 		if (group.type === 'testcase') return '🧪';
-		
+
 		// Browser/UI operations
 		if (name.includes('browser') || name.includes('open')) return '🌐';
 		if (name.includes('click') || name.includes('button')) return '👆';
 		if (name.includes('type') || name.includes('input') || name.includes('text')) return '⌨️';
 		if (name.includes('wait') || name.includes('sleep')) return '⏱️';
 		if (name.includes('screenshot') || name.includes('capture')) return '📸';
-		
+
 		// API/Network operations
 		if (name.includes('token') || name.includes('auth')) return '🔑';
 		if (name.includes('request') || name.includes('post') || name.includes('get')) return '📡';
 		if (name.includes('response')) return '📨';
 		if (name.includes('url') || name.includes('endpoint')) return '🔗';
-		
+
 		// Validation/Testing
 		if (name.includes('verify') || name.includes('assert') || name.includes('check')) return '✅';
 		if (name.includes('compare') || name.includes('match')) return '🔍';
-		
+
 		// Data operations
 		if (name.includes('download') || name.includes('save')) return '💾';
 		if (name.includes('upload') || name.includes('load')) return '📤';
 		if (name.includes('generate') || name.includes('create')) return '⚡';
 		if (name.includes('delete') || name.includes('remove')) return '🗑️';
-		
+
 		// Default
 		return '📋';
 	}
@@ -1193,14 +1193,32 @@ class UIManager {
 		}
 	}
 
-	// Generate clean HTML table with each log line as a row
+	// Generate clean HTML table with hierarchical grouping and indentation
 	generateSimpleTableHTML(tableData) {
 		if (!tableData || tableData.length === 0) {
 			return '<div class="table-view">No log entries to display</div>';
 		}
 
+		// Group operations logically for indentation
+		const groupedOperations = this.groupOperationsForIndentation(tableData);
+
+		// Find test case name for title
+		const testCaseName = this.extractTestCaseName(tableData);
+
 		let html = `
 			<div class="table-view-content">
+		`;
+
+		// Add test case title if found
+		if (testCaseName) {
+			html += `
+				<div class="test-case-title-header">
+					<h3>Starting TestCase "${testCaseName}"</h3>
+				</div>
+			`;
+		}
+
+		html += `
 				<table class="log-table">
 					<thead>
 						<tr>
@@ -1216,8 +1234,8 @@ class UIManager {
 					<tbody>
 		`;
 
-		tableData.forEach(logInfo => {
-			html += this.generateSimpleTableRow(logInfo);
+		groupedOperations.forEach(group => {
+			html += this.generateGroupRowsWithIndentation(group);
 		});
 
 		html += `
@@ -1229,27 +1247,9 @@ class UIManager {
 		return html;
 	}
 
-	// Generate a single table row for a log line
+	// Alias to the indented table row method for consistency
 	generateSimpleTableRow(logInfo) {
-		const rowClass = this.getRowClass(logInfo);
-		const operationDisplay = this.getOperationNameDisplay(logInfo);
-		const detailsDisplay = this.getDetailsDisplay(logInfo);
-		const variableDisplay = logInfo.variable ? this.escapeHtml(logInfo.variable) : '';
-		const valueDisplay = this.getCleanValueDisplay(logInfo);
-		const statusDisplay = this.getStatusDisplay(logInfo);
-		const actionsDisplay = this.getActionsDisplay(logInfo);
-
-		return `
-			<tr class="${rowClass}">
-				<td class="td-line">${logInfo.lineNumber}</td>
-				<td class="td-operation">${operationDisplay}</td>
-				<td class="td-details">${detailsDisplay}</td>
-				<td class="td-variable">${variableDisplay}</td>
-				<td class="td-value">${valueDisplay}</td>
-				<td class="td-actions"><div class="var-actions">${actionsDisplay}</div></td>
-				<td class="td-status">${statusDisplay}</td>
-			</tr>
-		`;
+		return this.generateIndentedTableRow(logInfo);
 	}
 
 	// Helper methods for table row generation
@@ -1270,6 +1270,12 @@ class UIManager {
 
 
 	getOperationNameDisplay(logInfo) {
+		// Use the indented version if indentLevel is available
+		if (logInfo.indentLevel !== undefined) {
+			return this.getIndentedOperationDisplay(logInfo);
+		}
+
+		// Fallback to simple display for non-indented contexts
 		let operation = logInfo.operation || logInfo.content || '';
 
 		// Clean up operation names - remove common prefixes and suffixes
@@ -1636,6 +1642,205 @@ class UIManager {
 		if (value.startsWith('ey') && value.length > 50) return 'Token';
 
 		return 'Buffer Variable';
+	}
+
+	// Extract test case name from table data
+	extractTestCaseName(tableData) {
+		const testCaseEntry = tableData.find(entry =>
+			entry.type === 'testcase' ||
+			(entry.content && entry.content.includes('Starting TestCase'))
+		);
+
+		if (testCaseEntry && testCaseEntry.operation) {
+			return testCaseEntry.operation;
+		}
+
+		return null;
+	}
+
+	// Group operations for visual indentation (simpler than before)
+	groupOperationsForIndentation(tableData) {
+		const groups = [];
+		let currentGroup = null;
+
+		tableData.forEach((logInfo, index) => {
+			// Skip test case entries as they're used for title
+			if (logInfo.type === 'testcase') {
+				return;
+			}
+
+			// Check if this should start a new group
+			const isGroupStarter = this.shouldStartNewGroup(logInfo);
+
+			if (isGroupStarter || !currentGroup) {
+				// Start a new group
+				currentGroup = {
+					name: this.getCleanOperationName(logInfo),
+					items: [],
+					mainOperation: logInfo,
+					status: this.getOperationGroupStatus(logInfo)
+				};
+				groups.push(currentGroup);
+			}
+
+			// Add item to current group with context
+			const itemWithContext = {
+				...logInfo,
+				indentLevel: this.determineIndentLevel(logInfo, currentGroup)
+			};
+
+			currentGroup.items.push(itemWithContext);
+		});
+
+		return groups;
+	}
+
+	// Determine if this log item should start a new group
+	shouldStartNewGroup(logInfo) {
+		const operation = logInfo.operation || logInfo.content || '';
+
+		// Don't start new groups for simple variable assignments
+		if (logInfo.variable && !operation.includes('Bearer Token') && !operation.includes('Generate')) {
+			return false;
+		}
+
+		// Start new groups for major operations
+		return operation.includes('Bearer Token') ||
+			operation.includes('POST ') ||
+			operation.includes('GET ') ||
+			operation.includes('DELETE ') ||
+			operation.includes('Generate') ||
+			operation.includes('Search for') ||
+			operation.includes('Wait for') ||
+			operation.includes('Verify') ||
+			operation.includes('Open') ||
+			operation.includes('Press ') ||
+			operation.includes('Save ') ||
+			operation.includes('TBox ') ||
+			operation.includes('Set the ') ||
+			logInfo.type === 'operation' ||
+			operation.match(/^[A-Z]/); // Starts with capital letter
+	}
+
+	// Determine indent level for visual hierarchy
+	determineIndentLevel(logInfo, currentGroup) {
+		const operation = logInfo.operation || logInfo.content || '';
+
+		// Main group operation gets level 0 (no indent)
+		if (logInfo === currentGroup.mainOperation) {
+			return 0;
+		}
+
+		// Variables get level 1 (one indent)
+		if (logInfo.variable) {
+			return 1;
+		}
+
+		// Sub-operations get level 1
+		return 1;
+	}
+
+	// Generate rows for a group with proper indentation
+	generateGroupRowsWithIndentation(group) {
+		let html = '';
+
+		group.items.forEach(item => {
+			html += this.generateIndentedTableRow(item);
+		});
+
+		return html;
+	}
+
+	// Generate a table row with proper indentation
+	generateIndentedTableRow(logInfo) {
+		const rowClass = this.getRowClass(logInfo);
+		const operationDisplay = this.getIndentedOperationDisplay(logInfo);
+		const detailsDisplay = this.getDetailsDisplay(logInfo);
+		const variableDisplay = logInfo.variable ? this.escapeHtml(logInfo.variable) : '';
+		const valueDisplay = this.getCleanValueDisplay(logInfo);
+		const statusDisplay = this.getStatusDisplay(logInfo);
+		const actionsDisplay = this.getActionsDisplay(logInfo);
+
+		return `
+			<tr class="${rowClass} indent-level-${logInfo.indentLevel || 0}">
+				<td class="td-line">${logInfo.lineNumber}</td>
+				<td class="td-operation">${operationDisplay}</td>
+				<td class="td-details">${detailsDisplay}</td>
+				<td class="td-variable">${variableDisplay}</td>
+				<td class="td-value">${valueDisplay}</td>
+				<td class="td-actions"><div class="var-actions">${actionsDisplay}</div></td>
+				<td class="td-status">${statusDisplay}</td>
+			</tr>
+		`;
+	}
+
+	// Get operation display with proper indentation
+	getIndentedOperationDisplay(logInfo) {
+		let operation = logInfo.operation || logInfo.content || '';
+
+		// Add visual indentation based on level
+		let indent = '';
+		const level = logInfo.indentLevel || 0;
+
+		if (level === 1) {
+			indent = '&nbsp;&nbsp;&nbsp;&nbsp;'; // 4 spaces for level 1
+		}
+
+		// For variables at level 1, show them in quotes like the format example
+		if (level === 1 && logInfo.variable) {
+			return `${indent}"${this.escapeHtml(logInfo.variable)}"`;
+		}
+
+		// Clean up operation names
+		operation = operation.replace(/^Buffer with name[:\s]*['"]([^'"]*)['"]\s*has been set to value.*/, '$1');
+		operation = operation.replace(/^\[Succeeded\]\s*['"]?([^'"]*?)['"]?$/, '$1');
+		operation = operation.replace(/^\[Failed\]\s*['"]?([^'"]*?)['"]?$/, '$1 - FAILED');
+		operation = operation.replace(/^Starting:\s*/, '');
+		operation = operation.replace(/^Set Buffer:\s*/, '');
+
+		// For level 0 (main operations), add quotes around the name
+		if (level === 0) {
+			// Remove existing quotes if they wrap the entire operation
+			if (operation.startsWith('"') && operation.endsWith('"')) {
+				operation = operation.slice(1, -1);
+			}
+			operation = `"${operation}"`;
+		}
+
+		// Truncate long operations but keep full content in title
+		const maxLength = level === 1 ? 50 : 60;
+		if (operation.length > maxLength) {
+			const truncated = operation.substring(0, maxLength) + '...';
+			return `${indent}<span title="${this.escapeHtml(operation)}">${this.escapeHtml(truncated)}</span>`;
+		}
+
+		return `${indent}${this.escapeHtml(operation)}`;
+	}
+
+	// Get clean operation name for group header
+	getCleanOperationName(logInfo) {
+		let name = logInfo.operation || logInfo.content || 'Operation';
+
+		// Clean up common prefixes/suffixes
+		name = name.replace(/^\[Succeeded\]\s*['"]?([^'"]*?)['"]?$/, '$1');
+		name = name.replace(/^\[Failed\]\s*['"]?([^'"]*?)['"]?$/, '$1');
+		name = name.replace(/^Buffer with name.*/, 'Buffer Assignment');
+		name = name.replace(/^Set Buffer:.*/, 'Buffer Assignment');
+
+		// Remove quotes if they wrap the entire name
+		if (name.startsWith('"') && name.endsWith('"')) {
+			name = name.slice(1, -1);
+		}
+
+		return name;
+	}
+
+	// Get operation status for group
+	getOperationGroupStatus(logInfo) {
+		if (logInfo.status === 'Failed' || (logInfo.content && logInfo.content.includes('FAILED'))) {
+			return 'FAILED';
+		}
+		return 'SUCCESS';
 	}
 
 

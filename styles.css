@@ -1160,6 +1160,54 @@ body {
 	background: #e8f4fd;
 }
 
+/* Test case title header */
+.test-case-title-header {
+	background: #e8f5e8;
+	border: 1px solid #28a745;
+	border-radius: 4px;
+	padding: 15px 20px;
+	margin-bottom: 15px;
+	border-left: 4px solid #28a745;
+}
+
+.test-case-title-header h3 {
+	margin: 0;
+	color: #155724;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+/* Indentation levels for hierarchical display */
+.log-parser-table-view-content .indent-level-0 {
+	font-weight: 600;
+	background: rgba(0, 123, 255, 0.05) !important;
+	border-left: 3px solid #007bff !important;
+}
+
+.log-parser-table-view-content .indent-level-0:hover {
+	background: rgba(0, 123, 255, 0.1) !important;
+}
+
+.log-parser-table-view-content .indent-level-1 {
+	background: rgba(108, 117, 125, 0.03) !important;
+	border-left: 2px solid rgba(108, 117, 125, 0.2) !important;
+}
+
+.log-parser-table-view-content .indent-level-1:hover {
+	background: rgba(108, 117, 125, 0.08) !important;
+}
+
+/* Operation column styling for indented items */
+.log-parser-table-view-content .indent-level-0 .td-operation {
+	color: #2c3e50;
+	font-weight: 600;
+}
+
+.log-parser-table-view-content .indent-level-1 .td-operation {
+	color: #495057;
+	font-style: italic;
+}
+
 /* Operation Card Styles */
 .operation-cards {
 	display: flex;
